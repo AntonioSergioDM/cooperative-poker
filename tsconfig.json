@@ -1,12 +1,59 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/public/*": [
+        "public/*"
+      ],
+      "@/client/*": [
+        "src/client/*"
+      ],
+      "@/client/components/*": [
+        "src/client/components/*"
+      ],
+      "@/client/containers/*": [
+        "src/client/containers/*"
+      ],
+      "@/client/tools/*": [
+        "src/client/tools/*"
+      ],
+      "@/server/*": [
+        "src/server/*"
+      ],
+      "@/shared/*": [
+        "src/shared/*"
+      ],
+      "@/globals": [
+        "src/globals"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "next-env.d.ts",
+    "src",
+    "next.config.js",
+    "next-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
 }
