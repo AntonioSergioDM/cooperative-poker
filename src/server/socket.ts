@@ -10,7 +10,7 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '../shared/SocketTypes';
-import { IN_DEV } from '../globals';
+import { IN_DEV, NEXT_URL } from '../globals';
 
 import {
   createLobby,
@@ -85,7 +85,13 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
       mode: 'development',
     });
 
-    console.info('\n\nAdmin website:    https://admin.socket.io \nURL:   http://localhost:3001\npath:   /api/socket\n\n');
+    console.info(`
+
+Admin website:    https://admin.socket.io 
+URL:   ${NEXT_URL}
+path:   /api/socket
+
+`);
   }
 
   res.end();
