@@ -20,3 +20,5 @@ We used React, Next and Socket.IO.
 ## What's next?
 
 Create a pull request to resolve an issue and submit it to review :)
+
+- I need to clone the socket io admin to this project because of the CORS policy
