@@ -1,6 +1,5 @@
 import {
   useMemo,
-  useState,
   useEffect,
   useCallback,
 } from 'react';
@@ -8,7 +7,6 @@ import {
 import { useSnackbar } from 'notistack';
 
 import {
-  type Score,
   getNextPlayer,
   type GameState,
   type PlayerState,
@@ -17,17 +15,13 @@ import {
 import { type Card } from '@/shared/Card';
 import type { LobbyPlayerState, ServerToClientEvents } from '@/shared/SocketTypes';
 
-import { Button } from '@mui/material';
 import { useSocket } from '@/client/tools/useSocket';
 
-import ScorePad from '../ScorePad';
-import TopPlayer from '../Players/TopPlayer';
-import LeftPlayer from '../Players/LeftPlayer';
-import RightPlayer from '../Players/RightPlayer';
-import BottomPlayer from '../Players/BottomPlayer';
+import PlayerHand from '@/client/components/Players/PlayerHand';
+import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
 import Table from './Table';
-import DenounceOverlay from '../DenounceOverlay';
+import {Typography} from "@mui/material";
 
 type FramerGameProps = {
   gameState: GameState;
@@ -40,26 +34,17 @@ const FramerGame = (props: FramerGameProps) => {
   const {
     gameState,
     players,
-    onPlayCard,
     playerState,
   } = props;
 
   const socket = useSocket();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [gameResults, setGameResults] = useState<Score[] | []>([]);
-  const [denounceOverlayState, setDenounceOverlayState] = useState(false);
-
-  const denounce = (idx: any) => {
-    console.log(`denounce  ${idx}`);
-    socket.emit('denounce', idx);
-  };
-
   const onGameResults = useCallback<ServerToClientEvents['gameResults']>((results) => {
     if (!results.length) {
       return;
     }
-    setGameResults(results);
+
     const myTeam = playerState.index % 2;
     const result = results[results.length - 1] || [0, 0];
     enqueueSnackbar({
@@ -88,25 +73,8 @@ const FramerGame = (props: FramerGameProps) => {
     leftIdx: getPreviousPlayer(playerState.index),
   }), [playerState.index]);
 
-  const hasTrumpIdx = useMemo(() => (
-    getPreviousPlayer(gameState.shufflePlayer)
-  ), [gameState.shufflePlayer]);
-
   return (
     <div className="relative w-screen h-screen bg-red-950 p-2">
-      <DenounceOverlay
-        open={denounceOverlayState}
-        onClose={() => setDenounceOverlayState(false)}
-        denounce={denounce}
-        playerLeft={{
-          name: players[leftIdx].name,
-          index: leftIdx,
-        }}
-        playerRight={{
-          name: players[rightIdx].name,
-          index: rightIdx,
-        }}
-      />
       <Table
         topIdx={topIdx}
         leftIdx={leftIdx}
@@ -114,35 +82,37 @@ const FramerGame = (props: FramerGameProps) => {
         gameState={gameState}
         bottomIdx={bottomIdx}
       />
-      <Button className="w-fit" onClick={() => setDenounceOverlayState(true)} color="primary">I spoted a cheater</Button>
 
-      <TopPlayer
-        isPlaying={gameState.currentPlayer === topIdx}
-        cardNum={gameState.hands[topIdx]}
-        trumpCard={(hasTrumpIdx === topIdx && gameState.trumpCard) || null}
-        name={players[topIdx].name}
-      />
-      <RightPlayer
-        isPlaying={gameState.currentPlayer === rightIdx}
-        cardNum={gameState.hands[rightIdx]}
-        trumpCard={(hasTrumpIdx === rightIdx && gameState.trumpCard) || null}
-        name={players[rightIdx].name}
-      />
-      <LeftPlayer
-        isPlaying={gameState.currentPlayer === leftIdx}
-        cardNum={gameState.hands[leftIdx]}
-        trumpCard={(hasTrumpIdx === leftIdx && gameState.trumpCard) || null}
-        name={players[leftIdx].name}
-      />
-      <BottomPlayer
-        onPlayCard={onPlayCard}
-        isPlaying={gameState.currentPlayer === bottomIdx}
-        cards={playerState.hand}
-        trumpCard={(hasTrumpIdx === bottomIdx && gameState.trumpCard) || null}
-        name={players[bottomIdx].name}
-      />
+      {players.map((player, idx) => {
+        const angle = (bottomIdx - idx) * ((2 * Math.PI) / players.length) - (3 * (Math.PI / 6));
 
-      <ScorePad gameResults={gameResults} playerIdx={playerState.index} />
+        const bottom = ((Math.sin(angle) * 100) / 2.3) + 45;
+        const left = ((Math.cos(angle) * 100) / 2.3) + 45;
+
+        const style = {
+          bottom: `${bottom.toFixed(2)}%`,
+          left: `${left.toFixed(2)}%`,
+          '--tw-rotate': `${angle * (180 / Math.PI) + 90}deg`,
+          transform: 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) '
+            + 'skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
+        };
+
+        const cards = bottomIdx === idx ? playerState.hand : Array(gameState.hands[idx]).fill(0);
+        // TODO make the name appear
+        return (
+          // TODO check what this is
+          // eslint-disable-next-line react/jsx-key
+          <div className="fixed flex row justify-center gap-20" style={style}>
+            <PlayerHand
+              cardWidth={bottomIdx === idx ? BIG_CARD : SMALL_CARD}
+              cards={cards}
+              name={player.name}
+            />
+
+            <Typography>{player.name}</Typography>
+          </div>
+        );
+      })}
     </div>
   );
 };

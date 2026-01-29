@@ -14,7 +14,6 @@ type PlayerHandProps = {
   isPlayer?: boolean;
   cards: (Card | 0)[];
   isPlaying?: boolean;
-  trumpCard: Card | null;
   name: string;
   onClick?: (card: Card) => void;
 };
@@ -24,7 +23,6 @@ const PlayerHand = (props: PlayerHandProps) => {
     cards,
     isRgb,
     cardWidth,
-    trumpCard,
     isPlaying,
     isPlayer,
     name,
@@ -37,23 +35,6 @@ const PlayerHand = (props: PlayerHandProps) => {
 
   return (
     <AnimatePresence>
-      {!!trumpCard && (
-        <motion.div
-          animate={{ x: `${cards.length <= 2 ? 125 : (25 * cards.length)}%`, y: '65%' }}
-          className="absolute bottom-0 select-none"
-          onClick={(isPlayer && handleOnClick(trumpCard)) || undefined}
-        >
-          <AnimatedCard
-            rgb={isRgb}
-            pulse={isPlaying}
-            width={cardWidth}
-            card={trumpCard}
-            clickable={isPlayer && isPlaying}
-          />
-        </motion.div>
-      )}
-
-      <Typography>{name}</Typography>
 
       {cards.map((card, idx) => (
         <motion.div

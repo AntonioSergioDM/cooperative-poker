@@ -35,7 +35,6 @@ const LeftPlayer = (props: LeftPlayerProps) => {
         isRgb={isRgb}
         cardWidth={SMALL_CARD}
         cards={emptyCards}
-        trumpCard={trumpCard}
         isPlaying={isPlaying}
         name={name}
       />
