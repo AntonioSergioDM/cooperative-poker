@@ -24,7 +24,7 @@ const Layout = ({ children }: LayoutProps) => (
     justifyContent="center"
   >
     <Link href={SiteRoute.Home}>
-      <Image alt="Logo" src={logo} priority width={200} height={200} />
+      <Image alt="Logo" src={logo} priority height={200} />
     </Link>
 
     <Stack

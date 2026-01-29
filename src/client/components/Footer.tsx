@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 const Footer = () => (
   <Box>
     <Typography variant="body2" color="text.secondary" align="center">
-      {'Sueca da Bila © '}
+      {'Cooperative Poker © '}
       {new Date().getFullYear()}
     </Typography>
     <Typography variant="body2" color="text.secondary" align="center">
