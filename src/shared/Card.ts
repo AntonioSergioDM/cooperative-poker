@@ -5,39 +5,16 @@ export enum Suit {
   Clubs = 4,
 }
 
-export const pointsOf = (card: Card) => {
-  switch (card.value) {
-    case 10:
-      return 11;
-    case 9:
-      return 10;
-    case 8:
-      return 4;
-    case 7:
-      return 3;
-    case 6:
-      return 2;
-    default:
-      return 0;
-    // case 2:
-    //   return 29;
-    // case 1:
-    //   return 1;
-  }
-};
-
 export const cardName = (card: Card) => {
   switch (card.value) {
-    case 10:
+    case 13:
       return 'Ace';
-    case 9:
-      return '7';
-    case 8:
+    case 12:
       return 'King';
-    case 7:
-      return 'Jack';
-    case 6:
+    case 11:
       return 'Queen';
+    case 10:
+      return 'Jack';
     default:
       return (card.value + 1).toString();
   }

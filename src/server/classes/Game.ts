@@ -1,7 +1,7 @@
 import type { GameState, Score, Table } from '@/shared/GameTypes';
 import { DenounceErrors, PlayErrors } from '@/shared/GameTypes';
 import type { Card } from '../../shared/Card';
-import { pointsOf, Suit } from '../../shared/Card';
+import { Suit } from '../../shared/Card';
 
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
@@ -9,13 +9,30 @@ export default class Game {
   // Adjust this to 1 for a very fast game!
   static cardsPerPlayer = 2;
 
-  static numPlayers = 23;
+  static maxPlayers = 23;
 
   static minPlayers = 3;
 
   static numTeams = 0;
 
   static maxPoints = 120; // +1 if the team wins all turns
+
+  /** Number of players */
+  numPlayers = 0;
+
+  /** renounce */
+  renounce: boolean[] = [false, false];
+
+  /** each 'deck' corresponds to a player hand */
+  decks: Array<Array<Card>> = [[], [], []];
+
+  /** Cards that will appear later */
+  flop: Array<Card> = [];
+
+  turn: Card | null = null;
+
+  river: Card | null = null;
+  // TODO add the cards required for special effects
 
   /** [even team, odd team] */
   roundScore: Score = [0, 0];
@@ -24,12 +41,6 @@ export default class Game {
 
   /** stars as -1, switches to winnning team idx, until another teams wins an hand. Then it becomes numTeams */
   bandeira = -1;
-
-  /** renounce */
-  renounce: boolean[] = [false, false];
-
-  /** each 'deck' corresponds to a player hand */
-  decks: [Array<Card>, Array<Card>, Array<Card>, Array<Card>] = [[], [], [], []];
 
   trump: Suit | `${Suit}` | null = null;
 
@@ -44,13 +55,10 @@ export default class Game {
 
   tableSuit: Suit | `${Suit}` | null = null;
 
-  start() {
-    this.roundScore = [0, 0];
-    this.bandeira = -1;
-    this.renounce = [false, false, false, false];
+  start(numPlayers: number) {
+    this.numPlayers = numPlayers;
+
     this.shuffleAndDistribute();
-    this.chooseTrump();
-    this.currPlayer = this.shufflePlayer;
   }
 
   play(player: number, card: Card, allowRenounce = false): PlayErrors | true {
@@ -120,15 +128,12 @@ export default class Game {
 
   clearTable() {
     let winnerId = 0;
-    let points = 0;
     let winningCard = this.onTable[0];
 
     this.onTable.forEach((card, playerIdx) => {
       if (card === null || winningCard === null) {
         throw new Error('You stupid piece of shit! No nulls can reach here!');
       }
-
-      points += pointsOf(card);
 
       if (this.isBiggerThan(card, winningCard)) {
         winningCard = card;
@@ -143,8 +148,6 @@ export default class Game {
     } else if (this.bandeira !== winnerTeam) {
       this.bandeira = Game.numTeams;
     }
-
-    this.roundScore[winnerTeam] += points;
 
     // Reset the table
     this.resetTable();
@@ -193,39 +196,26 @@ export default class Game {
   // --------------- Private Methods --------------- //
 
   private shuffleAndDistribute() {
-    Game.getFullDeck().forEach((c) => this.addCardRandom(c));
-  }
+    const fullDeck = Game.getFullDeck();
 
-  private addCardRandom(card: Card): void {
-    const playerNum = getRandom(Game.numPlayers);
+    const getCard = () => fullDeck.splice(getRandom(fullDeck.length), 1)[0];
 
-    if (this.decks[playerNum].length >= Game.cardsPerPlayer) {
-      this.addCardRandom(card);
-      return;
+    this.decks = [];
+    for (let i = 0; i < this.numPlayers; i++) {
+      this.decks.push(Array(Game.cardsPerPlayer).fill(1).map(getCard));
     }
 
-    this.decks[playerNum].push(card);
+    this.flop = [1, 1, 1].map(getCard);
+    this.turn = getCard();
+    this.river = getCard();
   }
 
   private getNextPlayer(player = this.currPlayer) {
-    if (player === Game.numPlayers - 1) {
+    if (player === this.numPlayers - 1) {
       return 0;
     }
 
     return player + 1;
-  }
-
-  private getPreviousPlayer(player = this.currPlayer) {
-    if (player === 0) {
-      return Game.numPlayers - 1;
-    }
-
-    return player - 1;
-  }
-
-  private chooseTrump() {
-    this.trumpCard = this.decks[this.getPreviousPlayer(this.shufflePlayer)][getRandom(Game.cardsPerPlayer)];
-    this.trump = this.trumpCard.suit;
   }
 
   private isBiggerThan(card1: Card, card2: Card): boolean {
@@ -269,12 +259,12 @@ export default class Game {
 
   // eslint-disable-next-line class-methods-use-this
   private static getFullDeck() {
-    const fulldeck: Array<Card> = [];
+    const fullDeck: Array<Card> = [];
 
     [Suit.Diamonds, Suit.Spades, Suit.Hearts, Suit.Clubs].forEach((suit) => {
-      let i: number = Game.cardsPerPlayer;
+      let i: number = 13;
       while (i) {
-        fulldeck.push({
+        fullDeck.push({
           suit,
           value: i,
         });
@@ -283,6 +273,6 @@ export default class Game {
       }
     });
 
-    return fulldeck;
+    return fullDeck;
   }
 }

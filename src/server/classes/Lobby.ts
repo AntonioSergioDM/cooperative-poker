@@ -82,7 +82,7 @@ export default class Lobby {
   }
 
   async addPlayer(player: Player): Promise<boolean> {
-    if (this.players.length >= Game.numPlayers) {
+    if (this.players.length >= Game.maxPlayers) {
       return false;
     }
 
@@ -192,7 +192,7 @@ export default class Lobby {
   }
 
   private startGame() {
-    this.game.start();
+    this.game.start(this.players.length);
 
     if (IN_DEV) {
       console.info(`♠️ ♦️ Game started on Lobby ${this.hash} ♣️ ♥️\n`);
