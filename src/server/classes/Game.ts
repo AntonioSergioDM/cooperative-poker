@@ -7,11 +7,13 @@ const getRandom = (range: number) => Math.floor(Math.random() * range);
 
 export default class Game {
   // Adjust this to 1 for a very fast game!
-  static cardsPerPlayer = 10;
+  static cardsPerPlayer = 2;
 
-  static numPlayers = 4;
+  static numPlayers = 23;
 
-  static numTeams = 2;
+  static minPlayers = 3;
+
+  static numTeams = 0;
 
   static maxPoints = 120; // +1 if the team wins all turns
 

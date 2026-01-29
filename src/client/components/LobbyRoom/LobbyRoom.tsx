@@ -41,9 +41,9 @@ const LobbyRoom = ({ lobbyHash, players }: LobbyRoomProps) => {
   }, [socket]);
 
   const missingPlayers = useMemo(() => {
-    if (players.length >= 4) return [];
+    if (players.length >= 3) return [];
 
-    return Array(4 - players.length).fill(0);
+    return Array(3 - players.length).fill(0);
   }, [players.length]);
 
   const isReady = useMemo(() => (
@@ -92,7 +92,7 @@ const LobbyRoom = ({ lobbyHash, players }: LobbyRoomProps) => {
               Ready
             </Button>
 
-            <LobbyRoomCounter value={players.filter((p) => p.ready).length} outOf={4} />
+            <LobbyRoomCounter value={players.filter((p) => p.ready).length} outOf={players.length + missingPlayers.length} />
           </Stack>
         </Card>
       </Stack>

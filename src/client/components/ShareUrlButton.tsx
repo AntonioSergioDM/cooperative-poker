@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { CopyAll } from '@mui/icons-material';
+import { CopyAll, IosShare } from '@mui/icons-material';
 import { Card, IconButton, Typography } from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
@@ -18,6 +18,14 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
     await navigator.clipboard.writeText(shareURL);
   }, [shareURL]);
 
+  const onShare = useCallback(async () => {
+    await navigator.share({
+      url: shareURL,
+      title: 'Cooperative Poker',
+      text: 'Come and play!',
+    });
+  }, [shareURL]);
+
   return (
     <Card
       sx={{
@@ -31,9 +39,10 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
         alignItems: 'center',
       }}
     >
-      <Typography flexGrow={1}>Share link</Typography>
+      <Typography flexGrow={1}>{shareURL}</Typography>
 
       <IconButton onClick={onCopy}><CopyAll /></IconButton>
+      <IconButton onClick={onShare}><IosShare /></IconButton>
     </Card>
   );
 };

@@ -116,7 +116,7 @@ export default class Lobby {
 
     this.emitLobbyUpdate();
 
-    if (allReady && this.players.length >= Game.numPlayers) {
+    if (allReady && this.players.length >= Game.minPlayers) {
       this.startGame();
     }
   }
