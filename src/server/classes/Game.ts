@@ -94,6 +94,10 @@ export default class Game {
     if (inTableIdx !== -1) {
       this.tableChips.splice(inTableIdx, 1);
       this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
+
+      if (this.tableChips.length === 0) {
+        return this.nextPhase() || true; // TODO not true
+      }
       return true;
     }
 
@@ -249,6 +253,34 @@ export default class Game {
     this.flop = [1, 1, 1].map(getCard);
     this.turn = getCard();
     this.river = getCard();
+  }
+
+  private nextPhase(): boolean {
+    const cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
+    if (cardsOnTable < 3) {
+      this.flop.forEach((card, idx) => {
+        this.table[idx] = card;
+      });
+
+      this.resetTableChips('yellow');
+      return true;
+    }
+
+    if (cardsOnTable < 4) {
+      this.table[3] = this.turn;
+      this.resetTableChips('orange');
+      return true;
+    }
+
+    if (cardsOnTable < 5) {
+      this.table[4] = this.river;
+      this.resetTableChips('red');
+      return true;
+    }
+
+    // TODO deal with endgame (probably should call end() and let the lobby show the results and eventually up/down the difficulty)
+
+    return false;
   }
 
   private getNextPlayer(player = this.currPlayer) {
