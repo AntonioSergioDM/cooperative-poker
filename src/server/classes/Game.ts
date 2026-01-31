@@ -1,7 +1,9 @@
-import type { Chip, GameState, Score, Table } from '@/shared/GameTypes';
+import { Suit } from '@/shared/Card';
+import { sameChip } from '@/shared/Chip';
+import type { Chip } from '@/shared/Chip';
+import type { Card } from '@/shared/Card';
 import { DenounceErrors, PlayErrors } from '@/shared/GameTypes';
-import type { Card } from '../../shared/Card';
-import { Suit } from '../../shared/Card';
+import type { GameState, Score, Table } from '@/shared/GameTypes';
 
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
@@ -20,20 +22,21 @@ export default class Game {
   /** Number of players */
   numPlayers = 0;
 
-  /** renounce */
-  renounce: boolean[] = [false, false];
-
   /** each 'deck' corresponds to a player hand */
-  decks: Array<Array<Card>> = [];
+  decks: Card[][] = [];
 
-  chips: (Chip | 0)[][] = [];
+  chips: Chip[][] = [];
 
   /** Cards that will appear later */
-  flop: Array<Card> = [];
+  flop: Card[] = [];
 
   turn: Card | null = null;
 
   river: Card | null = null;
+
+  tableChips: Chip[] = [];
+
+  table: Table = [null, null, null, null, null];
 
   // TODO add the cards required for special effects
 
@@ -45,6 +48,9 @@ export default class Game {
   /** stars as -1, switches to winnning team idx, until another teams wins an hand. Then it becomes numTeams */
   bandeira = -1;
 
+  /** renounce */
+  renounce: boolean[] = [false, false];
+
   trump: Suit | `${Suit}` | null = null;
 
   trumpCard: Card | null = null;
@@ -54,7 +60,6 @@ export default class Game {
   currPlayer: number = -1;
 
   /** each Card is related by id to the player */
-  onTable: Table = [null, null, null, null];
 
   tableSuit: Suit | `${Suit}` | null = null;
 
@@ -62,15 +67,47 @@ export default class Game {
     this.numPlayers = numPlayers;
 
     // reset chips
-    this.chips = Array(numPlayers).fill([0, 0, 0, 0]);
+    this.chips = Array(numPlayers)
+      .fill([0, 0, 0, 0]);
+
+    // reset table
+    this.resetTableChips('white');
 
     // reset cards
     this.shuffleAndDistribute();
   }
 
   stealChip(player: number, chip: Chip): PlayErrors | true {
-    // TODO
-    return true;
+    if (this.tableChips[0]?.color !== chip.color) {
+      return true; // TODO not true
+    }
+
+    // Already has a chip
+    if (this.chips[player].find((playerChip) => playerChip.color === chip.color)) {
+      return true; // TODO not true
+    }
+
+    // Find the chip
+
+    const inTableIdx = this.tableChips.findIndex((tableChip) => sameChip(tableChip, chip));
+    // chip is in the table
+    if (inTableIdx !== -1) {
+      this.tableChips.splice(inTableIdx, 1);
+      this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
+      return true;
+    }
+
+    const inHandIdx = this.chips.findIndex((playerChips) => (
+      playerChips.find((playerChip) => playerChip && sameChip(playerChip, chip))
+    ));
+
+    // chip is in the possession of another player
+    if (inHandIdx !== -1) {
+      this.chips[player].push(this.chips[inHandIdx].pop()!);
+      return true;
+    }
+
+    return true; // TODO not true
   }
 
   play(player: number, card: Card, allowRenounce = false): PlayErrors | true {
@@ -116,9 +153,8 @@ export default class Game {
     }
 
     // From the hand to the table
-    this.onTable[player] = this.decks[player].splice(foundIdx, 1)[0];
 
-    if (this.onTable.findIndex((val) => val === null) !== -1) {
+    if (this.tableChips.findIndex((val) => val === null) !== -1) {
       // missing some cards on the table
       this.currPlayer = this.getNextPlayer();
     } else {
@@ -131,7 +167,8 @@ export default class Game {
   getState(): GameState {
     return {
       trumpCard: this.trumpCard,
-      table: this.onTable,
+      tableChips: this.tableChips,
+      table: this.table,
       currentPlayer: this.currPlayer,
       shufflePlayer: this.shufflePlayer,
       hands: this.decks.map((hand) => hand.length),
@@ -140,21 +177,7 @@ export default class Game {
   }
 
   clearTable() {
-    let winnerId = 0;
-    let winningCard = this.onTable[0];
-
-    this.onTable.forEach((card, playerIdx) => {
-      if (card === null || winningCard === null) {
-        throw new Error('You stupid piece of shit! No nulls can reach here!');
-      }
-
-      if (this.isBiggerThan(card, winningCard)) {
-        winningCard = card;
-        winnerId = playerIdx;
-      }
-    });
-
-    const winnerTeam = winnerId % Game.numTeams;
+    const winnerTeam = 1;
 
     if (this.bandeira === -1) {
       this.bandeira = winnerTeam;
@@ -163,19 +186,21 @@ export default class Game {
     }
 
     // Reset the table
-    this.resetTable();
+    this.resetTableChips();
 
     if (!this.decks[0].length) {
       this.end();
-    } else {
-      // The player that wins is the first to play
-      this.currPlayer = winnerId;
     }
   }
 
-  resetTable() {
-    this.tableSuit = null;
-    this.onTable = [null, null, null, null];
+  resetTableChips(color: Chip['color'] = 'white') {
+    this.tableChips = Array(Game.cardsPerPlayer)
+      .fill(1)
+      .map((_, value) => ({
+        value,
+        color,
+        reverse: false,
+      }));
   }
 
   isEnded() {
@@ -215,9 +240,12 @@ export default class Game {
 
     this.decks = [];
     for (let i = 0; i < this.numPlayers; i++) {
-      this.decks.push(Array(Game.cardsPerPlayer).fill(1).map(getCard));
+      this.decks.push(Array(Game.cardsPerPlayer)
+        .fill(1)
+        .map(getCard));
     }
 
+    this.table = [null, null, null, null, null];
     this.flop = [1, 1, 1].map(getCard);
     this.turn = getCard();
     this.river = getCard();
@@ -253,7 +281,7 @@ export default class Game {
     // all cards go away
     this.decks = [[], [], [], []];
     // The table is cleaned
-    this.resetTable();
+    this.resetTableChips();
 
     // Check for "bandeira"
     let i = 0;

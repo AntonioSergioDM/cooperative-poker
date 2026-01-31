@@ -1,8 +1,9 @@
 import type { Card } from './Card';
+import type { Chip } from './Chip';
 
 export type Score = [number, number];
 
-export type Table = [Card | null, Card | null, Card | null, Card | null];
+export type Table = [Card | null, Card | null, Card | null, Card | null, Card | null];
 
 export type Hand = Array<Card>;
 
@@ -12,15 +13,10 @@ export type PlayerState = {
   chips: Array<Chip | 0>;
 };
 
-export type Chip = {
-  value: number;
-  color: 'white' | 'yellow' | 'orange' | 'red';
-  reverse: boolean;
-};
-
 export type GameState = {
-  hands: Array<number>;
-  chips: Array<Array<Chip | 0>>;
+  hands: number[];
+  chips: Chip[][];
+  tableChips: Chip[];
   table: Table;
   trumpCard: Card | null;
   shufflePlayer: number;

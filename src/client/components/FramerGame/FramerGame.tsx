@@ -115,10 +115,6 @@ const FramerGame = (props: FramerGameProps) => {
 
             <div className="flex flex-row gap-4">
               {gameState.chips[idx].map((chip) => {
-                if (!chip) {
-                  return '';
-                }
-
                 // TODO Chip
                 return (
                   <div key={chip.color}>
