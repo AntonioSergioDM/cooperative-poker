@@ -9,10 +9,18 @@ export type Hand = Array<Card>;
 export type PlayerState = {
   index: number;
   hand: Hand;
+  chips: Array<Chip | 0>;
+};
+
+export type Chip = {
+  value: number;
+  color: 'white' | 'yellow' | 'orange' | 'red';
+  reverse: boolean;
 };
 
 export type GameState = {
   hands: Array<number>;
+  chips: Array<Array<Chip | 0>>;
   table: Table;
   trumpCard: Card | null;
   shufflePlayer: number;

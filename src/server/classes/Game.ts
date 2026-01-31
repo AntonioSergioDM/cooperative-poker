@@ -1,4 +1,4 @@
-import type { GameState, Score, Table } from '@/shared/GameTypes';
+import type { Chip, GameState, Score, Table } from '@/shared/GameTypes';
 import { DenounceErrors, PlayErrors } from '@/shared/GameTypes';
 import type { Card } from '../../shared/Card';
 import { Suit } from '../../shared/Card';
@@ -24,7 +24,9 @@ export default class Game {
   renounce: boolean[] = [false, false];
 
   /** each 'deck' corresponds to a player hand */
-  decks: Array<Array<Card>> = [[], [], []];
+  decks: Array<Array<Card>> = [];
+
+  chips: (Chip | 0)[][] = [];
 
   /** Cards that will appear later */
   flop: Array<Card> = [];
@@ -32,6 +34,7 @@ export default class Game {
   turn: Card | null = null;
 
   river: Card | null = null;
+
   // TODO add the cards required for special effects
 
   /** [even team, odd team] */
@@ -58,7 +61,16 @@ export default class Game {
   start(numPlayers: number) {
     this.numPlayers = numPlayers;
 
+    // reset chips
+    this.chips = Array(numPlayers).fill([0, 0, 0, 0]);
+
+    // reset cards
     this.shuffleAndDistribute();
+  }
+
+  stealChip(player: number, chip: Chip): PlayErrors | true {
+    // TODO
+    return true;
   }
 
   play(player: number, card: Card, allowRenounce = false): PlayErrors | true {
@@ -123,6 +135,7 @@ export default class Game {
       currentPlayer: this.currPlayer,
       shufflePlayer: this.shufflePlayer,
       hands: this.decks.map((hand) => hand.length),
+      chips: this.chips,
     };
   }
 
