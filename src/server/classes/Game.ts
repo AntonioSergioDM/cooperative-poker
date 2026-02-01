@@ -1,9 +1,12 @@
 import type { Card } from '@/shared/Card';
-import { Suit } from '@/shared/Card';
+import { Suit, getPokerCode } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
 import type { GameState, Score, Table } from '@/shared/GameTypes';
 import { PlayErrors } from '@/shared/GameTypes';
+import { evaluate } from 'poker-utils/build/module/lib/evaluate';
+import { boardToInts, iso } from 'poker-utils';
+import { IN_DEV } from '@/globals';
 
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
@@ -45,19 +48,8 @@ export default class Game {
   /** [even team, odd team] */
   roundScore: Score = [0, 0];
 
-  gameScore: Score[] = [];
-
-  /** stars as -1, switches to winnning team idx, until another teams wins an hand. Then it becomes numTeams */
-  bandeira = -1;
-
-  /** renounce */
-  renounce: boolean[] = [false, false];
-
-  trump: Suit | `${Suit}` | null = null;
-
-  trumpCard: Card | null = null;
-
-  shufflePlayer: number = 0;
+  /** 0: losses; 1: Wins */
+  gameScore: Score = [0, 0];
 
   currPlayer: number = -1;
 
@@ -73,7 +65,8 @@ export default class Game {
 
     // reset chips
     this.chips = Array(numPlayers)
-      .fill(1).map(() => []);
+      .fill(1)
+      .map(() => []);
 
     // reset table
     this.resetTableChips('white');
@@ -102,7 +95,7 @@ export default class Game {
       this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
 
       if (this.tableChips.length === 0) {
-        return this.nextPhase() || true; // TODO not true
+        return this.nextPhase();
       }
 
       return true;
@@ -130,23 +123,6 @@ export default class Game {
     };
   }
 
-  clearTable() {
-    const winnerTeam = 1;
-
-    if (this.bandeira === -1) {
-      this.bandeira = winnerTeam;
-    } else if (this.bandeira !== winnerTeam) {
-      this.bandeira = Game.numTeams;
-    }
-
-    // Reset the table
-    this.resetTableChips();
-
-    if (!this.decks[0].length) {
-      this.end();
-    }
-  }
-
   resetTableChips(color: Chip['color'] = 'white') {
     this.tableChips = Array(this.numPlayers)
       .fill(1)
@@ -159,6 +135,11 @@ export default class Game {
 
   isEnded() {
     return this.showHands;
+  }
+
+  getResults() {
+    // TODO
+    return this.gameScore;
   }
 
   // --------------- Private Methods --------------- //
@@ -181,7 +162,7 @@ export default class Game {
     this.river = getCard();
   }
 
-  private nextPhase(): boolean {
+  private nextPhase(): true {
     const cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
     if (cardsOnTable < 3) {
       this.flop.forEach((card, idx) => {
@@ -206,54 +187,41 @@ export default class Game {
 
     this.showHands = true;
 
-    // TODO deal with endgame (probably should call end() and let the lobby show the results and eventually up/down the difficulty)
+    const hands = this.decks.map((deck) => this.getPokerHands(deck));
 
-    return false;
-  }
+    const playerChoice = Array(this.numPlayers)
+      .fill(1)
+      .map((_, idx) => idx)
+      .sort((playerA, playerB) => this.chips[playerB][this.chips[0].length - 1].value - this.chips[playerA][this.chips[0].length - 1].value);
 
-  private getNextPlayer(player = this.currPlayer) {
-    if (player === this.numPlayers - 1) {
-      return 0;
+    const compare = (playerA:number, playerB:number) => hands[playerB].value - hands[playerA].value;
+    const playerOrder = Array(this.numPlayers)
+      .fill(1)
+      .map((_, idx) => idx)
+      .sort(compare);
+
+    if (IN_DEV) {
+      console.info('hands:', hands);
+      console.info('playerChoice:', playerChoice);
+      console.info('playerOrder:', playerOrder);
     }
 
-    return player + 1;
-  }
-
-  private isBiggerThan(card1: Card, card2: Card): boolean {
-    if (card1.suit === card2.suit) {
-      return card1.value > card2.value;
-    }
-
-    if (card1.suit === this.trump) {
-      return true;
-    }
-
-    if (card1.suit === this.tableSuit && card2.suit !== this.trump) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private end() {
-    // end game no one can play
-    this.currPlayer = -1;
-    // all cards go away
-    this.decks = [[], [], [], []];
-    // The table is cleaned
-    this.resetTableChips();
-
-    // Check for "bandeira"
-    let i = 0;
-    while (i < Game.numTeams) {
-      if (this.roundScore[i] === Game.maxPoints && this.bandeira === i) {
-        this.roundScore[i]++;
+    if (playerChoice.some((player, idx) => player !== playerOrder[idx])) {
+      if (IN_DEV) {
+        console.info('incorrect order');
       }
-      i++;
+      return true; // TODO deal with Failure
     }
 
-    this.gameScore.push(this.roundScore);
-    this.shufflePlayer = this.getNextPlayer(this.shufflePlayer);
+    return true; // TODO deal with Sucess
+  }
+
+  private getPokerHands(deck: Card[]) {
+    const { board, hand } = iso({
+      board: boardToInts(this.table.filter((card) => !!card).map(getPokerCode)),
+      hand: boardToInts(deck.map(getPokerCode)),
+    });
+    return evaluate([...board, ...hand]);
   }
 
   // -------------- Private Static Methods -------------- //

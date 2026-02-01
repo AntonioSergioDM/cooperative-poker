@@ -13,12 +13,11 @@ import {
 import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
-import { DenounceErrors, type PlayerState } from '@/shared/GameTypes';
-import { cardName, Suit, type Card } from '@/shared/Card';
+import type { Chip } from '@/shared/Chip';
+import type { PlayerState } from '@/shared/GameTypes';
 
 import Game from './Game';
 import type Player from './Player';
-import { Chip } from '@/shared/Chip';
 
 export type LobbyRoom = BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<ServerToClientEvents>, SocketData>;
 
@@ -166,7 +165,7 @@ export default class Lobby {
   }
 
   emitGameResults() {
-    this.room?.emit('gameResults', this.game.gameScore);
+    this.room?.emit('gameResults', this.game.getResults());
   }
 
   private startGame() {
@@ -188,23 +187,15 @@ export default class Lobby {
   }
 
   private checkEnd() {
-    // TODO
     if (!this.game.isEnded()) {
       return false;
     }
 
-    if (IN_DEV) {
-      console.info(this.game.gameScore.reduce(
-        (str, s, i) => `${str}${i.toString().padStart(7, ' ')}:  ${s[0].toString().padStart(3, ' ')} | ${s[1].toString().padStart(3, ' ')}\n`,
-        'Results: Even | Odd \n',
-      ));
-    }
-
     this.emitGameResults();
     // TODO: Maybe we don't want to automaticly start another game? idk
-    setTimeout(() => {
-      this.startGame();
-    }, 5000);
+    // setTimeout(() => {
+    //   this.startGame();
+    // }, 5000);
 
     return true;
   }
