@@ -14,11 +14,10 @@ import { IN_DEV, NEXT_URL } from '../globals';
 
 import {
   createLobby,
-  denounce,
   joinLobby,
   leaveLobby,
   lobbyPlayers,
-  playCard,
+  stealChip,
   playerReady,
 } from './lobbies';
 
@@ -73,9 +72,8 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
       socket.on('createLobby', createLobby(socket));
       socket.on('playerReady', playerReady(socket));
       socket.on('leaveLobby', leaveLobby(socket));
-      socket.on('playCard', playCard(socket));
+      socket.on('stealChip', stealChip(socket));
       socket.on('lobbyPlayers', lobbyPlayers(socket));
-      socket.on('denounce', denounce(socket));
     }
   });
 

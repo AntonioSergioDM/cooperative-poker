@@ -10,11 +10,11 @@ export type Hand = Array<Card>;
 export type PlayerState = {
   index: number;
   hand: Hand;
-  chips: Array<Chip | 0>;
+  chip: Chip | null;
 };
 
 export type GameState = {
-  hands: number[];
+  hands: (Card | null)[][];
   chips: Chip[][];
   tableChips: Chip[];
   table: Table;
@@ -33,12 +33,6 @@ export const getNextPlayer = (idx: number) => {
 };
 
 export enum PlayErrors {
-  mustAssist = 'You must assist!',
-  invalidCard = 'Invalid card',
-  wrongTurn = 'Not your turn',
-}
-
-export enum DenounceErrors {
-  sameTeam = "That's your teammate, you idiot",
-  invalidPlayer = 'You are not a player!',
+  wrongRound = 'Not the chip from this round',
+  holdingChip = 'You already have a chip for this round',
 }

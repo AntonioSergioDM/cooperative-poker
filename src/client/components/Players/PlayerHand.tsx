@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { Typography } from '@mui/material';
 import type { Card } from '@/shared/Card';
 
 import AnimatedCard from '../AnimatedCard';
@@ -12,7 +11,7 @@ type PlayerHandProps = {
   isRgb?: boolean;
   cardWidth: number;
   isPlayer?: boolean;
-  cards: (Card | 0)[];
+  cards: (Card | null)[];
   isPlaying?: boolean;
   name: string;
   onClick?: (card: Card) => void;
@@ -25,11 +24,10 @@ const PlayerHand = (props: PlayerHandProps) => {
     cardWidth,
     isPlaying,
     isPlayer,
-    name,
     onClick,
   } = props;
 
-  const handleOnClick = useCallback((card: Card | 0) => () => {
+  const handleOnClick = useCallback((card: Card | null) => () => {
     if (isPlayer && isPlaying && card && onClick) onClick(card);
   }, [isPlayer, isPlaying, onClick]);
 

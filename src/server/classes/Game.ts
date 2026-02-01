@@ -1,9 +1,9 @@
-import { Suit } from '@/shared/Card';
-import { sameChip } from '@/shared/Chip';
-import type { Chip } from '@/shared/Chip';
 import type { Card } from '@/shared/Card';
-import { DenounceErrors, PlayErrors } from '@/shared/GameTypes';
+import { Suit } from '@/shared/Card';
+import type { Chip } from '@/shared/Chip';
+import { sameChip } from '@/shared/Chip';
 import type { GameState, Score, Table } from '@/shared/GameTypes';
+import { PlayErrors } from '@/shared/GameTypes';
 
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
@@ -38,6 +38,8 @@ export default class Game {
 
   table: Table = [null, null, null, null, null];
 
+  showHands = false;
+
   // TODO add the cards required for special effects
 
   /** [even team, odd team] */
@@ -66,9 +68,12 @@ export default class Game {
   start(numPlayers: number) {
     this.numPlayers = numPlayers;
 
+    // hide cards
+    this.showHands = false;
+
     // reset chips
     this.chips = Array(numPlayers)
-      .fill([0, 0, 0, 0]);
+      .fill(1).map(() => []);
 
     // reset table
     this.resetTableChips('white');
@@ -79,25 +84,27 @@ export default class Game {
 
   stealChip(player: number, chip: Chip): PlayErrors | true {
     if (this.tableChips[0]?.color !== chip.color) {
-      return true; // TODO not true
+      return PlayErrors.wrongRound;
     }
 
-    // Already has a chip
+    // Already has a chip - TODO make this a game option
     if (this.chips[player].find((playerChip) => playerChip.color === chip.color)) {
-      return true; // TODO not true
+      // return PlayErrors.holdingChip;
+
+      this.tableChips.push(this.chips[player].pop()!);
     }
 
-    // Find the chip
+    // Find the chip //
 
     const inTableIdx = this.tableChips.findIndex((tableChip) => sameChip(tableChip, chip));
     // chip is in the table
     if (inTableIdx !== -1) {
-      this.tableChips.splice(inTableIdx, 1);
       this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
 
       if (this.tableChips.length === 0) {
         return this.nextPhase() || true; // TODO not true
       }
+
       return true;
     }
 
@@ -114,65 +121,11 @@ export default class Game {
     return true; // TODO not true
   }
 
-  play(player: number, card: Card, allowRenounce = false): PlayErrors | true {
-    if (player !== this.currPlayer) {
-      return PlayErrors.wrongTurn;
-    }
-
-    const { tableSuit } = this;
-    let canAssist = false;
-    let foundIdx = -1;
-
-    this.decks[player].forEach((playerCard, cardIdx) => {
-      if (playerCard.suit === tableSuit) {
-        canAssist = true;
-      }
-
-      if ((card.value === playerCard.value) && (card.suit === playerCard.suit)) {
-        foundIdx = cardIdx;
-      }
-
-      if (card.suit === this.trump && card.value === this.trumpCard?.value) {
-        // We are playing the trump card... no more trump card
-        this.trumpCard = null;
-      }
-    });
-
-    if (foundIdx === -1) {
-      return PlayErrors.invalidCard;
-    }
-
-    // First card of the round
-    if (!this.tableSuit) {
-      this.tableSuit = card.suit;
-    }
-
-    // One must always assist
-    if ((card.suit !== this.tableSuit) && canAssist) {
-      if (!allowRenounce) {
-        return PlayErrors.mustAssist;
-      }
-
-      this.renounce[player] = true;
-    }
-
-    // From the hand to the table
-
-    if (this.tableChips.findIndex((val) => val === null) !== -1) {
-      // missing some cards on the table
-      this.currPlayer = this.getNextPlayer();
-    } else {
-      // Everyone placed a card, let's see who wins
-      this.currPlayer = -1;
-    }
-    return true;
-  }
-
   getState(): GameState {
     return {
       tableChips: this.tableChips,
       table: this.table,
-      hands: this.decks.map((hand) => hand.length),
+      hands: this.showHands ? this.decks : this.decks.map((hand) => hand.map(() => null)),
       chips: this.chips,
     };
   }
@@ -205,31 +158,7 @@ export default class Game {
   }
 
   isEnded() {
-    return this.currPlayer === -1 && !this.decks[0].length;
-  }
-
-  denounce(playerIdx: number, denounceIdx: number): boolean | DenounceErrors {
-    if (playerIdx % Game.numTeams === denounceIdx % Game.numTeams) {
-      return DenounceErrors.sameTeam;
-    }
-
-    const score: Score = [0, 0];
-
-    // You are wrong - Lose 1 Game and keep playing
-    if (!this.renounce[denounceIdx]) {
-      score[playerIdx % Game.numTeams] = 50;
-      score[denounceIdx % Game.numTeams] = Game.maxPoints - 50;
-      this.gameScore.push(score);
-      return false;
-    }
-
-    // You are right - Win 4 Games
-    this.roundScore = [0, 0];
-    this.bandeira = playerIdx % Game.numTeams;
-    this.roundScore[playerIdx % Game.numTeams] = Game.maxPoints;
-    this.end();
-
-    return true;
+    return this.showHands;
   }
 
   // --------------- Private Methods --------------- //
@@ -274,6 +203,8 @@ export default class Game {
       this.resetTableChips('red');
       return true;
     }
+
+    this.showHands = true;
 
     // TODO deal with endgame (probably should call end() and let the lobby show the results and eventually up/down the difficulty)
 

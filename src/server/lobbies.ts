@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import type { ClientToServerEvents, OurServerSocket } from '@/shared/SocketTypes';
 
-import type { Card } from '@/shared/Card';
+import type { Chip } from '@/shared/Chip';
 import Lobby from './classes/Lobby';
 import Player from './classes/Player';
 
@@ -96,8 +96,8 @@ export const lobbyPlayers = (socket: OurServerSocket): ClientToServerEvents['lob
   }
 );
 
-export const playCard = (socket: OurServerSocket): ClientToServerEvents['playCard'] => (
-  (card: Card, allowRenounce, callback) => {
+export const stealChip = (socket: OurServerSocket): ClientToServerEvents['stealChip'] => (
+  (chip: Chip, callback) => {
     if (!socket?.data?.lobbyHash || !socket.data.playerId) {
       callback({ error: 'Invalid lobby' });
       return;
@@ -109,11 +109,11 @@ export const playCard = (socket: OurServerSocket): ClientToServerEvents['playCar
       return;
     }
 
-    const playCardRes = lobby.playCard(socket.data.playerId, card, allowRenounce);
-    if (typeof playCardRes === 'string') {
-      callback({ error: playCardRes });
+    const res = lobby.stealChip(socket.data.playerId, chip);
+    if (typeof res === 'string') {
+      callback({ error: res });
     } else {
-      callback({ data: playCardRes });
+      callback({ data: res });
     }
   }
 );
@@ -130,20 +130,5 @@ export const leaveLobby = (socket: OurServerSocket): ClientToServerEvents['leave
     }
 
     await lobby.removePlayer(socket.data.playerId);
-  }
-);
-
-export const denounce = (socket: OurServerSocket): ClientToServerEvents['denounce'] => (
-  (idx) => {
-    if (!socket?.data?.lobbyHash || !socket.data.playerId) {
-      return;
-    }
-
-    const lobby = Lobby.lobbies.get(socket.data.lobbyHash);
-    if (!lobby) {
-      return;
-    }
-
-    lobby.denounce(socket.data.playerId, idx);
   }
 );

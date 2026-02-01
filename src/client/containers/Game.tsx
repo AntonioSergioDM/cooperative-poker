@@ -7,10 +7,10 @@ import {
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 
-import type { Card } from '@/shared/Card';
 import { type GameState, type PlayerState } from '@/shared/GameTypes';
 import type { LobbyPlayerState, ServerToClientEvents } from '@/shared/SocketTypes';
 
+import type { Chip } from '@/shared/Chip';
 import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
@@ -61,8 +61,8 @@ const Game = () => {
     setPlayerState(newPlayerState);
   }, []);
 
-  const onPlayCard = useCallback((card: Card, allowRenounce = false) => {
-    socket.emit('playCard', card, allowRenounce, (res) => {
+  const onStealChip = useCallback((chip: Chip) => {
+    socket.emit('stealChip', chip, (res) => {
       if (typeof res.error === 'string') {
         enqueueSnackbar({
           variant: 'error',
@@ -106,7 +106,7 @@ const Game = () => {
         <FramerGame
           players={players}
           gameState={gameState}
-          onPlayCard={onPlayCard}
+          onStealChip={onStealChip}
           playerState={playerState}
         />
       )}

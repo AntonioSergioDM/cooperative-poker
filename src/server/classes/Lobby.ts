@@ -18,6 +18,7 @@ import { cardName, Suit, type Card } from '@/shared/Card';
 
 import Game from './Game';
 import type Player from './Player';
+import { Chip } from '@/shared/Chip';
 
 export type LobbyRoom = BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<ServerToClientEvents>, SocketData>;
 
@@ -121,62 +122,39 @@ export default class Lobby {
     }
   }
 
-  playCard(playerId: string, card: Card, allowRenounce = false): PlayerState | string {
+  stealChip(playerId: string, chip: Chip | null): PlayerState | string {
     const foundIdx = this.players.findIndex((p) => p.id === playerId);
     if (foundIdx === -1) {
       return 'Invalid player';
     }
 
-    if (IN_DEV) {
-      console.info(`😉 PlayerID: ${playerId} played ${cardName(card)} of ${Suit[card.suit]}\n`);
+    if (!chip) {
+      return 'Invalid chip';
     }
 
-    const playRes = this.game.play(foundIdx, card, allowRenounce);
+    if (IN_DEV) {
+      console.info(`😉 PlayerID: ${playerId} steal ${chip.color} ${chip.value}\n`);
+    }
+
+    const playRes = this.game.stealChip(foundIdx, chip);
 
     if (typeof playRes === 'string') {
       return playRes;
     }
 
     if (IN_DEV) {
-      console.info('    Card Played');
+      console.info('    Chip Stolen');
     }
 
     this.emitGameChange();
 
-    if (this.game.currPlayer < 0) {
-      setTimeout(
-        () => this.endTurn(),
-        2000,
-      );
-    }
+    this.checkEnd();
 
     return {
       index: foundIdx,
       hand: this.game.decks[foundIdx],
+      chip,
     };
-  }
-
-  endTurn() {
-    this.game.clearTable();
-    this.emitGameChange();
-    this.checkEnd();
-  }
-
-  denounce(playerId: string, denounceIdx: number) {
-    const playerIdx = this.players.findIndex((p) => p.id === playerId);
-
-    if (playerIdx === -1) {
-      return DenounceErrors.invalidPlayer;
-    }
-
-    const res = this.game.denounce(playerIdx, denounceIdx);
-
-    // The game may have ended
-    if (!this.checkEnd()) {
-      // Give an update even if the game continues
-      this.emitGameResults();
-    }
-    return res;
   }
 
   emitLobbyUpdate() {
@@ -202,6 +180,7 @@ export default class Lobby {
       player.socket.emit('gameStart', {
         index: idx,
         hand: this.game.decks[idx],
+        chip: null,
       });
     });
 
@@ -209,6 +188,7 @@ export default class Lobby {
   }
 
   private checkEnd() {
+    // TODO
     if (!this.game.isEnded()) {
       return false;
     }

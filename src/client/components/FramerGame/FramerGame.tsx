@@ -1,5 +1,4 @@
 import {
-  useMemo,
   useEffect,
   useCallback,
 } from 'react';
@@ -7,12 +6,9 @@ import {
 import { useSnackbar } from 'notistack';
 
 import {
-  getNextPlayer,
   type GameState,
   type PlayerState,
-  getPreviousPlayer,
 } from '@/shared/GameTypes';
-import { type Card } from '@/shared/Card';
 import type { LobbyPlayerState, ServerToClientEvents } from '@/shared/SocketTypes';
 
 import { useSocket } from '@/client/tools/useSocket';
@@ -21,13 +17,15 @@ import PlayerHand from '@/client/components/Players/PlayerHand';
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
 import { Typography } from '@mui/material';
+import type { Chip } from '@/shared/Chip';
+import TableChip from '@/client/components/FramerGame/TableChip';
 import Table from './Table';
 
 type FramerGameProps = {
   gameState: GameState;
   players: LobbyPlayerState[];
   playerState: PlayerState;
-  onPlayCard: (card: Card) => void;
+  onStealChip: (chip: Chip) => void;
 };
 
 const FramerGame = (props: FramerGameProps) => {
@@ -35,6 +33,7 @@ const FramerGame = (props: FramerGameProps) => {
     gameState,
     players,
     playerState,
+    onStealChip,
   } = props;
 
   const socket = useSocket();
@@ -61,30 +60,15 @@ const FramerGame = (props: FramerGameProps) => {
     };
   }, [onGameResults, socket]);
 
-  const {
-    topIdx,
-    rightIdx,
-    bottomIdx,
-    leftIdx,
-  } = useMemo(() => ({
-    topIdx: getNextPlayer(getNextPlayer(playerState.index)),
-    rightIdx: getNextPlayer(playerState.index),
-    bottomIdx: playerState.index,
-    leftIdx: getPreviousPlayer(playerState.index),
-  }), [playerState.index]);
-
   return (
     <div className="relative w-screen h-screen bg-red-950 p-2">
       <Table
-        topIdx={topIdx}
-        leftIdx={leftIdx}
-        rightIdx={rightIdx}
         gameState={gameState}
-        bottomIdx={bottomIdx}
+        onStealChip={onStealChip}
       />
 
       {players.map((player, idx) => {
-        const angle = (bottomIdx - idx) * ((2 * Math.PI) / players.length) - (3 * (Math.PI / 6));
+        const angle = (playerState.index - idx) * ((2 * Math.PI) / players.length) - (3 * (Math.PI / 6));
 
         const bottom = ((Math.sin(angle) * 100) / 2.3) + 40;
         const left = ((Math.cos(angle) * 100) / 2.3) + 45;
@@ -102,27 +86,22 @@ const FramerGame = (props: FramerGameProps) => {
           height: '120px',
         };
 
-        const cards = bottomIdx === idx ? playerState.hand : Array(gameState.hands[idx]).fill(0);
+        const cards = playerState.index === idx ? playerState.hand : gameState.hands[idx];
         return (
           <div className="fixed flex flex-col justify-center gap-4" style={position} key={player.name}>
             <div style={rotate}>
               <PlayerHand
-                cardWidth={bottomIdx === idx ? BIG_CARD : SMALL_CARD}
+                cardWidth={playerState.index === idx ? BIG_CARD : SMALL_CARD}
                 cards={cards}
                 name={player.name}
               />
             </div>
 
             <div className="flex flex-row gap-4">
-              {gameState.chips[idx].map((chip) => {
-                // TODO Chip
-                return (
-                  <div key={chip.color}>
-                    {chip.color}
-                    {chip.value}
-                  </div>
-                );
-              })}
+              {gameState.chips[idx].map((chip) => (
+                // eslint-disable-next-line react/jsx-key
+                <TableChip chip={chip} onClick={onStealChip} />
+              ))}
             </div>
 
             <Typography>{player.name}</Typography>
