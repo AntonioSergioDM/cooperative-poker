@@ -1,6 +1,7 @@
 import {
   useEffect,
   useCallback,
+  useMemo,
 } from 'react';
 
 import { useSnackbar } from 'notistack';
@@ -60,54 +61,87 @@ const FramerGame = (props: FramerGameProps) => {
     };
   }, [onGameResults, socket]);
 
+  // Memoize player positions to prevent recalculation on every render unless players change
+  const playerPositions = useMemo(() => {
+    const totalPlayers = players.length;
+    // Radius as percentage of viewport.
+    // X is wider (42vw) to create an ellipse for landscape screens.
+    const radiusX = 42;
+    const radiusY = 38;
+
+    return players.map((player, idx) => {
+      // Calculate index relative to current player.
+      // We want current player (offset 0) to be at 90 degrees (Math.PI / 2) which is the bottom of the circle.
+      // We subtract the step to distribute players clockwise (or add for counter-clockwise).
+      const offset = idx - playerState.index;
+      const angleStep = (2 * Math.PI) / totalPlayers;
+      const theta = (Math.PI / 2) + (offset * angleStep);
+
+      // Convert Polar to Cartesian (percentage based)
+      // Center is 50, 50.
+      const x = 50 + radiusX * Math.cos(theta);
+      const y = 50 + radiusY * Math.sin(theta);
+
+      return {
+        ...player,
+        originalIndex: idx,
+        style: {
+          top: `${y}%`,
+          left: `${x}%`,
+          position: 'absolute' as const,
+        },
+        // Calculate rotation for the card container if you want them to face the center
+        // Adding 90deg (PI/2) because 0deg is usually pointing Right in CSS rotation
+        rotation: theta * (180 / Math.PI) - 90, // +180 to make cards face inward
+      };
+    });
+  }, [players, playerState.index]);
+
   return (
-    <div className="relative w-screen h-screen bg-red-950 p-2">
-      <Table
-        gameState={gameState}
-        onStealChip={onStealChip}
-      />
+    <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
+      {playerPositions.map((player) => {
+        const isMe = playerState.index === player.originalIndex;
+        const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
 
-      {players.map((player, idx) => {
-        const angle = (playerState.index - idx) * ((2 * Math.PI) / players.length) - (3 * (Math.PI / 6));
-
-        const bottom = ((Math.sin(angle) * 100) / 2.3) + 40;
-        const left = ((Math.cos(angle) * 100) / 2.3) + 45;
-
-        const position = {
-          bottom: `${bottom.toFixed(2)}%`,
-          left: `${left.toFixed(2)}%`,
-        };
-
-        const rotate = {
-          '--tw-rotate': `${angle * (180 / Math.PI) + 90}deg`,
-          transform: 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) '
-            + 'skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
-          width: '120px',
-          height: '120px',
-        };
-
-        const cards = playerState.index === idx ? playerState.hand : gameState.hands[idx];
         return (
-          <div className="fixed flex flex-col justify-center gap-4" style={position} key={player.name}>
-            <div style={rotate}>
+          <div
+            key={player.name}
+            className="fixed flex flex-col justify-center items-center gap-4 transform -translate-x-1/2 -translate-y-1/2"
+            style={player.style}
+          >
+            {/* Rotate the hand wrapper so cards face the center (optional) */}
+            <div className="origin-center w-24 h-24" style={{ transform: `rotate(${player.rotation}deg)` }}>
               <PlayerHand
-                cardWidth={playerState.index === idx ? BIG_CARD : SMALL_CARD}
+                cardWidth={isMe ? BIG_CARD : SMALL_CARD}
                 cards={cards}
                 name={player.name}
               />
             </div>
 
-            <div className="flex flex-row gap-4">
-              {gameState.chips[idx].map((chip) => (
-                // eslint-disable-next-line react/jsx-key
-                <TableChip chip={chip} onClick={onStealChip} />
+            <div className="flex flex-row gap-1 z-10">
+              {gameState.chips[player.originalIndex].map((chip) => (
+                <TableChip
+                  key={`${chip.color}-${chip.value}`} // Added unique key
+                  chip={chip}
+                  onClick={onStealChip}
+                />
               ))}
             </div>
 
-            <Typography>{player.name}</Typography>
+            <Typography>
+              {player.name}
+            </Typography>
           </div>
         );
       })}
+
+      {/* Table is centered absolutely */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <Table
+          gameState={gameState}
+          onStealChip={onStealChip}
+        />
+      </div>
     </div>
   );
 };
