@@ -18,9 +18,6 @@ export type GameState = {
   chips: Chip[][];
   tableChips: Chip[];
   table: Table;
-  trumpCard: Card | null;
-  shufflePlayer: number;
-  currentPlayer: number;
 };
 
 export const getPreviousPlayer = (idx: number) => {

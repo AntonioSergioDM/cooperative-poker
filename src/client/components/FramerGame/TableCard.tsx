@@ -19,17 +19,15 @@ export type TableCardVariants = {
 };
 
 type TableCardProps = {
-  variants: TableCardVariants;
-  card: Card;
+  card: Card | null;
 };
 
-const TableCard = ({ card, variants }: TableCardProps) => (
+const TableCard = ({ card }: TableCardProps) => (
   <motion.div
-    variants={variants}
     initial="fromHand"
     animate="inTable"
     exit={toGraveyard}
-    className="absolute bottom-0 select-none"
+    className="select-none"
   >
     <AnimatedCard width={SMALL_CARD} card={card} />
   </motion.div>

@@ -170,11 +170,8 @@ export default class Game {
 
   getState(): GameState {
     return {
-      trumpCard: this.trumpCard,
       tableChips: this.tableChips,
       table: this.table,
-      currentPlayer: this.currPlayer,
-      shufflePlayer: this.shufflePlayer,
       hands: this.decks.map((hand) => hand.length),
       chips: this.chips,
     };
@@ -198,10 +195,10 @@ export default class Game {
   }
 
   resetTableChips(color: Chip['color'] = 'white') {
-    this.tableChips = Array(Game.cardsPerPlayer)
+    this.tableChips = Array(this.numPlayers)
       .fill(1)
       .map((_, value) => ({
-        value,
+        value: value + 1,
         color,
         reverse: false,
       }));
