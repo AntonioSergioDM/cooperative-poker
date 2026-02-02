@@ -6,13 +6,19 @@ import type { ClientToServerEvents, ServerToClientEvents } from '@/shared/Socket
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const getSocket = () => {
-  if (socket) { return socket; }
-  console.log('Initializing socket');
+  if (socket) {
+    return socket;
+  }
 
-  socket = io({ path: '/api/socket', autoConnect: false });
+  console.info('Initializing socket');
+
+  socket = io({
+    path: '/api/socket',
+    autoConnect: false,
+  });
 
   socket.on('connect', () => {
-    console.log('connected');
+    console.info('connected');
   });
 
   socket.connect();

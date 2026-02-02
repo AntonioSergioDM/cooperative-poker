@@ -1,7 +1,7 @@
 import type { GameState } from '@/shared/GameTypes';
 import TableCard from '@/client/components/FramerGame/TableCard';
 import TableChip from '@/client/components/FramerGame/TableChip';
-import { Chip } from '@/shared/Chip';
+import type { Chip } from '@/shared/Chip';
 
 type TableProps = {
   gameState: GameState;

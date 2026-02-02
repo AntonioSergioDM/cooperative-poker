@@ -1,9 +1,12 @@
 import type { Card } from '@/shared/Card';
-import { Suit, getPokerCode } from '@/shared/Card';
+import { getPokerCode, Suit } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
 import type {
-  GameState, GameStatus, Score, Table,
+  GameState,
+  GameStatus,
+  Score,
+  Table,
 } from '@/shared/GameTypes';
 import { PlayErrors } from '@/shared/GameTypes';
 import { evaluate } from 'poker-utils/build/module/lib/evaluate';
@@ -19,10 +22,6 @@ export default class Game {
   static maxPlayers = 23;
 
   static minPlayers = 3;
-
-  static numTeams = 0;
-
-  static maxPoints = 120; // +1 if the team wins all turns
 
   /** Number of players */
   numPlayers = 0;
@@ -94,7 +93,8 @@ export default class Game {
       this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
 
       if (this.tableChips.length === 0) {
-        return this.nextPhase();
+        this.nextPhase();
+        return true;
       }
 
       return true;
@@ -110,7 +110,7 @@ export default class Game {
       return true;
     }
 
-    return true; // TODO not true
+    return PlayErrors.somethingWrong;
   }
 
   getState(): GameState {
@@ -136,7 +136,7 @@ export default class Game {
     return this.showHands;
   }
 
-  getResults():{ score: Score; round: GameStatus } {
+  getResults(): { score: Score; round: GameStatus } {
     return {
       score: this.gameScore,
       round: this.result,
@@ -163,7 +163,7 @@ export default class Game {
     this.river = getCard();
   }
 
-  private nextPhase(): true {
+  private nextPhase() {
     const cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
     if (cardsOnTable < 3) {
       this.flop.forEach((card, idx) => {
@@ -171,21 +171,25 @@ export default class Game {
       });
 
       this.resetTableChips('yellow');
-      return true;
+      return;
     }
 
     if (cardsOnTable < 4) {
       this.table[3] = this.turn;
       this.resetTableChips('orange');
-      return true;
+      return;
     }
 
     if (cardsOnTable < 5) {
       this.table[4] = this.river;
       this.resetTableChips('red');
-      return true;
+      return;
     }
 
+    this.end();
+  }
+
+  private end() {
     this.showHands = true;
 
     const hands = this.decks.map((deck) => this.getPokerHands(deck));
@@ -195,7 +199,7 @@ export default class Game {
       .map((_, idx) => idx)
       .sort((playerA, playerB) => this.chips[playerB][this.chips[0].length - 1].value - this.chips[playerA][this.chips[0].length - 1].value);
 
-    const compare = (playerA:number, playerB:number) => hands[playerB].value - hands[playerA].value;
+    const compare = (playerA: number, playerB: number) => hands[playerB].value - hands[playerA].value;
     const playerOrder = Array(this.numPlayers)
       .fill(1)
       .map((_, idx) => idx)
@@ -213,27 +217,40 @@ export default class Game {
       }
 
       // in case of ties the order may be 'wrong'
-      return ![hands[playerOrder[idx - 1]], hands[playerOrder[idx + 1]]].some((hand) => hand.value === hands[player].value);
+      if (idx - 1 >= 0 && playerOrder[idx - 1] !== player && hands[playerOrder[idx - 1]].value === hands[player].value) {
+        return false;
+      }
+
+      if (idx + 1 < this.numPlayers && playerOrder[idx + 1] !== player && hands[playerOrder[idx + 1]].value === hands[player].value) {
+        return false;
+      }
+
+      return true;
     });
 
     if (incorrectOrder) {
       this.result = 'lose';
       this.gameScore[0]++;
       if (IN_DEV) {
-        console.info('incorrect order');
+        console.info('Lose - incorrect order');
       }
 
-      return true;
+      return;
     }
 
     this.result = 'win';
     this.gameScore[1]++;
-    return true;
   }
 
   private getPokerHands(deck: Card[]) {
-    const { board, hand } = iso({
-      board: boardToInts(this.table.filter((card) => !!card).map(getPokerCode)),
+    const {
+      board,
+      hand,
+    } = iso({
+      board: boardToInts(
+        this.table.filter((card) => !!card)
+          .map(getPokerCode),
+      ),
       hand: boardToInts(deck.map(getPokerCode)),
     });
     return evaluate([...board, ...hand]);

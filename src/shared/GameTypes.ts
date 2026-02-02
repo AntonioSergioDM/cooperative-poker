@@ -22,19 +22,8 @@ export type GameState = {
   table: Table;
 };
 
-export const getPreviousPlayer = (idx: number) => {
-  if (idx === 0) return 3;
-
-  return idx - 1;
-};
-
-export const getNextPlayer = (idx: number) => {
-  if (idx === 3) return 0;
-
-  return idx + 1;
-};
-
 export enum PlayErrors {
   wrongRound = 'Not the chip from this round',
-  holdingChip = 'You already have a chip for this round',
+  holdingChip = 'You already have a chip for this round', // commented in code
+  somethingWrong = 'Something went wrong',
 }
