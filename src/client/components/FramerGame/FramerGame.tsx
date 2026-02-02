@@ -1,17 +1,12 @@
 import {
-  useEffect,
-  useCallback,
   useMemo,
 } from 'react';
-
-import { useSnackbar } from 'notistack';
 
 import {
   type GameState,
   type PlayerState,
 } from '@/shared/GameTypes';
 import type { LobbyPlayerState } from '@/shared/SocketTypes';
-
 
 import PlayerHand from '@/client/components/Players/PlayerHand';
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';

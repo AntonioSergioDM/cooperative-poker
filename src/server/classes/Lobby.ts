@@ -114,11 +114,11 @@ export default class Lobby {
       }
     });
 
-    this.emitLobbyUpdate();
-
     if (allReady && this.players.length >= Game.minPlayers) {
       this.startGame();
     }
+
+    this.emitLobbyUpdate();
   }
 
   stealChip(playerId: string, chip: Chip | null): PlayerState | string {

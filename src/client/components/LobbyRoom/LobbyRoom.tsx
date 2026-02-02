@@ -16,12 +16,12 @@ import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
 
 import logo from '@/public/cooperative-poker.png';
 
+import Results from '@/client/components/LobbyRoom/Results';
 import ShareUrlButton from '../ShareUrlButton';
 import { useSocket } from '../../tools/useSocket';
 
 import LobbyRoomPlayer from './LobbyRoomPlayer';
 import LobbyRoomCounter from './LobbyRoomCounter';
-import Results from '@/client/components/LobbyRoom/Results';
 
 type LobbyRoomProps = {
   lobbyHash: string;
@@ -65,7 +65,7 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
           <Image alt="Logo" src={logo} priority width={200} height={200} />
         </Link>
 
-        <Results results={results}></Results>
+        <Results results={results} />
 
         <ShareUrlButton lobbyHash={lobbyHash} />
 

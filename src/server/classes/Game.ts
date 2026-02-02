@@ -218,6 +218,7 @@ export default class Game {
 
     if (incorrectOrder) {
       this.result = 'lose';
+      this.gameScore[0]++;
       if (IN_DEV) {
         console.info('incorrect order');
       }
@@ -226,6 +227,7 @@ export default class Game {
     }
 
     this.result = 'win';
+    this.gameScore[1]++;
     return true;
   }
 

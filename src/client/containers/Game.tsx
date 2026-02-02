@@ -104,9 +104,9 @@ const Game = () => {
 
   return (
     <>
-      {!playerState && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} />}
+      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} />}
 
-      {(!!playerState && !!gameState) && (
+      {(results.round === 'inProgress' && !!playerState && !!gameState) && (
         <FramerGame
           players={players}
           gameState={gameState}
