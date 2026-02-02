@@ -157,15 +157,14 @@ export default class Lobby {
   }
 
   emitLobbyUpdate() {
-    this.room?.emit('playersListUpdated', this.players.map((p) => ({ name: p.name, ready: p.ready })));
+    this.room?.emit('playersListUpdated', {
+      players: this.players.map((p) => ({ name: p.name, ready: p.ready })),
+      results: this.game.getResults(),
+    });
   }
 
   emitGameChange() {
     this.room?.emit('gameChange', this.game.getState());
-  }
-
-  emitGameResults() {
-    this.room?.emit('gameResults', this.game.getResults());
   }
 
   private startGame() {
@@ -191,11 +190,10 @@ export default class Lobby {
       return false;
     }
 
-    this.emitGameResults();
-    // TODO: Maybe we don't want to automaticly start another game? idk
-    // setTimeout(() => {
-    //   this.startGame();
-    // }, 5000);
+    setTimeout(() => {
+      this.players.forEach((p) => p.setReady(false));
+      this.emitLobbyUpdate();
+    }, 3000);
 
     return true;
   }

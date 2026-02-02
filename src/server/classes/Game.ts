@@ -2,7 +2,9 @@ import type { Card } from '@/shared/Card';
 import { Suit, getPokerCode } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
-import type { GameState, Score, Table } from '@/shared/GameTypes';
+import type {
+  GameState, GameStatus, Score, Table,
+} from '@/shared/GameTypes';
 import { PlayErrors } from '@/shared/GameTypes';
 import { evaluate } from 'poker-utils/build/module/lib/evaluate';
 import { boardToInts, iso } from 'poker-utils';
@@ -45,19 +47,16 @@ export default class Game {
 
   // TODO add the cards required for special effects
 
-  /** [even team, odd team] */
-  roundScore: Score = [0, 0];
-
-  /** 0: losses; 1: Wins */
+  /**
+   * Totals
+   * 0: losses; 1: Wins
+   * */
   gameScore: Score = [0, 0];
 
-  currPlayer: number = -1;
-
-  /** each Card is related by id to the player */
-
-  tableSuit: Suit | `${Suit}` | null = null;
+  result: GameStatus = 'inProgress';
 
   start(numPlayers: number) {
+    this.result = 'inProgress';
     this.numPlayers = numPlayers;
 
     // hide cards
@@ -137,9 +136,11 @@ export default class Game {
     return this.showHands;
   }
 
-  getResults() {
-    // TODO
-    return this.gameScore;
+  getResults():{ score: Score; round: GameStatus } {
+    return {
+      score: this.gameScore,
+      round: this.result,
+    };
   }
 
   // --------------- Private Methods --------------- //
@@ -216,13 +217,16 @@ export default class Game {
     });
 
     if (incorrectOrder) {
+      this.result = 'lose';
       if (IN_DEV) {
         console.info('incorrect order');
       }
-      return true; // TODO deal with Failure
+
+      return true;
     }
 
-    return true; // TODO deal with Success
+    this.result = 'win';
+    return true;
   }
 
   private getPokerHands(deck: Card[]) {

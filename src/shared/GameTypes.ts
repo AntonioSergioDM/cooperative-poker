@@ -13,6 +13,8 @@ export type PlayerState = {
   chip: Chip | null;
 };
 
+export type GameStatus = 'win' | 'lose' | 'inProgress';
+
 export type GameState = {
   hands: (Card | null)[][];
   chips: Chip[][];

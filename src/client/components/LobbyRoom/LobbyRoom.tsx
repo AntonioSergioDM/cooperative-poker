@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
-import type { LobbyPlayerState } from '@/shared/SocketTypes';
+import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
 
 import logo from '@/public/cooperative-poker.png';
 
@@ -21,13 +21,15 @@ import { useSocket } from '../../tools/useSocket';
 
 import LobbyRoomPlayer from './LobbyRoomPlayer';
 import LobbyRoomCounter from './LobbyRoomCounter';
+import Results from '@/client/components/LobbyRoom/Results';
 
 type LobbyRoomProps = {
   lobbyHash: string;
   players: LobbyPlayerState[];
+  results: LobbyState['results'];
 };
 
-const LobbyRoom = ({ lobbyHash, players }: LobbyRoomProps) => {
+const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
   const socket = useSocket();
 
   const [playerIndex, setPlayerIndex] = useState<number | null>(null);
@@ -62,6 +64,8 @@ const LobbyRoom = ({ lobbyHash, players }: LobbyRoomProps) => {
         <Link href={SiteRoute.Home} style={{ alignSelf: 'center' }}>
           <Image alt="Logo" src={logo} priority width={200} height={200} />
         </Link>
+
+        <Results results={results}></Results>
 
         <ShareUrlButton lobbyHash={lobbyHash} />
 

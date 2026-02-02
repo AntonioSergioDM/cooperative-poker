@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 
 import { type GameState, type PlayerState } from '@/shared/GameTypes';
-import type { LobbyPlayerState, ServerToClientEvents } from '@/shared/SocketTypes';
+import type { LobbyPlayerState, LobbyState, ServerToClientEvents } from '@/shared/SocketTypes';
 
 import type { Chip } from '@/shared/Chip';
 import { useSocket } from '../tools/useSocket';
@@ -22,6 +22,8 @@ const Game = () => {
   const { query } = useRouter();
 
   const [players, setPlayers] = useState<LobbyPlayerState[]>([]);
+  const [results, setResults] = useState<LobbyState['results']>({ score: [0, 0], round: 'inProgress' });
+
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
 
@@ -33,8 +35,10 @@ const Game = () => {
     return '';
   }, [query.lobby]);
 
-  const updatePlayers = useCallback<ServerToClientEvents['playersListUpdated']>((newPlayers) => {
+  const updatePlayers = useCallback<ServerToClientEvents['playersListUpdated']>((lobbyState) => {
+    const { players: newPlayers, results: newResults } = lobbyState;
     setPlayers(newPlayers);
+    setResults(newResults);
   }, []);
 
   const onGameChange = useCallback<ServerToClientEvents['gameChange']>((newGameState) => {
@@ -46,11 +50,11 @@ const Game = () => {
       // get current players in lobby
       socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers) => {
         if (validHash) {
-          updatePlayers(newPlayers);
+          setPlayers(newPlayers);
         }
       });
     }
-  }, [socket, updatePlayers, lobbyHash]);
+  }, [socket, setPlayers, lobbyHash]);
 
   const onGameReset = useCallback<ServerToClientEvents['gameReset']>(() => {
     setGameState(null);
@@ -100,7 +104,7 @@ const Game = () => {
 
   return (
     <>
-      {!playerState && <LobbyRoom players={players} lobbyHash={lobbyHash} />}
+      {!playerState && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} />}
 
       {(!!playerState && !!gameState) && (
         <FramerGame

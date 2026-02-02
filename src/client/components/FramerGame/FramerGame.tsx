@@ -10,9 +10,8 @@ import {
   type GameState,
   type PlayerState,
 } from '@/shared/GameTypes';
-import type { LobbyPlayerState, ServerToClientEvents } from '@/shared/SocketTypes';
+import type { LobbyPlayerState } from '@/shared/SocketTypes';
 
-import { useSocket } from '@/client/tools/useSocket';
 
 import PlayerHand from '@/client/components/Players/PlayerHand';
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
@@ -36,30 +35,6 @@ const FramerGame = (props: FramerGameProps) => {
     playerState,
     onStealChip,
   } = props;
-
-  const socket = useSocket();
-  const { enqueueSnackbar } = useSnackbar();
-
-  const onGameResults = useCallback<ServerToClientEvents['gameResults']>((results) => {
-    if (!results.length) {
-      return;
-    }
-
-    const myTeam = playerState.index % 2;
-    const result = results[results.length - 1] || [0, 0];
-    enqueueSnackbar({
-      variant: 'info',
-      message: `Game ended: You ${result[myTeam] > result[myTeam ? 0 : 1] ? 'won' : 'lost'}! Points: ${result[myTeam]}`,
-    });
-  }, [enqueueSnackbar, playerState.index]);
-
-  useEffect(() => {
-    socket.on('gameResults', onGameResults);
-
-    return () => {
-      socket.off('gameResults', onGameResults);
-    };
-  }, [onGameResults, socket]);
 
   // Memoize player positions to prevent recalculation on every render unless players change
   const playerPositions = useMemo(() => {
