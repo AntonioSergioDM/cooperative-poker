@@ -206,14 +206,23 @@ export default class Game {
       console.info('playerOrder:', playerOrder);
     }
 
-    if (playerChoice.some((player, idx) => player !== playerOrder[idx])) {
+    const incorrectOrder = playerChoice.some((player, idx) => {
+      if (player === playerOrder[idx]) {
+        return false;
+      }
+
+      // in case of ties the order may be 'wrong'
+      return ![hands[playerOrder[idx - 1]], hands[playerOrder[idx + 1]]].some((hand) => hand.value === hands[player].value);
+    });
+
+    if (incorrectOrder) {
       if (IN_DEV) {
         console.info('incorrect order');
       }
       return true; // TODO deal with Failure
     }
 
-    return true; // TODO deal with Sucess
+    return true; // TODO deal with Success
   }
 
   private getPokerHands(deck: Card[]) {
