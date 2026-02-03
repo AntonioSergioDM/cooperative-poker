@@ -1,6 +1,6 @@
 export type Chip = {
   value: number;
-  color: 'white' | 'yellow' | 'orange' | 'red';
+  color: 'white' | 'yellow' | 'orange' | 'red' | 'lime';
   reverse: boolean;
 };
 

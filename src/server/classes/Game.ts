@@ -141,6 +141,13 @@ export default class Game {
     return {
       score: this.gameScore,
       round: this.result,
+      table: this.table.filter((card) => !!card),
+      players: this.decks.map((hand, index) => ({
+        index,
+        hand,
+        chip: this.chips[index][this.chips[0].length - 1],
+        ...(this.chips[index].length ? { rank: this.getPokerHands(hand).value } : {}),
+      })),
     };
   }
 

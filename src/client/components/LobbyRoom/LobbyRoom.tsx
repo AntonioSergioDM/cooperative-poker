@@ -65,7 +65,7 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
           <Image alt="Logo" src={logo} priority width={200} height={200} />
         </Link>
 
-        <Results results={results} />
+        <Results results={results} players={players} />
 
         <ShareUrlButton lobbyHash={lobbyHash} />
 

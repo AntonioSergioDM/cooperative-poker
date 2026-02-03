@@ -22,7 +22,7 @@ const Game = () => {
   const { query } = useRouter();
 
   const [players, setPlayers] = useState<LobbyPlayerState[]>([]);
-  const [results, setResults] = useState<LobbyState['results']>({ score: [0, 0], round: 'inProgress' });
+  const [results, setResults] = useState<LobbyState['results']>({ score: [0, 0], round: 'inProgress', table: [], players: [] });
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);

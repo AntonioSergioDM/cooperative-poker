@@ -11,6 +11,7 @@ export type PlayerState = {
   index: number;
   hand: Hand;
   chip: Chip | null;
+  rank?: number;
 };
 
 export type GameStatus = 'win' | 'lose' | 'inProgress';
@@ -25,6 +26,8 @@ export type GameState = {
 export type GameResults = {
   score: Score;
   round: GameStatus;
+  table: Card[];
+  players: PlayerState[];
 };
 
 export enum PlayErrors {
