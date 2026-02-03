@@ -3,6 +3,7 @@ import { getPokerCode, Suit } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
 import type {
+  GameResults,
   GameState,
   GameStatus,
   Score,
@@ -136,7 +137,7 @@ export default class Game {
     return this.showHands;
   }
 
-  getResults(): { score: Score; round: GameStatus } {
+  getResults(): GameResults {
     return {
       score: this.gameScore,
       round: this.result,

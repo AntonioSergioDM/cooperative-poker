@@ -22,6 +22,11 @@ export type GameState = {
   table: Table;
 };
 
+export type GameResults = {
+  score: Score;
+  round: GameStatus;
+};
+
 export enum PlayErrors {
   wrongRound = 'Not the chip from this round',
   holdingChip = 'You already have a chip for this round', // commented in code

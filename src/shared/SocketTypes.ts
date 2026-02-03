@@ -1,12 +1,14 @@
 import type { Socket as SocketIoSocket } from 'socket.io';
 
 import type {
-  GameState, GameStatus, PlayerState, Score,
+  GameResults,
+  GameState,
+  PlayerState,
 } from '@/shared/GameTypes';
 import type { Chip } from '@/shared/Chip';
 
 export type LobbyPlayerState = { name: string; ready: boolean };
-export type LobbyState = { players: LobbyPlayerState[]; results: { score: Score; round: GameStatus } };
+export type LobbyState = { players: LobbyPlayerState[]; results: GameResults };
 
 export interface ServerToClientEvents {
   error: () => void;
