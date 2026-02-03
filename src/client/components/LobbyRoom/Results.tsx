@@ -9,7 +9,8 @@ type ResultsProps = {
 };
 
 const Results = ({ results, players }: ResultsProps) => {
-  results.players.sort((playerB, playerA) => (playerB.rank || 0) - (playerA.rank || 0) || (playerB.chip?.value || 0) - (playerA.chip?.value || 0));
+  if (results.players.length !== players.length) return null;
+  results.players.sort((playerB, playerA) => ((playerB.rank || 0) - (playerA.rank || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
   const playerOrder = results.players.map((player) => ({ chip: player.chip, name: players[player.index].name, hand: player.hand }));
   return (
     <Stack direction="column" spacing={2}>
