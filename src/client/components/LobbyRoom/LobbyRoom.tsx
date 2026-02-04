@@ -42,6 +42,14 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
     });
   }, [socket]);
 
+  const unReady = useCallback(() => {
+    socket.emit('playerUnready', (newPlayerIndex) => {
+      if (typeof newPlayerIndex === 'number') {
+        setPlayerIndex(newPlayerIndex);
+      }
+    });
+  }, [socket]);
+
   const missingPlayers = useMemo(() => {
     if (players.length >= 3) return [];
 
@@ -94,6 +102,14 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
               sx={{ maxWidth: 100 }}
             >
               Ready
+            </Button>
+
+            <Button
+              onClick={unReady}
+              disabled={!isReady}
+              sx={{ maxWidth: 100 }}
+            >
+              Unready
             </Button>
 
             <LobbyRoomCounter value={players.filter((p) => p.ready).length} outOf={players.length + missingPlayers.length} />

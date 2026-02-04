@@ -121,6 +121,19 @@ export default class Lobby {
     this.emitLobbyUpdate();
   }
 
+  setPlayerUnReady(playerId: string) {
+    this.players.forEach((p) => {
+      if (p.id === playerId) {
+        p.setReady(false);
+        if (IN_DEV) {
+          console.info(`🫡  Player ${p.name} (ID: ${p.id}) is unReady\n`);
+        }
+      }
+    });
+
+    this.emitLobbyUpdate();
+  }
+
   stealChip(playerId: string, chip: Chip | null): PlayerState | string {
     const foundIdx = this.players.findIndex((p) => p.id === playerId);
     if (foundIdx === -1) {

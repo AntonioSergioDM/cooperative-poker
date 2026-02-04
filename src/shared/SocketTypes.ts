@@ -32,6 +32,7 @@ export interface ClientToServerEvents {
   leaveLobby: () => void;
   lobbyPlayers: (lobbyHash: string, callback: (lobbyHash: string, players: LobbyPlayerState[]) => void) => void;
   playerReady: (callback: (playerIndex: number | null) => void) => void;
+  playerUnready: (callback: (playerIndex: number | null) => void) => void;
   stealChip: (chip: Chip, callback: (res: GenericCallbackResponse<PlayerState | null>) => void) => void;
 }
 
