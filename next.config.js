@@ -13,6 +13,7 @@ function formatDate() {
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: false,
+  output: 'standalone',
   env: {
     NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
     BUILD_DATETIME: formatDate(),
