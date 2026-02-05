@@ -53,7 +53,7 @@ const Results = ({ results, players }: ResultsProps) => {
             </Stack>
             <Stack direction="row">
               <TableChip chip={player.chip!} onClick={() => (console.log('why are you clicking'))} />
-              <TableChip chip={{ value: idx + 1, color: 'lime', reverse: false }} onClick={() => (console.log('why are you clicking'))}/>
+              <TableChip chip={{ value: idx + 1, color: 'lime', reverse: false }} onClick={() => (console.log('why are you clicking'))} />
             </Stack>
           </Card>
         ))}
