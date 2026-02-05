@@ -10,8 +10,8 @@ type ResultsProps = {
 
 const Results = ({ results, players }: ResultsProps) => {
   if (results.players.length !== players.length) return null;
-  results.players.sort((playerB, playerA) => ((playerB.rank || 0) - (playerA.rank || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
-  const playerOrder = results.players.map((player) => ({ chip: player.chip, name: players[player.index].name, hand: player.hand }));
+  results.players.sort((playerB, playerA) => ((playerB.rank?.value || 0) - (playerA.rank?.value || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
+  const playerOrder = results.players.map((player) => ({ chip: player.chip, name: players[player.index].name, hand: player.hand, rank: player.rank }));
   return (
     <Stack direction="column" spacing={2}>
       <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="stretch">
@@ -51,6 +51,8 @@ const Results = ({ results, players }: ResultsProps) => {
                 <TableCard card={card} key={card.value} />
               ))}
             </Stack>
+
+            {player.rank?.handName && <Typography variant="body2">{player.rank.handName}</Typography>}
             <Stack direction="row">
               <TableChip chip={player.chip!} onClick={() => (console.log('why are you clicking'))} />
               <TableChip chip={{ value: idx + 1, color: 'lime', reverse: false }} onClick={() => (console.log('why are you clicking'))} />

@@ -1,5 +1,6 @@
 import type { Card } from './Card';
 import type { Chip } from './Chip';
+import { EvaluatedHand } from 'poker-utils';
 
 export type Score = [number, number];
 
@@ -11,7 +12,7 @@ export type PlayerState = {
   index: number;
   hand: Hand;
   chip: Chip | null;
-  rank?: number;
+  rank?: EvaluatedHand;
 };
 
 export type GameStatus = 'win' | 'lose' | 'inProgress';

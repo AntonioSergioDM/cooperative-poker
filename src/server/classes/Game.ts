@@ -146,7 +146,7 @@ export default class Game {
         index,
         hand,
         chip: this.chips[index][this.chips[0].length - 1],
-        ...(this.chips[index].length ? { rank: this.getPokerHands(hand).value } : {}),
+        ...(this.chips[index].length ? { rank: this.getPokerHands(hand) } : {}),
       })),
     };
   }
