@@ -1,6 +1,6 @@
+import type { EvaluatedHand } from 'poker-utils';
 import type { Card } from './Card';
 import type { Chip } from './Chip';
-import { EvaluatedHand } from 'poker-utils';
 
 export type Score = [number, number];
 

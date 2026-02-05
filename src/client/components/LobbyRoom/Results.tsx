@@ -11,7 +11,12 @@ type ResultsProps = {
 const Results = ({ results, players }: ResultsProps) => {
   if (results.players.length !== players.length) return null;
   results.players.sort((playerB, playerA) => ((playerB.rank?.value || 0) - (playerA.rank?.value || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
-  const playerOrder = results.players.map((player) => ({ chip: player.chip, name: players[player.index].name, hand: player.hand, rank: player.rank }));
+  const playerOrder = results.players.map((player) => ({
+    chip: player.chip,
+    name: players[player.index].name,
+    hand: player.hand,
+    rank: player.rank,
+  }));
   return (
     <Stack direction="column" spacing={2}>
       <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="stretch">
