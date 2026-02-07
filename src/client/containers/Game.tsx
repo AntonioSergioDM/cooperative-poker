@@ -52,9 +52,13 @@ const Game = () => {
   useEffect(() => {
     if (lobbyHash) {
       // get current players in lobby
-      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers) => {
+      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions) => {
         if (validHash) {
           setPlayers(newPlayers);
+          if (newResults) {
+            setResults(newResults);
+          }
+          setOptions(newOptions);
         }
       });
     }
