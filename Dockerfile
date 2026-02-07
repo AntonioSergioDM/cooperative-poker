@@ -12,9 +12,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+COPY .env ./
 # Pass your build-time env vars here
-ARG NEXT_PUBLIC_URL
-ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
 RUN npm run build
 
@@ -22,8 +21,7 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV PORT 3001
+ENV PORT 3000
 
 # Create a secure user so you don't run as root
 RUN addgroup --system --gid 1001 nodejs
@@ -36,7 +34,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3001
+EXPOSE 3000
 
 # Next.js standalone mode generates a server.js file
 CMD ["node", "server.js"]
