@@ -81,9 +81,9 @@ export default class Game {
     // reset cards
     this.shuffleAndDistribute();
 
-    this.options = this.options.map((option) => (
-      option !== GameOption.random ? option : getRandom(Object.entries(GameOption).length - 2)
-    ));
+    if (this.options.includes(GameOption.random)) {
+      this.options.push(getRandom(GameOption.random - 2));
+    }
 
     if (this.options.includes(GameOption.skipWhite)) {
       this.nextPhase();
@@ -157,6 +157,10 @@ export default class Game {
   }
 
   resetTableChips(color: Chip['color'] = 'white') {
+    if (this.options.includes(GameOption.noHistory)) {
+      this.chips = this.chips.map(() => []);
+    }
+
     this.tableChips = Array(this.numPlayers)
       .fill(1)
       .map((_, value) => ({
@@ -213,10 +217,6 @@ export default class Game {
   private getCard = () => this.fullDeck.splice(getRandom(this.fullDeck.length), 1)[0];
 
   private nextPhase() {
-    if (this.options.includes(GameOption.noHistory)) {
-      this.chips = this.chips.map(() => []);
-    }
-
     let cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
     if (cardsOnTable < 3) {
       this.flop.forEach((card, idx) => {
@@ -229,11 +229,11 @@ export default class Game {
         let playerToSwitch = -1;
 
         if (hasFigure && this.options.includes(GameOption.highestWhiteSwitch)) {
-          playerToSwitch = this.chips.findIndex((chips) => chips[chips.length - 1].value === this.numPlayers);
+          playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === this.numPlayers);
         }
 
         if (!hasFigure && this.options.includes(GameOption.lowestWhiteSwitch)) {
-          playerToSwitch = this.chips.findIndex((chips) => chips[chips.length - 1].value === 1);
+          playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === 1);
         }
 
         if (playerToSwitch !== -1) {
@@ -270,6 +270,10 @@ export default class Game {
 
   private end() {
     this.showHands = true;
+
+    if (this.options.includes(GameOption.random)) {
+      this.options.pop(); // We add a random one at the start, we need to remove it at the end
+    }
 
     const hands = this.decks.map((deck) => this.getPokerHands(deck));
 

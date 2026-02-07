@@ -14,8 +14,7 @@ import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import type { PlayerState } from '@/shared/GameTypes';
-import { GameOption } from '@/shared/GameTypes';
+import type { PlayerState, GameOption } from '@/shared/GameTypes';
 
 import Game from './Game';
 import type Player from './Player';
@@ -144,9 +143,9 @@ export default class Lobby {
     // Should check if it's the host?
 
     if (status) {
-      this.game.setOptions([...this.game.options, option]);
+      this.game.options.push(option);
     } else {
-      this.game.setOptions(this.game.options.filter((o) => o !== option));
+      this.game.options = this.game.options.filter((o) => o !== option);
     }
 
     this.emitLobbyUpdate();
@@ -201,7 +200,6 @@ export default class Lobby {
   }
 
   private startGame() {
-    this.game.setOptions([GameOption.random]); // TODO I need to adjust this better
     this.game.start(this.players.length);
 
     if (IN_DEV) {

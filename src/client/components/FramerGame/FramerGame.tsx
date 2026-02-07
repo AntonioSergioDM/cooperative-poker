@@ -70,7 +70,8 @@ const FramerGame = (props: FramerGameProps) => {
   return (
     <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
       <Typography>
-        {gameState.options.map(getOptionDescription).reduce((a, b) => `${a} | ${b}`, '')}
+        {/* @ts-ignore */}
+        {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
       </Typography>
 
       {playerPositions.map((player) => {
