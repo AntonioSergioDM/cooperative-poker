@@ -52,6 +52,9 @@ export enum GameOption {
   // guessHighRedRank, // Need to guess the rank of the higher red chip
   // guessHighRedCard, // Need to guess a card value of the higher red chip
   // extraCard, // Everyone has an extra card in their hand
+
+  // This needs to be the last entry on the enum
+  random = 12,
 }
 
 export const getOptionDescription = (option: GameOption) => [
@@ -67,4 +70,5 @@ export const getOptionDescription = (option: GameOption) => [
   'Need to guess the rank of the higher red chip',
   'Need to guess a card value of the higher red chip',
   'Everyone has an extra card in their hand',
+  'Random',
 ][option];

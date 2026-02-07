@@ -81,6 +81,10 @@ export default class Game {
     // reset cards
     this.shuffleAndDistribute();
 
+    this.options = this.options.map((option) => (
+      option !== GameOption.random ? option : getRandom(Object.entries(GameOption).length - 2)
+    ));
+
     if (this.options.includes(GameOption.skipWhite)) {
       this.nextPhase();
     }

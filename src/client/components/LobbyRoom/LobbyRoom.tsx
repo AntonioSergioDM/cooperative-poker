@@ -8,7 +8,7 @@ import {
   Box,
   Card,
   Stack,
-  Button,
+  Button, Typography, Select,
 } from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
@@ -22,6 +22,7 @@ import { useSocket } from '../../tools/useSocket';
 
 import LobbyRoomPlayer from './LobbyRoomPlayer';
 import LobbyRoomCounter from './LobbyRoomCounter';
+import { GameOption, getOptionDescription } from '@/shared/GameTypes';
 
 type LobbyRoomProps = {
   lobbyHash: string;
@@ -68,14 +69,22 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
       alignItems="center"
       justifyContent="center"
     >
-      <Stack gap={1} width="100%" maxWidth={500}>
+      <Stack gap={1} width="100%" maxWidth={800}>
         <Link href={SiteRoute.Home} style={{ alignSelf: 'center' }}>
-          <Image alt="Logo" src={logo} priority width={200} height={200} />
+          <Image alt="Logo" src={logo} priority height={250} />
         </Link>
 
         <Results results={results} players={players} />
 
         <ShareUrlButton lobbyHash={lobbyHash} />
+
+        <Card>
+          <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
+            <Typography>Options</Typography>
+            <Stack direction="row" gap={2} flexWrap="wrap">
+            </Stack>
+          </Stack>
+        </Card>
 
         <Card
           sx={{

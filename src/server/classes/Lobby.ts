@@ -14,7 +14,8 @@ import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import { GameOption, PlayerState } from '@/shared/GameTypes';
+import type { PlayerState } from '@/shared/GameTypes';
+import { GameOption } from '@/shared/GameTypes';
 
 import Game from './Game';
 import type Player from './Player';
@@ -54,12 +55,12 @@ export default class Lobby {
   }
 
   async removePlayer(playerId: string) {
-    const founIdx = this.players.findIndex((p) => p.id === playerId);
-    if (founIdx === -1) {
+    const foundIndex = this.players.findIndex((p) => p.id === playerId);
+    if (foundIndex === -1) {
       return;
     }
 
-    const player = this.players.splice(founIdx, 1)[0];
+    const player = this.players.splice(foundIndex, 1)[0];
 
     await player.leaveRoom(this.hash);
 
@@ -181,7 +182,7 @@ export default class Lobby {
   }
 
   private startGame() {
-    this.game.setOptions([Math.floor(Math.random() * Object.entries(GameOption).length)]); // TODO I need to adjust this better
+    this.game.setOptions([GameOption.random]); // TODO I need to adjust this better
     this.game.start(this.players.length);
 
     if (IN_DEV) {

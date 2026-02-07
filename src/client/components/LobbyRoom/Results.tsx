@@ -40,12 +40,12 @@ const Results = ({ results, players }: ResultsProps) => {
           </Stack>
         </Card>
       </Stack>
-      <Stack direction="row" spacing={-5}>
+      <Stack direction="row" spacing={-5} width="full" justifyContent="center">
         {results.table.map((card) => (
           <TableCard card={card} key={card.value} />
         ))}
       </Stack>
-      <Stack direction="row" spacing={2} overflow="auto">
+      <Stack direction="row" spacing={2} overflow="auto" width="full" justifyContent="center">
         {playerOrder.map((player, idx) => (
           <Card key={player.name}>
             <div className="mx-auto">
