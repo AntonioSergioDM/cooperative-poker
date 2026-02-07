@@ -100,6 +100,22 @@ export const playerUnReady = (socket: OurServerSocket): ClientToServerEvents['pl
   }
 );
 
+export const changeOption = (socket: OurServerSocket): ClientToServerEvents['changeOption'] => (
+  (option, status) => {
+    if (!socket?.data?.lobbyHash || !socket.data.playerId) {
+      return;
+    }
+
+    const lobby = Lobby.lobbies.get(socket.data.lobbyHash);
+    if (!lobby) {
+      return;
+    }
+
+    lobby.changeOption(option, status, socket.data.playerId);
+    lobby.emitLobbyUpdate();
+  }
+);
+
 export const lobbyPlayers = (socket: OurServerSocket): ClientToServerEvents['lobbyPlayers'] => (
   (lobbyHash, callback) => {
     if (!lobbyHash) {

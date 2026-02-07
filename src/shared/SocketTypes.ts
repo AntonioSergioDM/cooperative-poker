@@ -1,14 +1,16 @@
 import type { Socket as SocketIoSocket } from 'socket.io';
 
 import type {
+  GameOption,
   GameResults,
   GameState,
   PlayerState,
 } from '@/shared/GameTypes';
 import type { Chip } from '@/shared/Chip';
+import { changeOption } from '@/server/lobbies';
 
 export type LobbyPlayerState = { name: string; ready: boolean };
-export type LobbyState = { players: LobbyPlayerState[]; results: GameResults };
+export type LobbyState = { players: LobbyPlayerState[]; results: GameResults; options?: GameOption[] };
 
 export interface ServerToClientEvents {
   error: () => void;
@@ -33,6 +35,7 @@ export interface ClientToServerEvents {
   lobbyPlayers: (lobbyHash: string, callback: (lobbyHash: string, players: LobbyPlayerState[]) => void) => void;
   playerReady: (callback: (playerIndex: number | null) => void) => void;
   playerUnready: (callback: (playerIndex: number | null) => void) => void;
+  changeOption: (option: GameOption, status: boolean) => void;
   stealChip: (chip: Chip, callback: (res: GenericCallbackResponse<PlayerState | null>) => void) => void;
 }
 

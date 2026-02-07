@@ -135,6 +135,24 @@ export default class Lobby {
     this.emitLobbyUpdate();
   }
 
+  changeOption(option: GameOption, status: boolean, playerId: string): string | boolean {
+    const foundIdx = this.players.findIndex((p) => p.id === playerId);
+    if (foundIdx === -1) {
+      return 'Invalid player';
+    }
+
+    // Should check if it's the host?
+
+    if (status) {
+      this.game.setOptions([...this.game.options, option]);
+    } else {
+      this.game.setOptions(this.game.options.filter((o) => o !== option));
+    }
+
+    this.emitLobbyUpdate();
+    return status;
+  }
+
   stealChip(playerId: string, chip: Chip | null): PlayerState | string {
     const foundIdx = this.players.findIndex((p) => p.id === playerId);
     if (foundIdx === -1) {
@@ -174,6 +192,7 @@ export default class Lobby {
     this.room?.emit('playersListUpdated', {
       players: this.players.map((p) => ({ name: p.name, ready: p.ready })),
       results: this.game.getResults(),
+      options: this.game.options,
     });
   }
 
@@ -214,7 +233,11 @@ export default class Lobby {
   }
 
   private resetGame() {
+    const currentOptions = this.game.options;
+
     this.game = new Game();
+    this.game.setOptions(currentOptions);
+
     this.players.forEach((p) => {
       p.setReady(false);
       if (IN_DEV) {

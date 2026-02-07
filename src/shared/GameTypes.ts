@@ -49,16 +49,18 @@ export enum GameOption {
   noHistory, // No chip history
   lowestWhiteSwitch, // Switch hand if...
   highestWhiteSwitch, // Switch hand if...
+
   // guessHighRedRank, // Need to guess the rank of the higher red chip
   // guessHighRedCard, // Need to guess a card value of the higher red chip
   // extraCard, // Everyone has an extra card in their hand
 
   // This needs to be the last entry on the enum
-  random = 12,
+  random,
 }
 
+// This needs to follow the Enum
 export const getOptionDescription = (option: GameOption) => [
-  "You can take from other players or the table only when you don't have a chip",
+  'Can steal, but not switch chips',
   'Lowest chips are reversed',
   'Highest chips are reversed',
   'Skip white chips',
@@ -67,8 +69,10 @@ export const getOptionDescription = (option: GameOption) => [
   'No chip history',
   'Switch lower hand if no figure on flop',
   'Switch higher hand if figure on flop',
-  'Need to guess the rank of the higher red chip',
-  'Need to guess a card value of the higher red chip',
-  'Everyone has an extra card in their hand',
+
+  // 'Need to guess the rank of the higher red chip',
+  // 'Need to guess a card value of the higher red chip',
+  // 'Everyone has an extra card in their hand',
+
   'Random',
 ][option];

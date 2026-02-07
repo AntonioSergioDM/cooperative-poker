@@ -25,6 +25,7 @@ const Game = () => {
   const [results, setResults] = useState<LobbyState['results']>({
     score: [0, 0], round: 'inProgress', table: [], players: [],
   });
+  const [options, setOptions] = useState<LobbyState['options']>([]);
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
@@ -38,9 +39,10 @@ const Game = () => {
   }, [query.lobby]);
 
   const updatePlayers = useCallback<ServerToClientEvents['playersListUpdated']>((lobbyState) => {
-    const { players: newPlayers, results: newResults } = lobbyState;
+    const { players: newPlayers, results: newResults, options: newOptions } = lobbyState;
     setPlayers(newPlayers);
     setResults(newResults);
+    setOptions(newOptions);
   }, []);
 
   const onGameChange = useCallback<ServerToClientEvents['gameChange']>((newGameState) => {
@@ -106,7 +108,7 @@ const Game = () => {
 
   return (
     <>
-      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} />}
+      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} options={options} />}
 
       {(results.round === 'inProgress' && !!playerState && !!gameState) && (
         <FramerGame

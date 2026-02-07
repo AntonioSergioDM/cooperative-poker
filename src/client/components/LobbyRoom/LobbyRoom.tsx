@@ -8,7 +8,8 @@ import {
   Box,
   Card,
   Stack,
-  Button, Typography, Select,
+  Button,
+  Typography,
 } from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
@@ -17,20 +18,27 @@ import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
 import logo from '@/public/cooperative-poker.png';
 
 import Results from '@/client/components/LobbyRoom/Results';
+import { GameOption, getOptionDescription } from '@/shared/GameTypes';
 import ShareUrlButton from '../ShareUrlButton';
 import { useSocket } from '../../tools/useSocket';
 
 import LobbyRoomPlayer from './LobbyRoomPlayer';
 import LobbyRoomCounter from './LobbyRoomCounter';
-import { GameOption, getOptionDescription } from '@/shared/GameTypes';
 
 type LobbyRoomProps = {
   lobbyHash: string;
   players: LobbyPlayerState[];
   results: LobbyState['results'];
+  options?: GameOption[];
 };
 
-const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
+const LobbyRoom = (props: LobbyRoomProps) => {
+  const {
+    lobbyHash,
+    players,
+    results,
+    options,
+  } = props;
   const socket = useSocket();
 
   const [playerIndex, setPlayerIndex] = useState<number | null>(null);
@@ -50,6 +58,11 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
       }
     });
   }, [socket]);
+
+  const onChangeOption = useCallback(
+    (option: GameOption, status: boolean) => socket.emit('changeOption', option, status),
+    [socket],
+  );
 
   const missingPlayers = useMemo(() => {
     if (players.length >= 3) return [];
@@ -80,8 +93,27 @@ const LobbyRoom = ({ lobbyHash, players, results }: LobbyRoomProps) => {
 
         <Card>
           <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
-            <Typography>Options</Typography>
-            <Stack direction="row" gap={2} flexWrap="wrap">
+            <Typography fontSize={20}>Challenges</Typography>
+            <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
+              {Array(GameOption.random + 1)
+                .fill(1)
+                .map((_, idx) => {
+                  if (options?.includes(idx)) {
+                    const asdfre = () => onChangeOption(idx, false);
+                    return (
+                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
+                        {getOptionDescription(idx)}
+                      </Button>
+                    );
+                  }
+
+                  const asdfre = () => onChangeOption(idx, true);
+                  return (
+                    <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
+                      {getOptionDescription(idx)}
+                    </Button>
+                  );
+                })}
             </Stack>
           </Stack>
         </Card>
