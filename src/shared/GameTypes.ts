@@ -34,5 +34,21 @@ export type GameResults = {
 export enum PlayErrors {
   wrongRound = 'Not the chip from this round',
   holdingChip = 'You already have a chip for this round', // commented in code
+  reversedChip = 'Reversed chips cannot be exchanged',
   somethingWrong = 'Something went wrong',
+}
+
+export enum GameOption {
+  noSwitching, // You can take from other players or the table only when you don't have a chip
+  lowestReversed, // Lowest chips are reversed
+  highestReversed, // Highest chips are reversed
+  skipWhite, // Skip white chips
+  skipYellow, // Skip yellow chips
+  skipOrange, // Skip Orange chips
+  noHistory, // No chip history
+  lowestWhiteSwitch, // Switch hand if...
+  highestWhiteSwitch, // Switch hand if...
+  guessHighRedRank, // Need to guess the rank of the higher red chip
+  guessHighRedCard, // Need to guess a card value of the higher red chip
+  extraCard, // Everyone has an extra card in their hand
 }

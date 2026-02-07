@@ -20,6 +20,8 @@ export const cardName = (card: Card) => {
   }
 };
 
+export const isFigure = (card: Card) => [12, 11, 10].includes(card.value);
+
 export const getPokerCode = (card: Card): string => {
   let value = '';
   switch (card.value) {

@@ -1,5 +1,5 @@
 import type { Card } from '@/shared/Card';
-import { getPokerCode, Suit } from '@/shared/Card';
+import { isFigure, getPokerCode, Suit } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
 import type {
@@ -9,7 +9,10 @@ import type {
   Score,
   Table,
 } from '@/shared/GameTypes';
-import { PlayErrors } from '@/shared/GameTypes';
+import {
+  GameOption,
+  PlayErrors,
+} from '@/shared/GameTypes';
 import { evaluate } from 'poker-utils/build/module/lib/evaluate';
 import { boardToInts, iso } from 'poker-utils';
 import { IN_DEV } from '@/globals';
@@ -26,6 +29,8 @@ export default class Game {
 
   /** Number of players */
   numPlayers = 0;
+
+  fullDeck: Card[] = [];
 
   /** each 'deck' corresponds to a player hand */
   decks: Card[][] = [];
@@ -45,7 +50,7 @@ export default class Game {
 
   showHands = false;
 
-  // TODO add the cards required for special effects
+  options: GameOption[] = [];
 
   /**
    * Totals
@@ -54,6 +59,10 @@ export default class Game {
   gameScore: Score = [0, 0];
 
   result: GameStatus = 'inProgress';
+
+  setOptions(options: GameOption[]) {
+    this.options = options;
+  }
 
   start(numPlayers: number) {
     this.result = 'inProgress';
@@ -72,6 +81,10 @@ export default class Game {
 
     // reset cards
     this.shuffleAndDistribute();
+
+    if (this.options.includes(GameOption.skipWhite)) {
+      this.nextPhase();
+    }
   }
 
   stealChip(player: number, chip: Chip): PlayErrors | true {
@@ -79,15 +92,25 @@ export default class Game {
       return PlayErrors.wrongRound;
     }
 
-    // Already has a chip - TODO make this a game option
-    if (this.chips[player].find((playerChip) => playerChip.color === chip.color)) {
-      // return PlayErrors.holdingChip;
-
-      this.tableChips.push(this.chips[player].pop()!);
+    // Reversed chip cannot be exchanged
+    if (chip.reverse) {
+      return PlayErrors.reversedChip;
     }
 
-    // Find the chip //
+    // Already has a chip
+    const currentChip = this.chips[player].find((playerChip) => playerChip.color === chip.color);
+    if (currentChip) {
+      if (this.options.includes(GameOption.noSwitching)) {
+        return PlayErrors.holdingChip;
+      }
 
+      this.tableChips.push(this.chips[player].pop()!);
+      if (sameChip(currentChip, chip)) {
+        return true;
+      }
+    }
+
+    // Look for the chip on the table
     const inTableIdx = this.tableChips.findIndex((tableChip) => sameChip(tableChip, chip));
     // chip is in the table
     if (inTableIdx !== -1) {
@@ -101,6 +124,7 @@ export default class Game {
       return true;
     }
 
+    // Look for the chip on other players
     const inHandIdx = this.chips.findIndex((playerChips) => (
       playerChips.find((playerChip) => playerChip && sameChip(playerChip, chip))
     ));
@@ -131,6 +155,14 @@ export default class Game {
         color,
         reverse: false,
       }));
+
+    if (color !== 'red' && this.options.includes(GameOption.lowestReversed)) {
+      this.tableChips[0].reverse = true;
+    }
+
+    if (color !== 'red' && this.options.includes(GameOption.highestReversed)) {
+      this.tableChips[this.numPlayers - 1].reverse = true;
+    }
   }
 
   isEnded() {
@@ -154,42 +186,72 @@ export default class Game {
   // --------------- Private Methods --------------- //
 
   private shuffleAndDistribute() {
-    const fullDeck = Game.getFullDeck();
-
-    const getCard = () => fullDeck.splice(getRandom(fullDeck.length), 1)[0];
+    this.fullDeck = Game.getFullDeck();
 
     this.decks = [];
     for (let i = 0; i < this.numPlayers; i++) {
-      this.decks.push(Array(Game.cardsPerPlayer)
+      this.decks.push(Array(Game.cardsPerPlayer) // + +this.options.includes(GameOption.extraCard) Poker library can't handle it
         .fill(1)
-        .map(getCard));
+        .map(this.getCard));
     }
 
     this.table = [null, null, null, null, null];
-    this.flop = [1, 1, 1].map(getCard);
-    this.turn = getCard();
-    this.river = getCard();
+    this.flop = [1, 1, 1].map(this.getCard);
+    this.turn = this.getCard();
+    this.river = this.getCard();
   }
 
+  private getCard = () => this.fullDeck.splice(getRandom(this.fullDeck.length), 1)[0];
+
   private nextPhase() {
-    const cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
+    if (this.options.includes(GameOption.noHistory)) {
+      this.chips = this.chips.map(() => []);
+    }
+
+    let cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
     if (cardsOnTable < 3) {
       this.flop.forEach((card, idx) => {
         this.table[idx] = card;
       });
+      cardsOnTable++;
 
-      this.resetTableChips('yellow');
-      return;
+      if (this.options.includes(GameOption.lowestWhiteSwitch) || this.options.includes(GameOption.highestWhiteSwitch)) {
+        const hasFigure = this.flop.some(isFigure);
+        let playerToSwitch = -1;
+
+        if (hasFigure && this.options.includes(GameOption.highestWhiteSwitch)) {
+          playerToSwitch = this.chips.findIndex((chips) => chips[chips.length - 1].value === this.numPlayers);
+        }
+
+        if (!hasFigure && this.options.includes(GameOption.lowestWhiteSwitch)) {
+          playerToSwitch = this.chips.findIndex((chips) => chips[chips.length - 1].value === 1);
+        }
+
+        if (playerToSwitch !== -1) {
+          this.decks[playerToSwitch] = this.decks[playerToSwitch].map(this.getCard);
+        }
+      }
+
+      if (!this.options.includes(GameOption.skipYellow)) {
+        this.resetTableChips('yellow');
+        return;
+      }
     }
 
     if (cardsOnTable < 4) {
       this.table[3] = this.turn;
-      this.resetTableChips('orange');
-      return;
+      cardsOnTable++;
+
+      if (!this.options.includes(GameOption.skipOrange)) {
+        this.resetTableChips('orange');
+        return;
+      }
     }
 
     if (cardsOnTable < 5) {
       this.table[4] = this.river;
+      cardsOnTable++;
+
       this.resetTableChips('red');
       return;
     }
