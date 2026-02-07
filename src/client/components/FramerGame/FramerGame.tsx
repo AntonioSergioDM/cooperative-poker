@@ -3,7 +3,7 @@ import {
 } from 'react';
 
 import {
-  type GameState,
+  type GameState, getOptionDescription,
   type PlayerState,
 } from '@/shared/GameTypes';
 import type { LobbyPlayerState } from '@/shared/SocketTypes';
@@ -69,6 +69,10 @@ const FramerGame = (props: FramerGameProps) => {
 
   return (
     <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
+      <Typography>
+        {gameState.options.map(getOptionDescription)}
+      </Typography>
+
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
         const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];

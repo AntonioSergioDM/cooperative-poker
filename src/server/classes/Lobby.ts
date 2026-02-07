@@ -14,7 +14,7 @@ import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import type { PlayerState } from '@/shared/GameTypes';
+import { GameOption, PlayerState } from '@/shared/GameTypes';
 
 import Game from './Game';
 import type Player from './Player';
@@ -181,6 +181,7 @@ export default class Lobby {
   }
 
   private startGame() {
+    this.game.setOptions([Math.floor(Math.random() * Object.entries(GameOption).length)]); // TODO I need to adjust this better
     this.game.start(this.players.length);
 
     if (IN_DEV) {

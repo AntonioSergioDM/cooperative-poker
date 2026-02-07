@@ -22,6 +22,7 @@ export type GameState = {
   chips: Chip[][];
   tableChips: Chip[];
   table: Table;
+  options: GameOption[];
 };
 
 export type GameResults = {
@@ -48,7 +49,22 @@ export enum GameOption {
   noHistory, // No chip history
   lowestWhiteSwitch, // Switch hand if...
   highestWhiteSwitch, // Switch hand if...
-  guessHighRedRank, // Need to guess the rank of the higher red chip
-  guessHighRedCard, // Need to guess a card value of the higher red chip
-  extraCard, // Everyone has an extra card in their hand
+  // guessHighRedRank, // Need to guess the rank of the higher red chip
+  // guessHighRedCard, // Need to guess a card value of the higher red chip
+  // extraCard, // Everyone has an extra card in their hand
 }
+
+export const getOptionDescription = (option: GameOption) => [
+  "You can take from other players or the table only when you don't have a chip",
+  'Lowest chips are reversed',
+  'Highest chips are reversed',
+  'Skip white chips',
+  'Skip yellow chips',
+  'Skip orange chips',
+  'No chip history',
+  'Switch lower hand if no figure on flop',
+  'Switch higher hand if figure on flop',
+  'Need to guess the rank of the higher red chip',
+  'Need to guess a card value of the higher red chip',
+  'Everyone has an extra card in their hand',
+][option];

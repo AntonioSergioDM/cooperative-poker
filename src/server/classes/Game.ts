@@ -20,7 +20,6 @@ import { IN_DEV } from '@/globals';
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
 export default class Game {
-  // Adjust this to 1 for a very fast game!
   static cardsPerPlayer = 2;
 
   static maxPlayers = 23;
@@ -92,16 +91,16 @@ export default class Game {
       return PlayErrors.wrongRound;
     }
 
-    // Reversed chip cannot be exchanged
-    if (chip.reverse) {
-      return PlayErrors.reversedChip;
-    }
-
     // Already has a chip
     const currentChip = this.chips[player].find((playerChip) => playerChip.color === chip.color);
     if (currentChip) {
       if (this.options.includes(GameOption.noSwitching)) {
         return PlayErrors.holdingChip;
+      }
+
+      // Reversed chip cannot be exchanged
+      if (chip.reverse) {
+        return PlayErrors.reversedChip;
       }
 
       this.tableChips.push(this.chips[player].pop()!);
@@ -124,6 +123,11 @@ export default class Game {
       return true;
     }
 
+    // Reversed chip cannot be exchanged
+    if (chip.reverse) {
+      return PlayErrors.reversedChip;
+    }
+
     // Look for the chip on other players
     const inHandIdx = this.chips.findIndex((playerChips) => (
       playerChips.find((playerChip) => playerChip && sameChip(playerChip, chip))
@@ -144,6 +148,7 @@ export default class Game {
       table: this.table,
       hands: this.showHands ? this.decks : this.decks.map((hand) => hand.map(() => null)),
       chips: this.chips,
+      options: this.options,
     };
   }
 
