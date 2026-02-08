@@ -48,7 +48,11 @@ export enum GameOption {
   skipOrange, // Skip Orange chips
   noHistory, // No chip history
   lowestWhiteSwitch, // Switch hand if...
+  lowestYellowSwitch, // Switch hand if...
+  lowestOrangeSwitch, // Switch hand if...
   highestWhiteSwitch, // Switch hand if...
+  highestYellowSwitch, // Switch hand if...
+  highestOrangeSwitch, // Switch hand if...
 
   // guessHighRedRank, // Need to guess the rank of the higher red chip
   // guessHighRedCard, // Need to guess a card value of the higher red chip
@@ -68,10 +72,14 @@ export const getOptionDescription = (option: GameOption) => [
   'Skip orange chips',
   'No chip history',
   'Switch lower hand if no figure on flop',
+  'Switch lower hand if no figure on turn',
+  'Switch lower hand if no figure on river',
   'Switch higher hand if figure on flop',
+  'Switch higher hand if figure on turn',
+  'Switch higher hand if figure on river',
 
   // 'Need to guess the rank of the higher red chip',
-  // 'Need to guess a card value of the higher red chip',
+  // 'Need to guess one card value of the higher red chip',
   // 'Everyone has an extra card in their hand',
 
   'Random',

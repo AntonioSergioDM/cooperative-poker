@@ -216,6 +216,23 @@ export default class Game {
 
   private getCard = () => this.fullDeck.splice(getRandom(this.fullDeck.length), 1)[0];
 
+  private replaceHands = (rank: 'high' | 'low', cards: Card[]) => {
+    const hasFigure = cards.some(isFigure);
+    let playerToSwitch = -1;
+
+    if (hasFigure && rank === 'high') {
+      playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === this.numPlayers);
+    }
+
+    if (!hasFigure && rank === 'low') {
+      playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === 1);
+    }
+
+    if (playerToSwitch >= 0) {
+      this.decks[playerToSwitch] = this.decks[playerToSwitch].map(this.getCard);
+    }
+  };
+
   private nextPhase() {
     let cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
     if (cardsOnTable < 3) {
@@ -224,21 +241,12 @@ export default class Game {
       });
       cardsOnTable++;
 
-      if (this.options.includes(GameOption.lowestWhiteSwitch) || this.options.includes(GameOption.highestWhiteSwitch)) {
-        const hasFigure = this.flop.some(isFigure);
-        let playerToSwitch = -1;
+      if (this.options.includes(GameOption.highestWhiteSwitch)) {
+        this.replaceHands('high', this.flop);
+      }
 
-        if (hasFigure && this.options.includes(GameOption.highestWhiteSwitch)) {
-          playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === this.numPlayers);
-        }
-
-        if (!hasFigure && this.options.includes(GameOption.lowestWhiteSwitch)) {
-          playerToSwitch = this.chips.findIndex((chips) => chips.length && chips[chips.length - 1].value === 1);
-        }
-
-        if (playerToSwitch !== -1) {
-          this.decks[playerToSwitch] = this.decks[playerToSwitch].map(this.getCard);
-        }
+      if (this.options.includes(GameOption.lowestWhiteSwitch)) {
+        this.replaceHands('low', this.flop);
       }
 
       if (!this.options.includes(GameOption.skipYellow)) {
@@ -251,6 +259,14 @@ export default class Game {
       this.table[3] = this.turn;
       cardsOnTable++;
 
+      if (this.options.includes(GameOption.highestYellowSwitch)) {
+        this.replaceHands('high', [this.turn!]);
+      }
+
+      if (this.options.includes(GameOption.lowestYellowSwitch)) {
+        this.replaceHands('low', [this.turn!]);
+      }
+
       if (!this.options.includes(GameOption.skipOrange)) {
         this.resetTableChips('orange');
         return;
@@ -260,6 +276,14 @@ export default class Game {
     if (cardsOnTable < 5) {
       this.table[4] = this.river;
       cardsOnTable++;
+
+      if (this.options.includes(GameOption.highestOrangeSwitch)) {
+        this.replaceHands('high', [this.river!]);
+      }
+
+      if (this.options.includes(GameOption.lowestOrangeSwitch)) {
+        this.replaceHands('low', [this.river!]);
+      }
 
       this.resetTableChips('red');
       return;

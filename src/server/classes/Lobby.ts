@@ -140,7 +140,7 @@ export default class Lobby {
       return 'Invalid player';
     }
 
-    // Should check if it's the host?
+    // Should check if is the host?
 
     if (status) {
       this.game.options.push(option);
