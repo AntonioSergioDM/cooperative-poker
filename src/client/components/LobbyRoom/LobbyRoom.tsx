@@ -95,9 +95,38 @@ const LobbyRoom = (props: LobbyRoomProps) => {
           <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
             <Typography fontSize={20}>Challenges</Typography>
             <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
-              {Array(GameOption.random + 1)
+              {Array(GameOption.randomChallenge + 1)
                 .fill(1)
                 .map((_, idx) => {
+                  if (options?.includes(idx)) {
+                    const asdfre = () => onChangeOption(idx, false);
+                    return (
+                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
+                        {getOptionDescription(idx)}
+                      </Button>
+                    );
+                  }
+
+                  const asdfre = () => onChangeOption(idx, true);
+                  return (
+                    <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
+                      {getOptionDescription(idx)}
+                    </Button>
+                  );
+                })}
+            </Stack>
+          </Stack>
+        </Card>
+
+        <Card>
+          <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
+            <Typography fontSize={20}>Advantages</Typography>
+            <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
+              {Array(GameOption.randomAdvantage - GameOption.randomChallenge)
+                .fill(1)
+                .map((_, idx) => {
+                  // eslint-disable-next-line no-param-reassign
+                  idx += GameOption.randomChallenge + 1;
                   if (options?.includes(idx)) {
                     const asdfre = () => onChangeOption(idx, false);
                     return (

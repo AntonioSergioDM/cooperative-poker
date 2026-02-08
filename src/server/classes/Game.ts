@@ -81,8 +81,8 @@ export default class Game {
     // reset cards
     this.shuffleAndDistribute();
 
-    if (this.options.includes(GameOption.random)) {
-      this.options.push(getRandom(GameOption.random - 2));
+    if (this.options.includes(GameOption.randomChallenge)) {
+      this.options.push(getRandom(GameOption.randomChallenge - 2));
     }
 
     if (this.options.includes(GameOption.skipWhite)) {
@@ -295,7 +295,7 @@ export default class Game {
   private end() {
     this.showHands = true;
 
-    if (this.options.includes(GameOption.random)) {
+    if (this.options.includes(GameOption.randomChallenge)) {
       this.options.pop(); // We add a random one at the start, we need to remove it at the end
     }
 
@@ -329,6 +329,10 @@ export default class Game {
       }
 
       if (idx + 1 < this.numPlayers && playerOrder[idx + 1] !== player && hands[playerOrder[idx + 1]].value === hands[player].value) {
+        return false;
+      }
+
+      if (this.options.includes(GameOption.allowRankTie) && hands[playerOrder[idx]].handRank === hands[player].handRank) {
         return false;
       }
 

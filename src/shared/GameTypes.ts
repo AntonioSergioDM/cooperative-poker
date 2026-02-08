@@ -40,6 +40,7 @@ export enum PlayErrors {
 }
 
 export enum GameOption {
+  // Challenges
   noSwitching, // You can take from other players or the table only when you don't have a chip
   lowestReversed, // Lowest chips are reversed
   highestReversed, // Highest chips are reversed
@@ -48,18 +49,24 @@ export enum GameOption {
   skipOrange, // Skip Orange chips
   noHistory, // No chip history
   lowestWhiteSwitch, // Switch hand if...
-  lowestYellowSwitch, // Switch hand if...
-  lowestOrangeSwitch, // Switch hand if...
   highestWhiteSwitch, // Switch hand if...
+  lowestYellowSwitch, // Switch hand if...
   highestYellowSwitch, // Switch hand if...
+  lowestOrangeSwitch, // Switch hand if...
   highestOrangeSwitch, // Switch hand if...
 
   // guessHighRedRank, // Need to guess the rank of the higher red chip
   // guessHighRedCard, // Need to guess a card value of the higher red chip
   // extraCard, // Everyone has an extra card in their hand
 
-  // This needs to be the last entry on the enum
-  random,
+  // This needs to be the last challenge on the enum
+  randomChallenge,
+
+  // Advantages
+  allowRankTie,
+
+  // This needs to be the last advantage on the enum
+  randomAdvantage,
 }
 
 // This needs to follow the Enum
@@ -72,15 +79,18 @@ export const getOptionDescription = (option: GameOption) => [
   'Skip orange chips',
   'No chip history',
   'Switch lower hand if no figure on flop',
-  'Switch lower hand if no figure on turn',
-  'Switch lower hand if no figure on river',
   'Switch higher hand if figure on flop',
+  'Switch lower hand if no figure on turn',
   'Switch higher hand if figure on turn',
+  'Switch lower hand if no figure on river',
   'Switch higher hand if figure on river',
 
   // 'Need to guess the rank of the higher red chip',
   // 'Need to guess one card value of the higher red chip',
   // 'Everyone has an extra card in their hand',
 
-  'Random',
+  'Random Challenge',
+
+  'Allow rank ties',
+  'Random Advantage',
 ][option];
