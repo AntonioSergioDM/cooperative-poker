@@ -50,6 +50,7 @@ const Results = ({ results, players }: ResultsProps) => {
           <Card
             key={`${player.name}-${player.chip?.value}`}
             sx={{
+              padding: '4px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
