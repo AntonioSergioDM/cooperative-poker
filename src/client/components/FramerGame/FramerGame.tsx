@@ -80,7 +80,7 @@ const FramerGame = (props: FramerGameProps) => {
 
         return (
           <div
-            key={player.name}
+            key={player.name + player.originalIndex}
             className="fixed flex flex-col justify-center items-center gap-4 transform -translate-x-1/2 -translate-y-1/2"
             style={player.style}
           >

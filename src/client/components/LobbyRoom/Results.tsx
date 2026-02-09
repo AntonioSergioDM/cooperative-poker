@@ -42,12 +42,23 @@ const Results = ({ results, players }: ResultsProps) => {
       </Stack>
       <Stack direction="row" spacing={-5} width="full" justifyContent="center">
         {results.table.map((card) => (
-          <TableCard card={card} key={card.value} />
+          <TableCard card={card} key={`${card.value} - ${card.suit}`} />
         ))}
       </Stack>
       <Stack direction="row" spacing={2} overflow="auto" width="full" justifyContent="center">
         {playerOrder.map((player, idx) => (
-          <Card key={player.name} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '150px', opacity: 0, animation: 'fadeIn 0.5s ease-out forwards', animationDelay: `${idx * 1.5}s` }}>
+          <Card
+            key={`${player.name}-${player.chip?.value}`}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              minWidth: '150px',
+              opacity: 0,
+              animation: 'fadeIn 0.5s ease-out forwards',
+              animationDelay: `${idx * 1.5}s`,
+            }}
+          >
             <Typography variant="body2">{player.name}</Typography>
 
             <Stack direction="row" spacing={-5}>
