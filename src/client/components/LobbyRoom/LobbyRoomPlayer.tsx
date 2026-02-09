@@ -58,8 +58,6 @@ const LobbyRoomPlayer = ({ name, ready }: LobbyRoomPlayerProps) => {
     <Stack
       gap={2}
       width={MAX_WIDTH}
-      height={150}
-      flexGrow={1}
       direction="column"
       alignItems="center"
       justifyContent="flex-start"

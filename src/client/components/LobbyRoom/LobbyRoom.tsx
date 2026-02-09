@@ -103,7 +103,14 @@ const LobbyRoom = (props: LobbyRoomProps) => {
             flexDirection: 'column',
           }}
         >
-          <Stack direction="row" gap={2}>
+          <Stack
+            direction="row"
+            gap={2}
+            useFlexGap
+            flexWrap="wrap"
+            justifyContent="center"
+            alignItems="flex-start"
+          >
             {players.map((player, idx) => (
               <LobbyRoomPlayer key={`${player.name}-${idx}`} name={player.name} ready={player.ready} />
             ))}
@@ -115,19 +122,11 @@ const LobbyRoom = (props: LobbyRoomProps) => {
 
           <Stack px={1} direction="row" gap={5} justifyContent="space-between" alignItems="center">
             <Button
-              onClick={onReady}
-              disabled={isReady}
+              onClick={isReady ? unReady : onReady}
+              color={isReady ? 'primary' : 'secondary'}
               sx={{ maxWidth: 100 }}
             >
-              Ready
-            </Button>
-
-            <Button
-              onClick={unReady}
-              disabled={!isReady}
-              sx={{ maxWidth: 100 }}
-            >
-              Unready
+              {isReady ? 'ready' : 'ready'}
             </Button>
 
             <LobbyRoomCounter value={players.filter((p) => p.ready).length} outOf={players.length + missingPlayers.length} />
@@ -148,18 +147,10 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                 {Array(GameOption.randomChallenge + 1)
                   .fill(1)
                   .map((_, idx) => {
-                    if (options?.includes(idx)) {
-                      const asdfre = () => onChangeOption(idx, false);
-                      return (
-                        <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
-                          {getOptionDescription(idx)}
-                        </Button>
-                      );
-                    }
-
-                    const asdfre = () => onChangeOption(idx, true);
+                    const isActive = options?.includes(idx);
+                    const onChange = () => onChangeOption(idx, !isActive);
                     return (
-                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
+                      <Button key={idx} value={idx} fullWidth={false} onClick={onChange} color={isActive ? 'primary' : 'secondary'}>
                         {getOptionDescription(idx)}
                       </Button>
                     );
@@ -170,8 +161,8 @@ const LobbyRoom = (props: LobbyRoomProps) => {
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
+              aria-controls="panel2-content"
+              id="panel2-header"
             >
               <Typography fontSize={20}>Advantages</Typography>
             </AccordionSummary>
@@ -184,18 +175,10 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                     .map((_, idx) => {
                       // eslint-disable-next-line no-param-reassign
                       idx += GameOption.randomChallenge + 1;
-                      if (options?.includes(idx)) {
-                        const onChange = () => onChangeOption(idx, false);
-                        return (
-                          <Button key={idx} value={idx} fullWidth={false} onClick={onChange}>
-                            {getOptionDescription(idx)}
-                          </Button>
-                        );
-                      }
-
-                      const onChange = () => onChangeOption(idx, true);
+                      const isActive = options?.includes(idx);
+                      const onChange = () => onChangeOption(idx, !isActive);
                       return (
-                        <Button key={idx} value={idx} fullWidth={false} onClick={onChange} color="secondary">
+                        <Button key={idx} value={idx} fullWidth={false} onClick={onChange} color={isActive ? 'primary' : 'secondary'}>
                           {getOptionDescription(idx)}
                         </Button>
                       );

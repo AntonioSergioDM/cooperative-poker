@@ -75,6 +75,7 @@ export enum GameOption {
 
 // This needs to follow the Enum
 export const getOptionDescription = (option: GameOption) => [
+  // Challenges
   'Can steal, but not switch chips',
   'Lowest chips are reversed',
   'Highest chips are reversed',
@@ -95,8 +96,10 @@ export const getOptionDescription = (option: GameOption) => [
 
   'Random Challenge',
 
+  // Advantages
   'Allow rank ties',
   'How many K, Q and J in hand',
   'Hand value (A, K, Q & J are 10 points)',
+
   'Random Advantage',
 ][option];
