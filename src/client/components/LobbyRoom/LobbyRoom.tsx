@@ -10,7 +10,11 @@ import {
   Stack,
   Button,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { SiteRoute } from '@/shared/Routes';
 import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
@@ -91,62 +95,6 @@ const LobbyRoom = (props: LobbyRoomProps) => {
 
         <ShareUrlButton lobbyHash={lobbyHash} />
 
-        <Card>
-          <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
-            <Typography fontSize={20}>Challenges</Typography>
-            <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
-              {Array(GameOption.randomChallenge + 1)
-                .fill(1)
-                .map((_, idx) => {
-                  if (options?.includes(idx)) {
-                    const asdfre = () => onChangeOption(idx, false);
-                    return (
-                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
-                        {getOptionDescription(idx)}
-                      </Button>
-                    );
-                  }
-
-                  const asdfre = () => onChangeOption(idx, true);
-                  return (
-                    <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
-                      {getOptionDescription(idx)}
-                    </Button>
-                  );
-                })}
-            </Stack>
-          </Stack>
-        </Card>
-
-        <Card>
-          <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
-            <Typography fontSize={20}>Advantages</Typography>
-            <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
-              {Array(GameOption.randomAdvantage - GameOption.randomChallenge)
-                .fill(1)
-                .map((_, idx) => {
-                  // eslint-disable-next-line no-param-reassign
-                  idx += GameOption.randomChallenge + 1;
-                  if (options?.includes(idx)) {
-                    const asdfre = () => onChangeOption(idx, false);
-                    return (
-                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
-                        {getOptionDescription(idx)}
-                      </Button>
-                    );
-                  }
-
-                  const asdfre = () => onChangeOption(idx, true);
-                  return (
-                    <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
-                      {getOptionDescription(idx)}
-                    </Button>
-                  );
-                })}
-            </Stack>
-          </Stack>
-        </Card>
-
         <Card
           sx={{
             p: 2,
@@ -184,6 +132,78 @@ const LobbyRoom = (props: LobbyRoomProps) => {
 
             <LobbyRoomCounter value={players.filter((p) => p.ready).length} outOf={players.length + missingPlayers.length} />
           </Stack>
+        </Card>
+
+        <Card>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography fontSize={20}>Challenges</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
+                {Array(GameOption.randomChallenge + 1)
+                  .fill(1)
+                  .map((_, idx) => {
+                    if (options?.includes(idx)) {
+                      const asdfre = () => onChangeOption(idx, false);
+                      return (
+                        <Button key={idx} value={idx} fullWidth={false} onClick={asdfre}>
+                          {getOptionDescription(idx)}
+                        </Button>
+                      );
+                    }
+
+                    const asdfre = () => onChangeOption(idx, true);
+                    return (
+                      <Button key={idx} value={idx} fullWidth={false} onClick={asdfre} color="secondary">
+                        {getOptionDescription(idx)}
+                      </Button>
+                    );
+                  })}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography fontSize={20}>Advantages</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction="column" gap={2} width="full" alignItems="center" padding={2}>
+
+                <Stack direction="row" gap={2} flexWrap="wrap" justifyContent="center" alignItems="center">
+                  {Array(GameOption.randomAdvantage - GameOption.randomChallenge)
+                    .fill(1)
+                    .map((_, idx) => {
+                      // eslint-disable-next-line no-param-reassign
+                      idx += GameOption.randomChallenge + 1;
+                      if (options?.includes(idx)) {
+                        const onChange = () => onChangeOption(idx, false);
+                        return (
+                          <Button key={idx} value={idx} fullWidth={false} onClick={onChange}>
+                            {getOptionDescription(idx)}
+                          </Button>
+                        );
+                      }
+
+                      const onChange = () => onChangeOption(idx, true);
+                      return (
+                        <Button key={idx} value={idx} fullWidth={false} onClick={onChange} color="secondary">
+                          {getOptionDescription(idx)}
+                        </Button>
+                      );
+                    })}
+                </Stack>
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
         </Card>
       </Stack>
     </Box>
