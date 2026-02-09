@@ -85,6 +85,10 @@ export default class Game {
       this.options.push(getRandom(GameOption.randomChallenge - 2));
     }
 
+    if (this.options.includes(GameOption.randomAdvantage)) {
+      this.options.push(getRandom(GameOption.randomAdvantage - GameOption.randomChallenge - 1) + GameOption.randomChallenge + 1);
+    }
+
     if (this.options.includes(GameOption.skipWhite)) {
       this.nextPhase();
     }
@@ -296,6 +300,10 @@ export default class Game {
     this.showHands = true;
 
     if (this.options.includes(GameOption.randomChallenge)) {
+      this.options.pop(); // We add a random one at the start, we need to remove it at the end
+    }
+
+    if (this.options.includes(GameOption.randomAdvantage)) {
       this.options.pop(); // We add a random one at the start, we need to remove it at the end
     }
 
