@@ -156,6 +156,7 @@ export default class Game {
       table: this.table,
       hands: this.showHands ? this.decks : this.decks.map((hand) => hand.map(() => null)),
       ...(this.options.includes(GameOption.howManyFigures) && { numFigures: this.decks.map((hand) => hand.filter(isFigure).length) }),
+      ...(this.options.includes(GameOption.handValue) && { handValue: this.decks.map((hand) => hand.reduce((sum, card) => sum + Math.min(10, card.value + 1), 0)) }),
       chips: this.chips,
       options: this.options,
     };
