@@ -19,6 +19,7 @@ export type GameStatus = 'win' | 'lose' | 'inProgress';
 
 export type GameState = {
   hands: (Card | null)[][];
+  numFigures?: number[];
   chips: Chip[][];
   tableChips: Chip[];
   table: Table;
@@ -64,6 +65,7 @@ export enum GameOption {
 
   // Advantages
   allowRankTie,
+  howManyFigures,
 
   // This needs to be the last advantage on the enum
   randomAdvantage,
@@ -92,5 +94,6 @@ export const getOptionDescription = (option: GameOption) => [
   'Random Challenge',
 
   'Allow rank ties',
+  'How many K, Q and J in hand',
   'Random Advantage',
 ][option];

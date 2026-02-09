@@ -105,6 +105,7 @@ const FramerGame = (props: FramerGameProps) => {
 
             <Typography>
               {player.name}
+              {gameState.numFigures && ` (${gameState.numFigures[player.originalIndex]} figures)`}
             </Typography>
           </div>
         );
