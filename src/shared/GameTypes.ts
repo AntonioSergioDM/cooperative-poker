@@ -69,6 +69,14 @@ export enum GameOption {
   howManyFigures,
   handValue,
 
+  // switchOneCard,
+  // shareRank,
+  // shareValue,
+  // showOne,
+  // redistribute,
+  // passCard,
+  // extraJack,
+
   // This needs to be the last advantage on the enum
   randomAdvantage,
 }
@@ -100,6 +108,14 @@ export const getOptionDescription = (option: GameOption) => [
   'Allow rank ties',
   'How many K, Q and J in hand',
   'Hand value (A, K, Q & J are 10 points)',
+
+  // 'One player switches one card',
+  // 'One player shares the current rank',
+  // 'One player shares one card value',
+  // 'One player shows one card to another',
+  // 'Redistribute the dealt cards',
+  // 'Give one card to the left player',
+  // 'One player can get a J with no suit',
 
   'Random Advantage',
 ][option];
