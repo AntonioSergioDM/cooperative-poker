@@ -112,6 +112,8 @@ export default class Game {
       }
 
       this.tableChips.push(this.chips[player].pop()!);
+      this.tableChips.sort((a, b) => a.value - b.value);
+
       if (sameChip(currentChip, chip)) {
         return true;
       }
