@@ -31,6 +31,5 @@ Create a pull request to resolve an issue and submit it to review :)
 - toast on copy link
 - Show Current hand
 - kick system
-- Carefully with big name
 - Switching cards is not instantaneously
 - equivalent hands with different suits are not the same value. It still has the bug :'(

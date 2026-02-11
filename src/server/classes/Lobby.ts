@@ -86,6 +86,8 @@ export default class Lobby {
       return false;
     }
 
+    player.name = player.name.length > 50 ? `${player.name.substring(0, 50)}...` : player.name;
+
     this.players.push(player);
     this.emitLobbyUpdate();
     this.room = await player.joinRoom(this.hash);

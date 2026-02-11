@@ -52,13 +52,14 @@ const Results = ({ results, players }: ResultsProps) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              justifyContent: 'end',
               minWidth: '150px',
               opacity: 0,
               animation: 'fadeIn 0.5s ease-out forwards',
               animationDelay: `${idx * 1.5}s`,
             }}
           >
-            <Typography variant="body2">{player.name}</Typography>
+            <Typography variant="body2" textAlign="center" maxWidth={150}>{player.name}</Typography>
 
             <Stack direction="row" spacing={-5}>
               {player.hand.map((card) => (

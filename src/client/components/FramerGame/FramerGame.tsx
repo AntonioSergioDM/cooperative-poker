@@ -103,7 +103,7 @@ const FramerGame = (props: FramerGameProps) => {
               ))}
             </div>
 
-            <Typography>
+            <Typography textAlign="center" maxWidth={(isMe && 'full') || 150}>
               {player.name}
               {gameState.numFigures && ` (${gameState.numFigures[player.originalIndex]} figures)`}
               {gameState.handValue && ` (${gameState.handValue[player.originalIndex]} points)`}
