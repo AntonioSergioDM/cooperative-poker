@@ -2,6 +2,9 @@ import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
 import { Stack, Typography, Card } from '@mui/material';
 import TableCard from '@/client/components/FramerGame/TableCard';
 import TableChip from '@/client/components/FramerGame/TableChip';
+import ResultCounter from '@/client/components/LobbyRoom/ResultCounter';
+import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
+import { ColorNames } from '@/client/tools/colors';
 
 type ResultsProps = {
   results: LobbyState['results'];
@@ -17,28 +20,23 @@ const Results = ({ results, players }: ResultsProps) => {
     hand: player.hand,
     rank: player.rank,
   }));
+
+  let resultColor: ColorNames;
+  if (results.round === 'win') {
+    resultColor = 'green';
+  } else if (results.round === 'lose') {
+    resultColor = 'red';
+  }
+
   return (
     <Stack direction="column" spacing={2}>
-      <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="stretch">
-        <Card className="px-2 py-1">
-          <Stack direction="column">
-            <Typography fontSize={10} marginRight={2}>Lost</Typography>
-            <Typography marginLeft="auto">{results.score[0]}</Typography>
-          </Stack>
-        </Card>
+      <Stack direction="row" spacing={5} justifyContent="center" alignItems="start">
+        <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
 
-        <Card className="flex justify-center items-center px-8">
-          <Typography fontSize={20}>
-            {results.score.reduce((a, b) => a + b) ? `You ${results.round}` : 'Ready when you are'}
-          </Typography>
-        </Card>
+        {/* @ts-ignore */}
+        <ResultMessage color={resultColor} message={results.score.reduce((a, b) => a + b) ? `You ${results.round}!` : 'Ready when you are'} />
 
-        <Card className="px-2 py-1">
-          <Stack direction="column">
-            <Typography fontSize={10} marginLeft={2}>Won</Typography>
-            <Typography marginLeft={0}>{results.score[1]}</Typography>
-          </Stack>
-        </Card>
+        <ResultCounter content={results.score[1]} label="win" color="green" emoji="🏆" />
       </Stack>
       <Stack direction="row" spacing={-5} width="full" justifyContent="center">
         {results.table.map((card) => (
