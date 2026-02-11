@@ -28,7 +28,6 @@ Create a pull request to resolve an issue and submit it to review :)
 - kick system
 - error when host leaves
 - Carefully with big name
-- Sounds when updating
 - Switching cards is not instantaneously
 - equivalent hands with different suits are not the same value. It still has the bug :'(
 - Proper readme to deploy

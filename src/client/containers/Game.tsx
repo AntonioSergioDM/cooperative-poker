@@ -15,6 +15,8 @@ import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
 
+import { sound } from '../tools/sounds';
+
 const Game = () => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -47,6 +49,8 @@ const Game = () => {
 
   const onGameChange = useCallback<ServerToClientEvents['gameChange']>((newGameState) => {
     setGameState(newGameState);
+    // Play the beep sound
+    sound('beep');
   }, []);
 
   useEffect(() => {
