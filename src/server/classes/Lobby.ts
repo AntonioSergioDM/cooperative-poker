@@ -231,11 +231,6 @@ export default class Lobby {
   }
 
   private resetGame() {
-    const currentOptions = this.game.options;
-
-    this.game = new Game();
-    this.game.setOptions(currentOptions);
-
     this.players.forEach((p) => {
       p.setReady(false);
       if (IN_DEV) {

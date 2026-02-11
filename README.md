@@ -28,8 +28,6 @@ We used React, Next and Socket.IO.
 Create a pull request to resolve an issue and submit it to review :)
 
 - I need to clone the socket io admin to this project because of the CORS policy
-- I need to re-check the Lobby leaving logic. I don't want to reset the score.
-- error when host leaves
 - toast on copy link
 - Show Current hand
 - kick system
