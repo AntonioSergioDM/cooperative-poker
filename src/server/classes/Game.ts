@@ -1,5 +1,10 @@
-import { Card, filterPoker } from '@/shared/Card';
-import { isFigure, getPokerCode, Suit } from '@/shared/Card';
+import type { Card } from '@/shared/Card';
+import {
+  filterPoker,
+  isFigure,
+  getPokerCode,
+  Suit,
+} from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
 import type {

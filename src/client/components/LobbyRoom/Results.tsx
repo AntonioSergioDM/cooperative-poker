@@ -70,7 +70,7 @@ const Results = ({ results, players }: ResultsProps) => {
             {player.rank?.handName && <Typography variant="body2">{player.rank.handName}</Typography>}
             <Stack direction="row" gap={1.5}>
               <TableChip chip={player.chip!} onClick={() => (console.log('why are you clicking'))} />
-              <TableChip chip={{ value: idx + 1, color: 'lime', reverse: false }} onClick={() => (console.log('why are you clicking'))} />
+              <TableChip chip={{ value: idx + 1, color: 'green', reverse: false }} onClick={() => (console.log('why are you clicking'))} />
             </Stack>
           </Card>
         ))}
