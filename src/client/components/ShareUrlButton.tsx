@@ -4,6 +4,7 @@ import { CopyAll, IosShare } from '@mui/icons-material';
 import { Card, IconButton, Typography } from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
+import { useSnackbar } from 'notistack';
 
 type ShareUrlButtonProps = {
   lobbyHash: string;
@@ -14,8 +15,14 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
     `${process.env.NEXT_PUBLIC_URL}${SiteRoute.JoinLobby}/${lobbyHash}`
   ), [lobbyHash]);
 
+  const { enqueueSnackbar } = useSnackbar();
   const onCopy = useCallback(async () => {
     await navigator.clipboard.writeText(shareURL);
+    enqueueSnackbar({
+      variant: 'success',
+      message: 'Copied to clipboard!',
+      autoHideDuration: 2000,
+    });
   }, [shareURL]);
 
   const onShare = useCallback(async () => {

@@ -83,6 +83,7 @@ const Game = () => {
         enqueueSnackbar({
           variant: 'error',
           message: res.error,
+          autoHideDuration: 2000,
         });
       } else {
         setPlayerState(res.data);

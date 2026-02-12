@@ -43,6 +43,7 @@ const CreateLobby = () => {
         enqueueSnackbar({
           variant: 'error',
           message: res.error,
+          autoHideDuration: 2000,
         });
       } else {
         void push(`${SiteRoute.Game}/${res.data.lobbyHash}`);
