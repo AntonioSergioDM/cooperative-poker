@@ -30,4 +30,3 @@ Create a pull request to resolve an issue and submit it to review :)
 - I need to clone the socket io admin to this project because of the CORS policy
 - kick system
 - Switching cards is not instantaneously
-- equivalent hands with different suits are not the same value. It still has the bug :'(

@@ -12,8 +12,11 @@ type ResultsProps = {
 };
 
 const Results = ({ results, players }: ResultsProps) => {
-  if (results.players.length !== players.length) return null;
-  results.players.sort((playerB, playerA) => ((playerB.rank?.value || 0) - (playerA.rank?.value || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
+  if (results.players.length !== players.length) {
+    return null;
+  }
+
+  results.players.sort((playerB, playerA) => ((playerB.rank?.value || 0) - (playerA.rank?.value || 0)) || ((playerA.rank?.handRank || 0) - (playerB.rank?.handRank || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
   const playerOrder = results.players.map((player) => ({
     chip: player.chip,
     name: players[player.index].name,
@@ -59,8 +62,6 @@ const Results = ({ results, players }: ResultsProps) => {
               animationDelay: `${idx * 1.5}s`,
             }}
           >
-            <Typography variant="body2" textAlign="center" maxWidth={150}>{player.name}</Typography>
-
             <Stack direction="row" spacing={-5}>
               {player.hand.map((card) => (
                 <TableCard card={card} key={card.value} />
@@ -72,6 +73,8 @@ const Results = ({ results, players }: ResultsProps) => {
               <TableChip chip={player.chip!} onClick={() => (console.log('why are you clicking'))} />
               <TableChip chip={{ value: idx + 1, color: 'green', reverse: false }} onClick={() => (console.log('why are you clicking'))} />
             </Stack>
+
+            <Typography variant="body2" textAlign="center" maxWidth={150}>{player.name}</Typography>
           </Card>
         ))}
       </Stack>

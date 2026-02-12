@@ -223,6 +223,19 @@ export default class Game {
     this.river = this.getCard();
   }
 
+  // private shuffleAndDistribute() {
+  //   this.decks = [
+  //     [{ suit: 1, value: 1 }, { suit: 1, value: 10 }],
+  //     [{ suit: 3, value: 1 }, { suit: 3, value: 10 }],
+  //     [{ suit: 2, value: 1 }, { suit: 2, value: 10 }],
+  //   ];
+  //
+  //   this.table = [null, null, null, null, null];
+  //   this.flop = [{ suit: 4, value: 1 }, { suit: 4, value: 2 }, { suit: 4, value: 3 }];
+  //   this.turn = { suit: 3, value: 5 };
+  //   this.river = { suit: 3, value: 9 };
+  // }
+
   private getCard = () => this.fullDeck.splice(getRandom(this.fullDeck.length), 1)[0];
 
   private replaceHands = (rank: 'high' | 'low', cards: Card[]) => {
@@ -331,21 +344,19 @@ export default class Game {
       console.info('playerOrder:', playerOrder);
     }
 
-    const incorrectOrder = playerChoice.some((player, idx) => {
-      if (player === playerOrder[idx]) {
+    const incorrectOrder = playerChoice.some((playerIdx, idx) => {
+      // They match, yey
+      if (playerIdx === playerOrder[idx]) {
         return false;
       }
 
-      // in case of ties the order may be 'wrong'
-      if (idx - 1 >= 0 && playerOrder[idx - 1] !== player && hands[playerOrder[idx - 1]].value === hands[player].value) {
+      // Tie
+      if (hands[playerOrder[idx]].handRank === hands[playerIdx].handRank) {
         return false;
       }
 
-      if (idx + 1 < this.numPlayers && playerOrder[idx + 1] !== player && hands[playerOrder[idx + 1]].value === hands[player].value) {
-        return false;
-      }
-
-      if (this.options.includes(GameOption.allowRankTie) && hands[playerOrder[idx]].handRank === hands[player].handRank) {
+      // Allow Rank Ties Advantage (Pair Q's vs Pair K's)
+      if (this.options.includes(GameOption.allowRankTie) && hands[playerOrder[idx]].handType === hands[playerIdx].handType) {
         return false;
       }
 
