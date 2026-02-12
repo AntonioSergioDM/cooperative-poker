@@ -23,7 +23,7 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
       message: 'Copied to clipboard!',
       autoHideDuration: 2000,
     });
-  }, [shareURL]);
+  }, [enqueueSnackbar, shareURL]);
 
   const onShare = useCallback(async () => {
     await navigator.share({
