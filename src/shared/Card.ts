@@ -56,6 +56,11 @@ export const getPokerCode = (card: Card): string => {
   return value + suit;
 };
 
+export const filterPoker = (hand: Array<Card | null>) => (
+  hand.filter((a) => !!a)
+    .map(getPokerCode)
+);
+
 export type Card = {
   suit: Suit | `${Suit}`;
   value: number;

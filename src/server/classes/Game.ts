@@ -1,4 +1,4 @@
-import type { Card } from '@/shared/Card';
+import { Card, filterPoker } from '@/shared/Card';
 import { isFigure, getPokerCode, Suit } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
 import { sameChip } from '@/shared/Chip';
@@ -58,10 +58,6 @@ export default class Game {
   gameScore: Score = [0, 0];
 
   result: GameStatus = 'inProgress';
-
-  setOptions(options: GameOption[]) {
-    this.options = options;
-  }
 
   start(numPlayers: number) {
     this.result = 'inProgress';
@@ -371,8 +367,7 @@ export default class Game {
       hand,
     } = iso({
       board: boardToInts(
-        this.table.filter((card) => !!card)
-          .map(getPokerCode),
+        filterPoker(this.table),
       ),
       hand: boardToInts(deck.map(getPokerCode)),
     });

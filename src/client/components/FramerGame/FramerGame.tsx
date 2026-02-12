@@ -14,6 +14,7 @@ import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 import { Typography } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
+import { filterPoker } from '@/shared/Card';
 import Table from './Table';
 
 type FramerGameProps = {
@@ -77,6 +78,9 @@ const FramerGame = (props: FramerGameProps) => {
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
         const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
+        // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
+        const Hand = require('pokersolver').Hand;
+        const pokerHand = isMe ? Hand.solve([...filterPoker(cards), ...filterPoker(gameState.table)]).descr : '';
 
         return (
           <div
@@ -92,6 +96,8 @@ const FramerGame = (props: FramerGameProps) => {
                 name={player.name}
               />
             </div>
+
+            {pokerHand && <Typography>{pokerHand}</Typography>}
 
             <div className="flex flex-row gap-1 z-10">
               {gameState.chips[player.originalIndex].map((chip) => (
