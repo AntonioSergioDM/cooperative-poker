@@ -21,7 +21,7 @@ const ResultMessage = (props: ResultsMessageProps) => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '50px',
-        boxShadow: `0 0 5px ${myColor || 'transparent'}`,
+        boxShadow: `0 0 8px ${myColor || 'transparent'}`,
       }}
     >
       <Typography color={myColor || 'inherit'} margin="auto" marginX={2} fontSize={20} fontWeight="bold">{message}</Typography>
