@@ -68,6 +68,11 @@ const FramerGame = (props: FramerGameProps) => {
     });
   }, [players, playerState.index]);
 
+  const pokerHand = useMemo(() => (
+    // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
+    require('pokersolver').Hand.solve([...filterPoker(playerState.hand), ...filterPoker(gameState.table)]).descr
+  ), [playerState.hand, gameState.table]);
+
   return (
     <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
       <Typography>
@@ -78,9 +83,6 @@ const FramerGame = (props: FramerGameProps) => {
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
         const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
-        // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
-        const Hand = require('pokersolver').Hand;
-        const pokerHand = isMe ? Hand.solve([...filterPoker(cards), ...filterPoker(gameState.table)]).descr : '';
 
         return (
           <div
@@ -97,7 +99,7 @@ const FramerGame = (props: FramerGameProps) => {
               />
             </div>
 
-            {pokerHand && <Typography>{pokerHand}</Typography>}
+            {isMe && <Typography>{pokerHand}</Typography>}
 
             <div className="flex flex-row gap-1 z-10">
               {gameState.chips[player.originalIndex].map((chip) => (
