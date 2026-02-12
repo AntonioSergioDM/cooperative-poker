@@ -81,12 +81,11 @@ const LobbyRoom = (props: LobbyRoomProps) => {
   return (
     <Box
       margin={5}
-      height="90vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
     >
-      <Stack gap={1} width="100%" maxWidth={800}>
+      <Stack gap={1} width="100%" maxWidth={1200}>
         <Link href={SiteRoute.Home} style={{ alignSelf: 'center' }}>
           <Image alt="Logo" src={logo} priority height={250} />
         </Link>
