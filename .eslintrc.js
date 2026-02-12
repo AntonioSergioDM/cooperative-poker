@@ -59,6 +59,7 @@ module.exports = {
         'no-shadow': 0,
         'no-plusplus': 0,
         'no-invalid-this': 0,
+        'no-param-reassign': 0,
         'no-use-before-define': 0,
         'no-restricted-imports': 0,
         'no-console': ['warn', {

@@ -4,7 +4,7 @@ import TableCard from '@/client/components/FramerGame/TableCard';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import ResultCounter from '@/client/components/LobbyRoom/ResultCounter';
 import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
-import { ColorNames } from '@/client/tools/colors';
+import type { ColorNames } from '@/client/tools/colors';
 
 type ResultsProps = {
   results: LobbyState['results'];

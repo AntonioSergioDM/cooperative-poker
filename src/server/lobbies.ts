@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import type { ClientToServerEvents, OurServerSocket } from '@/shared/SocketTypes';
 
 import type { Chip } from '@/shared/Chip';

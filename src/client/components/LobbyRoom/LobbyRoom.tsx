@@ -173,7 +173,6 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                   {Array(GameOption.randomAdvantage - GameOption.randomChallenge)
                     .fill(1)
                     .map((_, idx) => {
-                      // eslint-disable-next-line no-param-reassign
                       idx += GameOption.randomChallenge + 1;
                       const isActive = options?.includes(idx);
                       const onChange = () => onChangeOption(idx, !isActive);
