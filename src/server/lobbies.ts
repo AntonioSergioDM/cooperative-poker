@@ -133,7 +133,7 @@ export const lobbyPlayers = (socket: OurServerSocket): ClientToServerEvents['lob
     }
 
     // returning lobby hash so the client knows it was successful at least
-    return callback(lobby.hash, lobby.players.map((p) => ({ name: p.name || '____', ready: p.ready })), lobby.game.getResults(), lobby.game.options);
+    return callback(lobby.hash, lobby.players.map((p) => ({ name: p.name || '____', ready: p.ready, id: p.id })), lobby.game.getResults(), lobby.game.options);
   }
 );
 
@@ -171,5 +171,26 @@ export const leaveLobby = (socket: OurServerSocket): ClientToServerEvents['leave
     }
 
     await lobby.removePlayer(socket.data.playerId);
+  }
+);
+
+export const kickFromLobby = (socket: OurServerSocket): ClientToServerEvents['kickFromLobby'] => (
+  async (playerToKick: string) => {
+    if (!socket?.data?.lobbyHash || !socket.data.playerId) {
+      return;
+    }
+
+    const lobby = Lobby.lobbies.get(socket.data.lobbyHash);
+    if (!lobby) {
+      return;
+    }
+
+    const isHost = lobby.players.findIndex((p) => p.id === socket.data.playerId) === 0;
+    if (!isHost) {
+      return;
+    }
+
+    await lobby.removePlayer(playerToKick);
+    lobby.emitLobbyUpdate();
   }
 );

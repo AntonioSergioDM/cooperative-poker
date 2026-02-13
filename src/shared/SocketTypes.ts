@@ -7,8 +7,9 @@ import type {
   PlayerState,
 } from '@/shared/GameTypes';
 import type { Chip } from '@/shared/Chip';
+import { kickFromLobby } from '@/server/lobbies';
 
-export type LobbyPlayerState = { name: string; ready: boolean };
+export type LobbyPlayerState = { name: string; ready: boolean; id: string };
 export type LobbyState = { players: LobbyPlayerState[]; results: GameResults; options?: GameOption[] };
 
 export interface ServerToClientEvents {
@@ -31,6 +32,7 @@ export interface ClientToServerEvents {
   joinLobby: (lobbyHash: string, playerName: string, callback: (res: GenericCallbackResponse<{ lobbyHash: string }>) => void) => void;
   createLobby: (playerName: string, callback: (res: GenericCallbackResponse<{ lobbyHash: string }>) => void) => void;
   leaveLobby: () => void;
+  kickFromLobby: (playerToKickId: string) => void;
   lobbyPlayers: (lobbyHash: string, callback: (lobbyHash: string, players: LobbyPlayerState[], results?: GameResults, options?: GameOption[]) => void) => void;
   playerReady: (callback: (playerIndex: number | null) => void) => void;
   playerUnready: (callback: (playerIndex: number | null) => void) => void;

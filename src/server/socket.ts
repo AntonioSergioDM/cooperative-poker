@@ -16,6 +16,7 @@ import {
   createLobby,
   joinLobby,
   leaveLobby,
+  kickFromLobby,
   lobbyPlayers,
   stealChip,
   playerReady,
@@ -76,6 +77,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
       socket.on('playerUnready', playerUnReady(socket));
       socket.on('changeOption', changeOption(socket));
       socket.on('leaveLobby', leaveLobby(socket));
+      socket.on('kickFromLobby', kickFromLobby(socket));
       socket.on('stealChip', stealChip(socket));
       socket.on('lobbyPlayers', lobbyPlayers(socket));
     }

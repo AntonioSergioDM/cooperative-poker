@@ -1,24 +1,32 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
   Stack,
   Avatar,
   Skeleton,
   Typography,
-  Badge,
+  Badge, Button,
 } from '@mui/material';
 
 import getInitials from '../../tools/getInitials';
+import { useSocket } from '@/client/tools/useSocket';
 
 type LobbyRoomPlayerProps = {
   name?: string;
   ready?: boolean;
+  canKick?: boolean;
+  id?: string;
 };
 
 const SIZE = 75;
 const MAX_WIDTH = 100;
 
-const LobbyRoomPlayer = ({ name, ready }: LobbyRoomPlayerProps) => {
+const LobbyRoomPlayer = ({ name, ready, canKick, id }: LobbyRoomPlayerProps) => {
+  const socket = useSocket();
+  const kickFromLobby = useCallback((playerId: string) => {
+    socket.emit('kickFromLobby', playerId);
+  }, [socket]);
+
   const content = useMemo(() => {
     if (!name) {
       return (
@@ -50,6 +58,8 @@ const LobbyRoomPlayer = ({ name, ready }: LobbyRoomPlayerProps) => {
         >
           {name}
         </Typography>
+
+        {canKick && id && <Button onClick={() => kickFromLobby(id)}>Kick</Button>}
       </>
     );
   }, [name, ready]);

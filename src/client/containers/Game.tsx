@@ -53,17 +53,23 @@ const Game = () => {
     sound('beep');
   }, []);
 
+  const [isHost, setHost] = useState<boolean>(false);
+
   useEffect(() => {
     if (lobbyHash) {
       // get current players in lobby
       socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions) => {
-        if (validHash) {
-          setPlayers(newPlayers);
-          if (newResults) {
-            setResults(newResults);
-          }
-          setOptions(newOptions);
+        if (!validHash) {
+          return;
         }
+        setPlayers(newPlayers);
+        if (newPlayers.length === 1) {
+          setHost(true);
+        }
+        if (newResults) {
+          setResults(newResults);
+        }
+        setOptions(newOptions);
       });
     }
   }, [socket, setPlayers, lobbyHash]);
@@ -117,7 +123,7 @@ const Game = () => {
 
   return (
     <>
-      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} options={options} />}
+      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} options={options} isHost={isHost} />}
 
       {(results.round === 'inProgress' && !!playerState && !!gameState) && (
         <FramerGame

@@ -28,5 +28,6 @@ We used React, Next and Socket.IO.
 Create a pull request to resolve an issue and submit it to review :)
 
 - I need to clone the socket io admin to this project because of the CORS policy
-- kick system
-- Switching cards is not instantaneously
+- Switching cards is not instantaneous
+- Now I have a host flag, I can change the layout for host vs player
+- Block options to host only?

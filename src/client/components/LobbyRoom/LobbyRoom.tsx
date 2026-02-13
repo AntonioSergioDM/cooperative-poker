@@ -33,6 +33,7 @@ type LobbyRoomProps = {
   lobbyHash: string;
   players: LobbyPlayerState[];
   results: LobbyState['results'];
+  isHost?: boolean;
   options?: GameOption[];
 };
 
@@ -41,6 +42,7 @@ const LobbyRoom = (props: LobbyRoomProps) => {
     lobbyHash,
     players,
     results,
+    isHost,
     options,
   } = props;
   const socket = useSocket();
@@ -111,7 +113,13 @@ const LobbyRoom = (props: LobbyRoomProps) => {
             alignItems="flex-start"
           >
             {players.map((player, idx) => (
-              <LobbyRoomPlayer key={`${player.name}-${idx}`} name={player.name} ready={player.ready} />
+              <LobbyRoomPlayer
+                key={`${player.name}-${idx}`}
+                name={player.name}
+                ready={player.ready}
+                id={player.id}
+                canKick={(isHost || playerIndex === 0) && idx > 0}
+              />
             ))}
 
             {missingPlayers.map((_, idx) => (
