@@ -17,6 +17,7 @@ const Table = (props: TableProps) => {
 
   return (
     <Box
+      className="border-2 border-solid border-poker-highlight border-opacity-20 rounded-2xl"
       sx={{
         position: 'relative',
         display: 'flex',
@@ -24,11 +25,9 @@ const Table = (props: TableProps) => {
         gap: 4,
         alignItems: 'center',
         background: 'rgba(0, 0, 0, 0.3)',
-        borderRadius: '24px',
         padding: 4,
         backdropFilter: 'blur(4px)',
         boxShadow: 'inset 0 2px 20px rgba(0, 0, 0, 0.5), 0 8px 32px rgba(0, 0, 0, 0.3)',
-        border: '2px solid rgba(255, 215, 0, 0.2)',
       }}
     >
       {/* Community Cards */}
