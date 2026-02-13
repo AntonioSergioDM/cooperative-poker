@@ -19,6 +19,8 @@ const Results = ({ results, players }: ResultsProps) => {
     return null;
   }
 
+  const delay = 2;
+
   results.players.sort((playerB, playerA) => {
     if (results.round === 'win') {
       return ((playerA.chip?.value || 0) - (playerB.chip?.value || 0));
@@ -54,6 +56,11 @@ const Results = ({ results, players }: ResultsProps) => {
     >
       <Stack direction="column" spacing={3}>
         {/* Score Display */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: playerOrder.length * delay, duration: 0.4 }}
+        >
         <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
           <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
 
@@ -65,6 +72,7 @@ const Results = ({ results, players }: ResultsProps) => {
 
           <ResultCounter content={results.score[1]} label="win" color="green" emoji="🏆" />
         </Stack>
+        </motion.div>
 
         {/* Community Cards */}
         <Box
@@ -96,7 +104,7 @@ const Results = ({ results, players }: ResultsProps) => {
               key={`${player.name}-${player.chip?.value}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.15, duration: 0.4 }}
+              transition={{ delay: idx * delay, duration: 0.4 }}
             >
               <Paper
                 elevation={4}
