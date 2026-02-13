@@ -133,7 +133,6 @@ const Game = () => {
 
     return () => {
       cleanup();
-      socket.emit('leaveLobby');
       window.removeEventListener('beforeunload', cleanup);
     };
   }, [onGameChange, onGameReset, onGameStart, socket, updatePlayers]);
