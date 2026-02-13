@@ -192,8 +192,7 @@ const Results = ({ results, players }: ResultsProps) => {
 
                 {/* Chips */}
                 <Stack direction="row" gap={1.5} alignItems="center" sx={{ my: 1 }}>
-                  {/* eslint-disable-next-line no-console */}
-                  <TableChip chip={player.chip!} onClick={() => (console.log('Display only'))} />
+                  <TableChip chip={player.chip!} onClick={() => {}} />
                 </Stack>
 
                 {/* Player Name */}
