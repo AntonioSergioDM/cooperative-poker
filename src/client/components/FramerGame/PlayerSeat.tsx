@@ -71,16 +71,11 @@ const PlayerSeat = (props: PlayerSeatProps) => {
       <Stack gap={1} direction={isCurrentPlayer ? 'row-reverse' : 'column'} justifyContent="center" alignItems="center">
         {/* Player info */}
         <Paper
+          className={`border rounded border-solid border-poker-highlight ${(!isCurrentPlayer ? 'border-opacity-30' : ' shadow-[0_0_12px_4px] shadow-poker-highlight')}`}
           sx={{
             p: 1.5,
             backdropFilter: 'blur(8px)',
-            borderRadius: 2,
-            border: isCurrentPlayer ? '3px solid' : '2px solid rgba(255, 215, 0, 0.3)',
-            borderColor: isCurrentPlayer ? '#ffd700' : 'rgba(255, 215, 0, 0.3)',
             transition: 'all 0.3s ease',
-            boxShadow: isCurrentPlayer
-              ? '0 4px 20px rgba(255, 215, 0, 0.4)'
-              : '0 4px 12px rgba(0, 0, 0, 0.3)',
           }}
         >
           <Stack direction="row" spacing={1.5} alignItems="center">

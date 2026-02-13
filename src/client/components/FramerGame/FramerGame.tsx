@@ -105,8 +105,8 @@ const FramerGame = (props: FramerGameProps) => {
           }}
         >
           <Typography
+            className="text-poker-highlight"
             sx={{
-              color: '#ffd700',
               fontWeight: 600,
               fontSize: '0.9rem',
               letterSpacing: '0.5px',
