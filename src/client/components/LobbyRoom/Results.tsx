@@ -19,7 +19,9 @@ const Results = ({ results, players }: ResultsProps) => {
     return null;
   }
 
-  const delay = 2;
+  const animDelay = 2;
+  const animInitial = { opacity: 0, y: 20 };
+  const animAnimation = { opacity: 1, y: 0 };
 
   results.players.sort((playerB, playerA) => {
     if (results.round === 'win') {
@@ -57,9 +59,9 @@ const Results = ({ results, players }: ResultsProps) => {
       <Stack direction="column" spacing={3}>
         {/* Score Display */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: playerOrder.length * delay, duration: 0.4 }}
+          initial={animInitial}
+          animate={animAnimation}
+          transition={{ delay: playerOrder.length * animDelay, duration: 0.4 }}
         >
           <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
             <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
@@ -101,9 +103,9 @@ const Results = ({ results, players }: ResultsProps) => {
           {playerOrder.map((player, idx) => (
             <motion.div
               key={`${player.name}-${player.chip?.value}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * delay, duration: 0.4 }}
+              initial={animInitial}
+              animate={animAnimation}
+              transition={{ delay: idx * animDelay, duration: 0.4 }}
             >
               <Paper
                 elevation={4}
