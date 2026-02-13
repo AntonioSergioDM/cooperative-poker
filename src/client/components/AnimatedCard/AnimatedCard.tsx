@@ -8,8 +8,8 @@ import getCardId from '@/client/tools/getCardId';
 
 import styles from './AnimatedCard.module.css';
 
-export const SMALL_CARD = 80;
-export const BIG_CARD = 100;
+export const SMALL_CARD = 100;
+export const BIG_CARD = 140;
 
 type AnimatedCardProps = {
   width: number;

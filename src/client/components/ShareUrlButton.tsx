@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from 'react';
+import { motion } from 'framer-motion';
 
 import { CopyAll, IosShare } from '@mui/icons-material';
-import { Card, IconButton, Typography } from '@mui/material';
+import {
+  Card, IconButton, Typography, Box,
+} from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
 import { useSnackbar } from 'notistack';
@@ -34,23 +37,82 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
   }, [shareURL]);
 
   return (
-    <Card
-      sx={{
-        p: 1,
-        gap: 1,
-        flexGrow: 1,
-        width: '100%',
-        paddingLeft: 2,
-        display: 'flex',
-        direction: 'row',
-        alignItems: 'center',
-      }}
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.1, duration: 0.5 }}
     >
-      <Typography flexGrow={1}>{shareURL}</Typography>
+      <Card
+        sx={{
+          p: 2,
+          gap: 1,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '2px solid rgba(147, 51, 234, 0.3)',
+          borderRadius: 3,
+          boxShadow: '0 4px 12px rgba(147, 51, 234, 0.2)',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            boxShadow: '0 6px 20px rgba(147, 51, 234, 0.3)',
+          },
+        }}
+      >
+        <Box
+          sx={{
+            flexGrow: 1,
+            background: 'rgba(0, 0, 0, 0.3)',
+            borderRadius: 2,
+            px: 2,
+            py: 1,
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: 'monospace',
+              fontSize: '0.9rem',
+              color: '#a78bfa',
+              wordBreak: 'break-all',
+            }}
+          >
+            {shareURL}
+          </Typography>
+        </Box>
 
-      <IconButton onClick={onCopy}><CopyAll /></IconButton>
-      <IconButton onClick={onShare}><IosShare /></IconButton>
-    </Card>
+        <IconButton
+          onClick={onCopy}
+          sx={{
+            background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+            color: 'white',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)',
+              transform: 'scale(1.05)',
+            },
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <CopyAll />
+        </IconButton>
+
+        <IconButton
+          onClick={onShare}
+          sx={{
+            background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+            color: 'white',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)',
+              transform: 'scale(1.05)',
+            },
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <IosShare />
+        </IconButton>
+      </Card>
+    </motion.div>
   );
 };
 

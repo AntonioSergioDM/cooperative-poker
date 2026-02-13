@@ -8,13 +8,13 @@ import {
 } from '@/shared/GameTypes';
 import type { LobbyPlayerState } from '@/shared/SocketTypes';
 
-import PlayerHand from '@/client/components/Players/PlayerHand';
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import { filterPoker } from '@/shared/Card';
+import PlayerSeat from './PlayerSeat';
 import Table from './Table';
 
 type FramerGameProps = {
@@ -50,8 +50,8 @@ const FramerGame = (props: FramerGameProps) => {
 
       // Convert Polar to Cartesian (percentage based)
       // Center is 50, 50.
-      const x = 50 + radiusX * Math.cos(theta);
-      const y = 50 + radiusY * Math.sin(theta);
+      const x = 45 + radiusX * Math.cos(theta);
+      const y = 40 + radiusY * Math.sin(theta);
 
       return {
         ...player,
@@ -59,8 +59,8 @@ const FramerGame = (props: FramerGameProps) => {
         style: {
           top: `${y}%`,
           left: `${x}%`,
-          position: 'absolute' as const,
-        },
+          position: 'absolute',
+        } as const,
         // Calculate rotation for the card container if you want them to face the center
         // Adding 90deg (PI/2) because 0deg is usually pointing Right in CSS rotation
         rotation: theta * (180 / Math.PI) - 90, // +180 to make cards face inward
@@ -74,54 +74,82 @@ const FramerGame = (props: FramerGameProps) => {
   ), [playerState.hand, gameState.table]);
 
   return (
-    <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
-      <Typography>
-        {/* @ts-ignore */}
-        {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
-      </Typography>
+    <div className="relative w-screen h-screen poker-table-felt overflow-hidden">
+      {/* Wood rail around the table */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          border: '24px solid',
+          borderImage: 'linear-gradient(135deg, #3e2723 0%, #5d4037 25%, #4e342e 50%, #5d4037 75%, #3e2723 100%) 1',
+          pointerEvents: 'none',
+          boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.5)',
+        }}
+      />
+
+      {/* Options display with better styling */}
+      {gameState.options.length && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 3,
+            px: 3,
+            py: 1.5,
+            border: '1px solid rgba(255, 215, 0, 0.3)',
+          }}
+        >
+          <Typography
+            sx={{
+              color: '#ffd700',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              letterSpacing: '0.5px',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            {/* @ts-ignore */}
+            {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
+          </Typography>
+        </Box>
+      )}
 
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
         const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
 
         return (
-          <div
+          <PlayerSeat
             key={player.name + player.originalIndex}
-            className="fixed flex flex-col justify-center items-center gap-4 transform -translate-x-1/2 -translate-y-1/2"
-            style={player.style}
-          >
-            {/* Rotate the hand wrapper so cards face the center (optional) */}
-            <div className="origin-center w-24 h-24" style={{ transform: `rotate(${player.rotation}deg)` }}>
-              <PlayerHand
-                cardWidth={isMe ? BIG_CARD : SMALL_CARD}
-                cards={cards}
-                name={player.name}
-              />
-            </div>
-
-            {isMe && <Typography>{pokerHand}</Typography>}
-
-            <div className="flex flex-row gap-1 z-10">
-              {gameState.chips[player.originalIndex].map((chip) => (
-                <TableChip
-                  key={`${chip.color}-${chip.value}`} // Added unique key
-                  chip={chip}
-                  onClick={onStealChip}
-                />
-              ))}
-            </div>
-
-            <Typography textAlign="center" maxWidth={(isMe && 'full') || 150}>
-              {player.name}
-              {gameState.numFigures && ` (${gameState.numFigures[player.originalIndex]} figures)`}
-              {gameState.handValue && ` (${gameState.handValue[player.originalIndex]} points)`}
-            </Typography>
-          </div>
+            player={player}
+            cards={cards}
+            cardWidth={isMe ? BIG_CARD : SMALL_CARD}
+            isCurrentPlayer={isMe}
+            handDescription={isMe ? pokerHand : undefined}
+            numFigures={gameState.numFigures?.[player.originalIndex]}
+            handValue={gameState.handValue?.[player.originalIndex]}
+            chips={gameState.chips[player.originalIndex].length > 0 && (
+              <>
+                {gameState.chips[player.originalIndex].map((chip) => (
+                  <TableChip
+                    key={`${chip.color}-${chip.value}`}
+                    chip={chip}
+                    onClick={onStealChip}
+                  />
+                ))}
+              </>
+            )}
+          />
         );
       })}
 
       {/* Table is centered absolutely */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[70%]">
         <Table
           gameState={gameState}
           onStealChip={onStealChip}
