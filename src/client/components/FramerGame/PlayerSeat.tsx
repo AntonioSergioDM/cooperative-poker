@@ -73,7 +73,7 @@ const PlayerSeat = (props: PlayerSeatProps) => {
           borderColor: isCurrentPlayer ? '#ffd700' : 'rgba(255, 215, 0, 0.3)',
           transition: 'all 0.3s ease',
           transform: isActivePlayer ? 'scale(1.05)' : 'scale(1)',
-          boxShadow: isCurrentPlayer 
+          boxShadow: isCurrentPlayer
             ? '0 4px 20px rgba(255, 215, 0, 0.4)'
             : '0 4px 12px rgba(0, 0, 0, 0.3)',
         }}
@@ -122,9 +122,9 @@ const PlayerSeat = (props: PlayerSeatProps) => {
             </Typography>
 
             {(numFigures !== undefined || handValue !== undefined) && (
-              <Typography 
-                variant="caption" 
-                sx={{ 
+              <Typography
+                variant="caption"
+                sx={{
                   color: 'rgba(255, 255, 255, 0.7)',
                   fontSize: '0.75rem',
                 }}
@@ -170,10 +170,10 @@ const PlayerSeat = (props: PlayerSeatProps) => {
             boxShadow: '0 4px 12px rgba(147, 51, 234, 0.4)',
           }}
         >
-          <Typography 
-            variant="body1" 
+          <Typography
+            variant="body1"
             fontWeight="bold"
-            sx={{ 
+            sx={{
               color: '#ffd700',
               textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
             }}
@@ -185,10 +185,10 @@ const PlayerSeat = (props: PlayerSeatProps) => {
 
       {/* Chips */}
       {chips && (
-        <Box 
-          display="flex" 
-          flexDirection="row" 
-          gap={1} 
+        <Box
+          display="flex"
+          flexDirection="row"
+          gap={1}
           zIndex={10}
           sx={{
             background: 'rgba(0, 0, 0, 0.5)',

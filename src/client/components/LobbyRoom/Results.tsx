@@ -1,5 +1,7 @@
 import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
-import { Stack, Typography, Card, Box, Paper } from '@mui/material';
+import {
+  Stack, Typography, Box, Paper,
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import TableCard from '@/client/components/FramerGame/TableCard';
 import TableChip from '@/client/components/FramerGame/TableChip';
@@ -49,9 +51,9 @@ const Results = ({ results, players }: ResultsProps) => {
           <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
 
           {/* @ts-ignore */}
-          <ResultMessage 
-            color={resultColor} 
-            message={results.score.reduce((a, b) => a + b) ? `You ${results.round}!` : 'Ready when you are'} 
+          <ResultMessage
+            color={resultColor}
+            message={results.score.reduce((a, b) => a + b) ? `You ${results.round}!` : 'Ready when you are'}
           />
 
           <ResultCounter content={results.score[1]} label="win" color="green" emoji="🏆" />
@@ -75,9 +77,9 @@ const Results = ({ results, players }: ResultsProps) => {
         </Box>
 
         {/* Player Results */}
-        <Stack 
-          direction="row" 
-          spacing={2} 
+        <Stack
+          direction="row"
+          spacing={2}
           flexWrap="wrap"
           justifyContent="center"
           sx={{ gap: 2 }}
@@ -101,8 +103,8 @@ const Results = ({ results, players }: ResultsProps) => {
                   minHeight: '240px',
                   background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
                   backdropFilter: 'blur(8px)',
-                  border: idx === 0 
-                    ? '3px solid rgba(255, 215, 0, 0.6)' 
+                  border: idx === 0
+                    ? '3px solid rgba(255, 215, 0, 0.6)'
                     : '2px solid rgba(147, 51, 234, 0.4)',
                   borderRadius: 3,
                   boxShadow: idx === 0
@@ -174,10 +176,10 @@ const Results = ({ results, players }: ResultsProps) => {
 
                 {/* Hand Rank */}
                 {player.rank?.handName && (
-                  <Typography 
-                    variant="body1" 
+                  <Typography
+                    variant="body1"
                     fontWeight="bold"
-                    sx={{ 
+                    sx={{
                       color: '#ffd700',
                       textAlign: 'center',
                       textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
@@ -195,11 +197,11 @@ const Results = ({ results, players }: ResultsProps) => {
                 </Stack>
 
                 {/* Player Name */}
-                <Typography 
-                  variant="body1" 
+                <Typography
+                  variant="body1"
                   fontWeight="semibold"
-                  textAlign="center" 
-                  sx={{ 
+                  textAlign="center"
+                  sx={{
                     maxWidth: 160,
                     color: 'white',
                     mt: 1,
