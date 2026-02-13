@@ -10,7 +10,7 @@ import type { LobbyPlayerState } from '@/shared/SocketTypes';
 
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import { filterPoker } from '@/shared/Card';
@@ -74,11 +74,48 @@ const FramerGame = (props: FramerGameProps) => {
   ), [playerState.hand, gameState.table]);
 
   return (
-    <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
-      <Typography sx={{ p: 2 }}>
-        {/* @ts-ignore */}
-        {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
-      </Typography>
+    <div className="relative w-screen h-screen poker-table-felt overflow-hidden">
+      {/* Wood rail around the table */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          border: '24px solid',
+          borderImage: 'linear-gradient(135deg, #3e2723 0%, #5d4037 25%, #4e342e 50%, #5d4037 75%, #3e2723 100%) 1',
+          pointerEvents: 'none',
+          boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.5)',
+        }}
+      />
+
+      {/* Options display with better styling */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 16,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 10,
+          background: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(8px)',
+          borderRadius: 3,
+          px: 3,
+          py: 1.5,
+          border: '1px solid rgba(255, 215, 0, 0.3)',
+        }}
+      >
+        <Typography
+          sx={{
+            color: '#ffd700',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            letterSpacing: '0.5px',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          {/* @ts-ignore */}
+          {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
+        </Typography>
+      </Box>
 
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;

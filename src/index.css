@@ -2,6 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Poker Felt Texture Background */
+@layer utilities {
+  .poker-felt {
+    background: radial-gradient(ellipse at center, #1a4d2e 0%, #0f2818 100%);
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.05) 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.05) 3px),
+      radial-gradient(ellipse at center, #1a4d2e 0%, #0f2818 100%);
+  }
+
+  .poker-table-felt {
+    background: radial-gradient(ellipse at center, #2d5a3d 0%, #1a3d2a 100%);
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.08) 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.08) 3px),
+      radial-gradient(ellipse at center, #2d5a3d 0%, #1a3d2a 100%);
+  }
+
+  .wood-texture {
+    background: linear-gradient(90deg, #3e2723 0%, #5d4037 50%, #3e2723 100%);
+    background-size: 100% 100%;
+  }
+
+  .casino-lights {
+    background: 
+      radial-gradient(ellipse at top, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+      #1a1a1a;
+  }
+
+  .card-shadow {
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.3),
+      0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .chip-shadow {
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .neon-glow {
+    text-shadow: 
+      0 0 10px rgba(147, 51, 234, 0.8),
+      0 0 20px rgba(147, 51, 234, 0.6),
+      0 0 30px rgba(147, 51, 234, 0.4);
+  }
+}
+
 ::-webkit-scrollbar {
     @apply w-2 h-2;
 }
@@ -12,26 +63,55 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #1a1a1a;
     @apply rounded-b-md;
 }
 
 ::-webkit-scrollbar-track:hover {
-    background: #bebdbd;
+    background: #2a2a2a;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #4a4a4a;
     @apply rounded-md;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #5a5a5a;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateX(20px);}
     to { opacity: 1; transform: translateX(0);}
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    background-size: 1000px 100%;
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
 }
