@@ -48,20 +48,16 @@ const PlayerSeat = (props: PlayerSeatProps) => {
   } = props;
 
   return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.3, type: 'spring' }}
-      className="fixed flex flex-col justify-center items-center gap-3 transform -translate-x-1/2 -translate-y-1/2"
+    <div
+      className="fixed flex flex-col justify-start items-center gap-3 transform -translate-x-1/2 -translate-y-1/2 hover:z-10"
       style={player.style}
     >
 
       {/* Cards - rotated to face center */}
-      <div
+      <motion.div
         className="origin-center relative w-24 h-24"
         style={{
           transform: `rotate(${player.rotation}deg)`,
-          zIndex: isCurrentPlayer ? 1 : 0,
         }}
       >
         <PlayerHand
@@ -70,87 +66,90 @@ const PlayerSeat = (props: PlayerSeatProps) => {
           name={player.name}
           isPlayer={isCurrentPlayer}
         />
-      </div>
+      </motion.div>
 
-      {/* Player info */}
-      <Paper
-        sx={{
-          p: 1.5,
-          backdropFilter: 'blur(8px)',
-          borderRadius: 2,
-          border: isCurrentPlayer ? '3px solid' : '2px solid rgba(255, 215, 0, 0.3)',
-          borderColor: isCurrentPlayer ? '#ffd700' : 'rgba(255, 215, 0, 0.3)',
-          transition: 'all 0.3s ease',
-          boxShadow: isCurrentPlayer
-            ? '0 4px 20px rgba(255, 215, 0, 0.4)'
-            : '0 4px 12px rgba(0, 0, 0, 0.3)',
-        }}
-      >
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <Box>
-            <Typography
-              variant="body1"
-              fontWeight={isCurrentPlayer ? 'bold' : 'semibold'}
-              sx={{
-                maxWidth: 140,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                color: isCurrentPlayer ? '#ffd700' : 'white',
-                fontSize: isCurrentPlayer ? '1rem' : '0.9rem',
-              }}
-            >
-              {player.name}
-            </Typography>
-
-            {/* Hand description for current player */}
-            {isCurrentPlayer && handDescription && (
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                sx={{
-                  color: 'white',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
-                }}
-              >
-                {`Current: ${handDescription}`}
-              </Typography>
-            )}
-
-            {(numFigures !== undefined || handValue !== undefined) && (
-              <Typography
-                variant="caption"
-                sx={{
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontSize: '0.75rem',
-                }}
-              >
-                {numFigures !== undefined && `${numFigures} figures`}
-                {numFigures !== undefined && handValue !== undefined && ' • '}
-                {handValue !== undefined && `${handValue} pts`}
-              </Typography>
-            )}
-          </Box>
-        </Stack>
-      </Paper>
-
-      {/* Chips */}
-      {chips && (
-        <Stack
-          direction="row"
-          gap={1}
-          zIndex={10}
+      <Stack gap={1} direction={isCurrentPlayer ? 'row-reverse' : 'column'} justifyContent="center" alignItems="center">
+        {/* Player info */}
+        <Paper
           sx={{
-            background: 'rgba(0, 0, 0, 0.5)',
+            p: 1.5,
+            backdropFilter: 'blur(8px)',
             borderRadius: 2,
-            p: 0.5,
-            backdropFilter: 'blur(4px)',
+            border: isCurrentPlayer ? '3px solid' : '2px solid rgba(255, 215, 0, 0.3)',
+            borderColor: isCurrentPlayer ? '#ffd700' : 'rgba(255, 215, 0, 0.3)',
+            transition: 'all 0.3s ease',
+            boxShadow: isCurrentPlayer
+              ? '0 4px 20px rgba(255, 215, 0, 0.4)'
+              : '0 4px 12px rgba(0, 0, 0, 0.3)',
           }}
         >
-          {chips}
-        </Stack>
-      )}
-    </motion.div>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Box>
+              <Typography
+                variant="body1"
+                fontWeight={isCurrentPlayer ? 'bold' : 'semibold'}
+                sx={{
+                  maxWidth: 140,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  color: isCurrentPlayer ? '#ffd700' : 'white',
+                  fontSize: isCurrentPlayer ? '1rem' : '0.9rem',
+                }}
+              >
+                {player.name}
+              </Typography>
+
+              {/* Hand description for current player */}
+              {isCurrentPlayer && handDescription && (
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  sx={{
+                    color: 'white',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+                  }}
+                >
+                  {`Current: ${handDescription}`}
+                </Typography>
+              )}
+
+              {(numFigures !== undefined || handValue !== undefined) && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  {numFigures !== undefined && `${numFigures} figures`}
+                  {numFigures !== undefined && handValue !== undefined && ' • '}
+                  {handValue !== undefined && `${handValue} pts`}
+                </Typography>
+              )}
+            </Box>
+          </Stack>
+        </Paper>
+
+        {/* Chips */}
+        {chips && (
+          <Stack
+            direction="row"
+            gap={1}
+            zIndex={10}
+            sx={{
+              background: 'rgba(0, 0, 0, 0.5)',
+              borderRadius: 2,
+              p: 0.5,
+              backdropFilter: 'blur(4px)',
+            }}
+          >
+            {chips}
+          </Stack>
+        )}
+      </Stack>
+
+    </div>
   );
 };
 

@@ -50,7 +50,7 @@ const FramerGame = (props: FramerGameProps) => {
 
       // Convert Polar to Cartesian (percentage based)
       // Center is 50, 50.
-      const x = 45 + radiusX * Math.cos(theta);
+      const x = 50 + radiusX * Math.cos(theta);
       const y = 40 + radiusY * Math.sin(theta);
 
       return {
@@ -58,7 +58,7 @@ const FramerGame = (props: FramerGameProps) => {
         originalIndex: idx,
         style: {
           top: `${y}%`,
-          left: `${x}%`,
+          left: playerState.index === idx ? '50%' : `${x}%`,
           position: 'absolute',
         } as const,
         // Calculate rotation for the card container if you want them to face the center

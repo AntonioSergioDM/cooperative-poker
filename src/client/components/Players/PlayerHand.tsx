@@ -49,7 +49,7 @@ const PlayerHand = (props: PlayerHandProps) => {
             pulse={isPlaying}
             width={cardWidth}
             card={card || null}
-            clickable={isPlayer && isPlaying}
+            clickable={isPlayer}
           />
         </motion.div>
       ))}
