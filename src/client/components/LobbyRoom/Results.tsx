@@ -61,17 +61,16 @@ const Results = ({ results, players }: ResultsProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: playerOrder.length * delay, duration: 0.4 }}
         >
-        <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
-          <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
+          <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
+            <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
 
-          {/* @ts-ignore */}
-          <ResultMessage
-            color={resultColor}
-            message={results.score.reduce((a, b) => a + b) ? `You ${results.round}!` : 'Ready when you are'}
-          />
+            <ResultMessage
+              color={resultColor}
+              message={results.score.reduce((a, b) => a + b) ? `You ${results.round}!` : 'Ready when you are'}
+            />
 
-          <ResultCounter content={results.score[1]} label="win" color="green" emoji="🏆" />
-        </Stack>
+            <ResultCounter content={results.score[1]} label="win" color="green" emoji="🏆" />
+          </Stack>
         </motion.div>
 
         {/* Community Cards */}
