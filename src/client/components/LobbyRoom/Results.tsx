@@ -28,7 +28,11 @@ const Results = ({ results, players }: ResultsProps) => {
       return ((playerA.chip?.value || 0) - (playerB.chip?.value || 0));
     }
 
-    return ((playerB.rank?.value || 0) - (playerA.rank?.value || 0)) || ((playerA.rank?.handRank || 0) - (playerB.rank?.handRank || 0)) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0))
+    return (
+      (playerB.rank?.value || 0) - (playerA.rank?.value || 0))
+      || ((playerA.rank?.handRank || 0) - (playerB.rank?.handRank || 0))
+      || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)
+      );
   });
 
   const playerOrder = results.players.map((player) => ({
