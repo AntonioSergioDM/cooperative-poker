@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
 } from 'react';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -11,10 +12,12 @@ import { type GameState, type PlayerState } from '@/shared/GameTypes';
 import type { LobbyPlayerState, LobbyState, ServerToClientEvents } from '@/shared/SocketTypes';
 
 import type { Chip } from '@/shared/Chip';
+import { Box, IconButton } from '@mui/material';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
-
 import { sound } from '../tools/sounds';
 
 const Game = () => {
@@ -47,10 +50,23 @@ const Game = () => {
     setOptions(newOptions);
   }, []);
 
+  const [isMuted, setIsMuted] = useState(false);
+  const isMutedRef = useRef(isMuted);
+
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  const handleToggleMuted = () => {
+    setIsMuted((prev) => !prev);
+  };
+
   const onGameChange = useCallback<ServerToClientEvents['gameChange']>((newGameState) => {
     setGameState(newGameState);
     // Play the beep sound
-    sound('beep');
+    if (!isMutedRef.current) {
+      sound('beep');
+    }
   }, []);
 
   const [isHost, setHost] = useState<boolean>(false);
@@ -117,12 +133,22 @@ const Game = () => {
 
     return () => {
       cleanup();
+      socket.emit('leaveLobby');
       window.removeEventListener('beforeunload', cleanup);
     };
   }, [onGameChange, onGameReset, onGameStart, socket, updatePlayers]);
 
   return (
     <>
+      <Box sx={{ position: 'absolute', width: '100%', zIndex: 1 }}>
+        {/* The Absolute Positioned Button */}
+        <IconButton
+          onClick={handleToggleMuted}
+          sx={{ position: 'absolute', top: 16, right: 16 }}
+        >
+          {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+        </IconButton>
+      </Box>
       {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} options={options} isHost={isHost} />}
 
       {(results.round === 'inProgress' && !!playerState && !!gameState) && (
