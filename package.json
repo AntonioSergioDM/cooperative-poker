@@ -51,5 +51,28 @@
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.6",
     "typescript": "latest"
+  },
+  "optionalDependencies": {
+    "@emnapi/runtime": "^1.8.1",
+    "@img/sharp-darwin-arm64": "0.33.4",
+    "@img/sharp-darwin-x64": "0.33.4",
+    "@img/sharp-libvips-darwin-arm64": "1.0.2",
+    "@img/sharp-libvips-darwin-x64": "1.0.2",
+    "@img/sharp-libvips-linux-arm": "1.0.2",
+    "@img/sharp-libvips-linux-arm64": "1.0.2",
+    "@img/sharp-libvips-linux-s390x": "1.0.2",
+    "@img/sharp-libvips-linux-x64": "1.0.2",
+    "@img/sharp-libvips-linuxmusl-arm64": "1.0.2",
+    "@img/sharp-libvips-linuxmusl-x64": "1.0.2",
+    "@img/sharp-linux-arm": "0.33.4",
+    "@img/sharp-linux-arm64": "0.33.4",
+    "@img/sharp-linux-s390x": "0.33.4",
+    "@img/sharp-linux-x64": "0.33.4",
+    "@img/sharp-linuxmusl-arm64": "0.33.4",
+    "@img/sharp-linuxmusl-x64": "0.33.4",
+    "@img/sharp-wasm32": "0.33.4",
+    "@img/sharp-win32-ia32": "0.33.4",
+    "@img/sharp-win32-x64": "0.33.4",
+    "fsevents": "^2.3.3"
   }
 }
