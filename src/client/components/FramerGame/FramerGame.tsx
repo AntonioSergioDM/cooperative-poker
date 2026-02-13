@@ -50,8 +50,8 @@ const FramerGame = (props: FramerGameProps) => {
 
       // Convert Polar to Cartesian (percentage based)
       // Center is 50, 50.
-      const x = 50 + radiusX * Math.cos(theta);
-      const y = 35 + radiusY * Math.sin(theta);
+      const x = 45 + radiusX * Math.cos(theta);
+      const y = 40 + radiusY * Math.sin(theta);
 
       return {
         ...player,
@@ -149,7 +149,7 @@ const FramerGame = (props: FramerGameProps) => {
       })}
 
       {/* Table is centered absolutely */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[70%]">
         <Table
           gameState={gameState}
           onStealChip={onStealChip}

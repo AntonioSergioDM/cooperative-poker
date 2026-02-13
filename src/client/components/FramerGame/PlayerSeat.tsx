@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
 import {
-  Avatar,
-  Badge,
   Box,
   Paper,
   Stack,
@@ -57,7 +55,24 @@ const PlayerSeat = (props: PlayerSeatProps) => {
       className="fixed flex flex-col justify-center items-center gap-3 transform -translate-x-1/2 -translate-y-1/2"
       style={player.style}
     >
-      {/* Player info card */}
+
+      {/* Cards - rotated to face center */}
+      <div
+        className="origin-center relative w-24 h-24"
+        style={{
+          transform: `rotate(${player.rotation}deg)`,
+          zIndex: isCurrentPlayer ? 1 : 0,
+        }}
+      >
+        <PlayerHand
+          cardWidth={cardWidth}
+          cards={cards}
+          name={player.name}
+          isPlayer={isCurrentPlayer}
+        />
+      </div>
+
+      {/* Player info */}
       <Paper
         sx={{
           p: 1.5,
@@ -135,21 +150,6 @@ const PlayerSeat = (props: PlayerSeatProps) => {
           {chips}
         </Stack>
       )}
-
-      {/* Cards - rotated to face center */}
-      <div
-        className="origin-center relative w-24 h-24"
-        style={{
-          transform: `rotate(${player.rotation}deg)`,
-        }}
-      >
-        <PlayerHand
-          cardWidth={cardWidth}
-          cards={cards}
-          name={player.name}
-          isPlayer={isCurrentPlayer}
-        />
-      </div>
     </motion.div>
   );
 };
