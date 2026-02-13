@@ -70,7 +70,9 @@ const Results = ({ results, players }: ResultsProps) => {
 
             {player.rank?.handName && <Typography variant="body2">{player.rank.handName}</Typography>}
             <Stack direction="row" gap={1.5}>
+              {/* eslint-disable-next-line no-console */}
               <TableChip chip={player.chip!} onClick={() => (console.log('why are you clicking'))} />
+              {/* eslint-disable-next-line no-console */}
               <TableChip chip={{ value: idx + 1, color: 'green', reverse: false }} onClick={() => (console.log('why are you clicking'))} />
             </Stack>
 

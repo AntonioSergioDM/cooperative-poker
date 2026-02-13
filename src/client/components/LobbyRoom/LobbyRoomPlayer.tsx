@@ -8,8 +8,8 @@ import {
   Badge, Button,
 } from '@mui/material';
 
-import getInitials from '../../tools/getInitials';
 import { useSocket } from '@/client/tools/useSocket';
+import getInitials from '../../tools/getInitials';
 
 type LobbyRoomPlayerProps = {
   name?: string;
@@ -21,7 +21,9 @@ type LobbyRoomPlayerProps = {
 const SIZE = 75;
 const MAX_WIDTH = 100;
 
-const LobbyRoomPlayer = ({ name, ready, canKick, id }: LobbyRoomPlayerProps) => {
+const LobbyRoomPlayer = ({
+  name, ready, canKick, id,
+}: LobbyRoomPlayerProps) => {
   const socket = useSocket();
   const kickFromLobby = useCallback((playerId: string) => {
     socket.emit('kickFromLobby', playerId);
@@ -62,7 +64,7 @@ const LobbyRoomPlayer = ({ name, ready, canKick, id }: LobbyRoomPlayerProps) => 
         {canKick && id && <Button onClick={() => kickFromLobby(id)}>Kick</Button>}
       </>
     );
-  }, [name, ready]);
+  }, [canKick, id, kickFromLobby, name, ready]);
 
   return (
     <Stack

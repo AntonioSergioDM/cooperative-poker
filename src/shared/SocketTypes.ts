@@ -7,7 +7,6 @@ import type {
   PlayerState,
 } from '@/shared/GameTypes';
 import type { Chip } from '@/shared/Chip';
-import { kickFromLobby } from '@/server/lobbies';
 
 export type LobbyPlayerState = { name: string; ready: boolean; id: string };
 export type LobbyState = { players: LobbyPlayerState[]; results: GameResults; options?: GameOption[] };
