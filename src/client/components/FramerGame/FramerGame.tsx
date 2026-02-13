@@ -95,7 +95,7 @@ const FramerGame = (props: FramerGameProps) => {
             handDescription={isMe ? pokerHand : undefined}
             numFigures={gameState.numFigures?.[player.originalIndex]}
             handValue={gameState.handValue?.[player.originalIndex]}
-            chips={
+            chips={(
               <>
                 {gameState.chips[player.originalIndex].map((chip) => (
                   <TableChip
@@ -105,7 +105,7 @@ const FramerGame = (props: FramerGameProps) => {
                   />
                 ))}
               </>
-            }
+            )}
           />
         );
       })}
