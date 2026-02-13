@@ -2,7 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 import { CopyAll, IosShare } from '@mui/icons-material';
-import { Card, IconButton, Typography, Box } from '@mui/material';
+import {
+  Card, IconButton, Typography, Box,
+} from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
 import { useSnackbar } from 'notistack';

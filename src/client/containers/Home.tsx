@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-import { Button, Box, Container, Typography } from '@mui/material';
+import {
+  Button, Box, Container, Typography,
+} from '@mui/material';
 
 import { SiteRoute } from '@/shared/Routes';
 
