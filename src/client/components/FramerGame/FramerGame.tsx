@@ -51,7 +51,7 @@ const FramerGame = (props: FramerGameProps) => {
       // Convert Polar to Cartesian (percentage based)
       // Center is 50, 50.
       const x = 50 + radiusX * Math.cos(theta);
-      const y = 50 + radiusY * Math.sin(theta);
+      const y = 35 + radiusY * Math.sin(theta);
 
       return {
         ...player,
@@ -59,8 +59,8 @@ const FramerGame = (props: FramerGameProps) => {
         style: {
           top: `${y}%`,
           left: `${x}%`,
-          position: 'absolute' as const,
-        },
+          position: 'absolute',
+        } as const,
         // Calculate rotation for the card container if you want them to face the center
         // Adding 90deg (PI/2) because 0deg is usually pointing Right in CSS rotation
         rotation: theta * (180 / Math.PI) - 90, // +180 to make cards face inward
@@ -88,34 +88,36 @@ const FramerGame = (props: FramerGameProps) => {
       />
 
       {/* Options display with better styling */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 16,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 10,
-          background: 'rgba(0, 0, 0, 0.7)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: 3,
-          px: 3,
-          py: 1.5,
-          border: '1px solid rgba(255, 215, 0, 0.3)',
-        }}
-      >
-        <Typography
+      {gameState.options.length && (
+        <Box
           sx={{
-            color: '#ffd700',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-            letterSpacing: '0.5px',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+            position: 'absolute',
+            top: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 3,
+            px: 3,
+            py: 1.5,
+            border: '1px solid rgba(255, 215, 0, 0.3)',
           }}
         >
-          {/* @ts-ignore */}
-          {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
-        </Typography>
-      </Box>
+          <Typography
+            sx={{
+              color: '#ffd700',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              letterSpacing: '0.5px',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            {/* @ts-ignore */}
+            {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
+          </Typography>
+        </Box>
+      )}
 
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
@@ -128,11 +130,10 @@ const FramerGame = (props: FramerGameProps) => {
             cards={cards}
             cardWidth={isMe ? BIG_CARD : SMALL_CARD}
             isCurrentPlayer={isMe}
-            isActivePlayer={false} // TODO: Add active player detection from game state
             handDescription={isMe ? pokerHand : undefined}
             numFigures={gameState.numFigures?.[player.originalIndex]}
             handValue={gameState.handValue?.[player.originalIndex]}
-            chips={(
+            chips={gameState.chips[player.originalIndex].length > 0 && (
               <>
                 {gameState.chips[player.originalIndex].map((chip) => (
                   <TableChip
