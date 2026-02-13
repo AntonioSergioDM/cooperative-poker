@@ -6,12 +6,12 @@ import {
   Avatar,
   Skeleton,
   Typography,
-  Badge,
-  Button,
   Box,
+  IconButton,
 } from '@mui/material';
 
 import { useSocket } from '@/client/tools/useSocket';
+import { Close } from '@mui/icons-material';
 import getInitials from '../../tools/getInitials';
 
 type LobbyRoomPlayerProps = {
@@ -68,35 +68,32 @@ const LobbyRoomPlayer = ({
               ? '0 4px 12px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
               : '0 4px 12px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
             transition: 'all 0.3s ease',
+            position: 'relative',
           }}
         >
-          <Badge
-            badgeContent=" "
-            overlap="circular"
-            color={ready ? 'success' : 'error'}
+          {canKick && id && (
+            <IconButton
+              onClick={() => kickFromLobby(id)}
+              size="small"
+              className="absolute top-0 right-0"
+            >
+              <Close className="w-5 h-5" />
+            </IconButton>
+          )}
+
+          <Avatar
             sx={{
-              '& .MuiBadge-badge': {
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                border: '2px solid #1a1a1a',
-              },
+              width: SIZE,
+              height: SIZE,
+              background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+              boxShadow: '0 4px 12px rgba(147, 51, 234, 0.4)',
+              border: '3px solid rgba(255, 255, 255, 0.1)',
             }}
           >
-            <Avatar
-              sx={{
-                width: SIZE,
-                height: SIZE,
-                background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
-                boxShadow: '0 4px 12px rgba(147, 51, 234, 0.4)',
-                border: '3px solid rgba(255, 255, 255, 0.1)',
-              }}
-            >
-              <Typography variant="h4" fontWeight={700}>
-                {getInitials(name)}
-              </Typography>
-            </Avatar>
-          </Badge>
+            <Typography variant="h4" fontWeight={700}>
+              {getInitials(name)}
+            </Typography>
+          </Avatar>
 
           <Typography
             variant="body1"
@@ -114,26 +111,6 @@ const LobbyRoomPlayer = ({
           >
             {name}
           </Typography>
-
-          {canKick && id && (
-            <Button
-              onClick={() => kickFromLobby(id)}
-              size="small"
-              sx={{
-                mt: 1,
-                fontSize: '0.75rem',
-                color: '#ef4444',
-                borderColor: '#ef4444',
-                '&:hover': {
-                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                  borderColor: '#dc2626',
-                },
-              }}
-              variant="outlined"
-            >
-              Kick
-            </Button>
-          )}
         </Box>
       </motion.div>
     );

@@ -103,53 +103,30 @@ const Results = ({ results, players }: ResultsProps) => {
                   minHeight: '240px',
                   background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
                   backdropFilter: 'blur(8px)',
-                  border: idx === 0
-                    ? '3px solid rgba(255, 215, 0, 0.6)'
-                    : '2px solid rgba(147, 51, 234, 0.4)',
+                  border: idx + 1 !== player.chip?.value
+                    ? '3px solid rgba(239, 68, 68, 0.6)'
+                    : '3px solid rgba(34, 197, 94, 0.6)',
                   borderRadius: 3,
-                  boxShadow: idx === 0
-                    ? '0 8px 24px rgba(255, 215, 0, 0.3)'
-                    : '0 4px 12px rgba(147, 51, 234, 0.3)',
+                  boxShadow: idx + 1 !== player.chip?.value
+                    ? '0 8px 24px rgba(239, 68, 68, 0.3)'
+                    : '0 8px 12px rgba(34, 197, 94, 0.3)',
                   position: 'relative',
                   overflow: 'hidden',
                   transition: 'all 0.3s ease',
                   '&:hover': {
                     transform: 'translateY(-4px)',
-                    boxShadow: idx === 0
-                      ? '0 12px 32px rgba(255, 215, 0, 0.4)'
-                      : '0 6px 20px rgba(147, 51, 234, 0.4)',
+                    boxShadow: idx + 1 !== player.chip?.value
+                      ? '0 12px 32px rgba(239, 68, 68, 0.4)'
+                      : '0 12px 20px rgba(34, 197, 94, 0.4)',
                   },
                 }}
               >
-                {/* Winner Badge */}
-                {idx === 0 && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: -8,
-                      right: -8,
-                      width: 48,
-                      height: 48,
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.5rem',
-                      boxShadow: '0 4px 12px rgba(255, 215, 0, 0.5)',
-                      border: '2px solid white',
-                    }}
-                  >
-                    👑
-                  </Box>
-                )}
-
                 {/* Rank Badge */}
                 <Box
                   sx={{
                     position: 'absolute',
                     top: 8,
-                    left: 8,
+                    right: 8,
                     width: 32,
                     height: 32,
                     borderRadius: '50%',
@@ -191,7 +168,7 @@ const Results = ({ results, players }: ResultsProps) => {
                 )}
 
                 {/* Chips */}
-                <Stack direction="row" gap={1.5} alignItems="center" sx={{ my: 1 }}>
+                <Stack direction="row" gap={-1.5} alignItems="center" sx={{ my: 1 }}>
                   <TableChip chip={player.chip!} onClick={() => {}} />
                 </Stack>
 

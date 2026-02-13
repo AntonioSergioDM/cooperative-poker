@@ -150,7 +150,13 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                 p: 3,
               }}
             >
-              <Stack gap={3}>
+              <Stack gap={3} style={{ position: 'relative' }}>
+                <div className="absolute top-0 right-0">
+                  <LobbyRoomCounter
+                    value={players.filter((p) => p.ready).length}
+                    outOf={players.length + missingPlayers.length}
+                  />
+                </div>
                 <Stack
                   direction="row"
                   gap={3}
@@ -214,11 +220,6 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                   >
                     {isReady ? 'Ready ✓' : 'Ready Up'}
                   </Button>
-
-                  <LobbyRoomCounter
-                    value={players.filter((p) => p.ready).length}
-                    outOf={players.length + missingPlayers.length}
-                  />
                 </Stack>
               </Stack>
             </Card>
