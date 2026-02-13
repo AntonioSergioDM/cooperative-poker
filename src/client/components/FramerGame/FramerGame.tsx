@@ -8,13 +8,13 @@ import {
 } from '@/shared/GameTypes';
 import type { LobbyPlayerState } from '@/shared/SocketTypes';
 
-import PlayerHand from '@/client/components/Players/PlayerHand';
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
 import { Typography } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import { filterPoker } from '@/shared/Card';
+import PlayerSeat from './PlayerSeat';
 import Table from './Table';
 
 type FramerGameProps = {
@@ -75,7 +75,7 @@ const FramerGame = (props: FramerGameProps) => {
 
   return (
     <div className="relative w-screen h-screen bg-red-950 overflow-hidden">
-      <Typography>
+      <Typography sx={{ p: 2 }}>
         {/* @ts-ignore */}
         {[...new Set(gameState.options)].map(getOptionDescription).join(' | ')}
       </Typography>
@@ -85,38 +85,28 @@ const FramerGame = (props: FramerGameProps) => {
         const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
 
         return (
-          <div
+          <PlayerSeat
             key={player.name + player.originalIndex}
-            className="fixed flex flex-col justify-center items-center gap-4 transform -translate-x-1/2 -translate-y-1/2"
-            style={player.style}
-          >
-            {/* Rotate the hand wrapper so cards face the center (optional) */}
-            <div className="origin-center w-24 h-24" style={{ transform: `rotate(${player.rotation}deg)` }}>
-              <PlayerHand
-                cardWidth={isMe ? BIG_CARD : SMALL_CARD}
-                cards={cards}
-                name={player.name}
-              />
-            </div>
-
-            {isMe && <Typography>{pokerHand}</Typography>}
-
-            <div className="flex flex-row gap-1 z-10">
-              {gameState.chips[player.originalIndex].map((chip) => (
-                <TableChip
-                  key={`${chip.color}-${chip.value}`} // Added unique key
-                  chip={chip}
-                  onClick={onStealChip}
-                />
-              ))}
-            </div>
-
-            <Typography textAlign="center" maxWidth={(isMe && 'full') || 150}>
-              {player.name}
-              {gameState.numFigures && ` (${gameState.numFigures[player.originalIndex]} figures)`}
-              {gameState.handValue && ` (${gameState.handValue[player.originalIndex]} points)`}
-            </Typography>
-          </div>
+            player={player}
+            cards={cards}
+            cardWidth={isMe ? BIG_CARD : SMALL_CARD}
+            isCurrentPlayer={isMe}
+            isActivePlayer={false} // TODO: Add active player detection from game state
+            handDescription={isMe ? pokerHand : undefined}
+            numFigures={gameState.numFigures?.[player.originalIndex]}
+            handValue={gameState.handValue?.[player.originalIndex]}
+            chips={
+              <>
+                {gameState.chips[player.originalIndex].map((chip) => (
+                  <TableChip
+                    key={`${chip.color}-${chip.value}`}
+                    chip={chip}
+                    onClick={onStealChip}
+                  />
+                ))}
+              </>
+            }
+          />
         );
       })}
 
