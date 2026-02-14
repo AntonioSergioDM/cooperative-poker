@@ -30,4 +30,12 @@ module.exports = {
     NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
     BUILD_DATETIME: formatDate(),
   },
+  rewrites() {
+    return [
+      {
+        source: '/admin',
+        destination: '/admin/index.html',
+      },
+    ];
+  },
 };

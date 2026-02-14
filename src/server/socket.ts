@@ -59,9 +59,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
         skipMiddlewares: true,
       },
       cors: {
-        // Allow any origin in dev, prod might need a fix later
-        origin: IN_DEV ? true : undefined,
-        credentials: true,
+        origin: false,
       },
     },
   );
@@ -103,7 +101,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
 
     console.info(`
 
-Admin website:    https://admin.socket.io 
+Admin website:    ${NEXT_URL}/admin
 URL:   ${NEXT_URL}
 Username: ${ADMIN_USERNAME}
 Password: ${ADMIN_PASSWORD.replace(/./g, '*')}
