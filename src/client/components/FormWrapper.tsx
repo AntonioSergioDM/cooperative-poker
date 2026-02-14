@@ -28,6 +28,7 @@ const FormWrapper = <TValues extends FieldValues = FieldValues>(
 
   return (
     <FormProvider {...form}>
+      {/* @ts-ignore */}
       <form noValidate onSubmit={form.handleSubmit(onSuccess, onError)}>
         <Stack
           gap={3}

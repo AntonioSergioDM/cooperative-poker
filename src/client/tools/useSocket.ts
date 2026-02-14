@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { io, type Socket } from 'socket.io-client';
 
 import type { ClientToServerEvents, ServerToClientEvents } from '@/shared/SocketTypes';
+import { SiteRoute } from '@/shared/Routes';
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -13,7 +14,7 @@ const getSocket = () => {
   console.info('Initializing socket');
 
   socket = io({
-    path: '/api/socket',
+    path: SiteRoute.Socket,
     autoConnect: false,
   });
 
