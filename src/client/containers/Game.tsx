@@ -75,21 +75,24 @@ const Game = () => {
   useEffect(() => {
     if (lobbyHash) {
       // get current players in lobby
-      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions) => {
-        if (!validHash) {
+      socket.emit('lobbyPlayers', lobbyHash, async (validHash, newPlayers, newResults, newOptions) => {
+        if (!validHash || !newPlayers || newPlayers.length === 0) {
+          await router.push(`/joinLobby/${lobbyHash}`);
           return;
         }
+
         setPlayers(newPlayers);
         if (newPlayers.length === 1) {
           setHost(true);
         }
+
         if (newResults) {
           setResults(newResults);
         }
         setOptions(newOptions);
       });
     }
-  }, [socket, setPlayers, lobbyHash]);
+  }, [router, socket, setPlayers, lobbyHash]);
 
   const onGoToHomePage = useCallback<ServerToClientEvents['goToHomePage']>(async () => {
     await router.push('/');
