@@ -15,6 +15,7 @@ import type { Chip } from '@/shared/Chip';
 import { Box, IconButton } from '@mui/material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import { SiteRoute } from '@/shared/Routes';
 import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
@@ -24,8 +25,7 @@ const Game = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const socket = useSocket();
-  const router = useRouter();
-  const { query } = router;
+  const { query, push } = useRouter();
 
   const [players, setPlayers] = useState<LobbyPlayerState[]>([]);
   const [results, setResults] = useState<LobbyState['results']>({
@@ -75,9 +75,9 @@ const Game = () => {
   useEffect(() => {
     if (lobbyHash) {
       // get current players in lobby
-      socket.emit('lobbyPlayers', lobbyHash, async (validHash, newPlayers, newResults, newOptions) => {
+      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions) => {
         if (!validHash || !newPlayers || newPlayers.length === 0) {
-          await router.push(`/joinLobby/${lobbyHash}`);
+          void push(`${SiteRoute.JoinLobby}/${lobbyHash}`);
           return;
         }
 
@@ -92,11 +92,11 @@ const Game = () => {
         setOptions(newOptions);
       });
     }
-  }, [router, socket, setPlayers, lobbyHash]);
+  }, [push, socket, setPlayers, lobbyHash]);
 
-  const onGoToHomePage = useCallback<ServerToClientEvents['goToHomePage']>(async () => {
-    await router.push('/');
-  }, [router]);
+  const onGoToHomePage = useCallback<ServerToClientEvents['goToHomePage']>(() => {
+    void push(`${SiteRoute.Home}`);
+  }, [push]);
 
   const onGameReset = useCallback<ServerToClientEvents['gameReset']>(() => {
     setGameState(null);

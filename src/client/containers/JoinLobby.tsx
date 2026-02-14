@@ -133,6 +133,7 @@ const JoinLobby = () => {
               </IconButton>
             </Stack>
 
+            {/* @ts-ignore */}
             <FormWrapper {...form} onSuccess={onJoin}>
               <TextField
                 autoFocus
