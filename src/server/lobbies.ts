@@ -185,11 +185,18 @@ export const kickFromLobby = (socket: OurServerSocket): ClientToServerEvents['ki
       return;
     }
 
-    const isHost = lobby.players.findIndex((p) => p.id === socket.data.playerId) === 0;
+    const isHost = lobby.players[0]?.id === socket.data.playerId;
     if (!isHost) {
       return;
     }
 
+    const kickedPlayer = lobby.players.find((p) => p.id === playerToKick);
+    if (!kickedPlayer) {
+      lobby.emitLobbyUpdate();
+      return;
+    }
+
+    kickedPlayer.socket.emit('goToHomePage');
     await lobby.removePlayer(playerToKick);
     lobby.emitLobbyUpdate();
   }
