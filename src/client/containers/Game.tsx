@@ -47,7 +47,9 @@ const Game = () => {
   const updatePlayers = useCallback<ServerToClientEvents['playersListUpdated']>((lobbyState) => {
     const { players: newPlayers, results: newResults, options: newOptions } = lobbyState;
     setPlayers(newPlayers);
-    setResults(newResults);
+    if (newResults) {
+      setResults(newResults);
+    }
     setOptions(newOptions);
   }, []);
 
