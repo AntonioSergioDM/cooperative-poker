@@ -55,6 +55,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
       cors: {
         // Allow any origin in dev, prod might need a fix later
         origin: IN_DEV ? true : undefined,
+        credentials: true,
       },
     },
   );
@@ -83,7 +84,6 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
     }
   });
 
-  // TODO I need to clone the socket io admin to this project because of the CORS policy
   if (IN_DEV) {
     instrument(io, {
       auth: false,
