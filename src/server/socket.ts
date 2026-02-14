@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import type { Http2Server } from 'http2';
 import { instrument } from '@socket.io/admin-ui';
 
+import { SiteRoute } from '@/shared/Routes';
 import type {
   SocketData,
   InterServerEvents,
@@ -44,7 +45,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
   io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
     res.socket!.server,
     {
-      path: '/api/socket',
+      path: SiteRoute.Socket,
       addTrailingSlash: false,
       connectionStateRecovery: {
         // the backup duration of the sessions and the packets
