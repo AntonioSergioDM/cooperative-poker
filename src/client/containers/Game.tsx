@@ -24,7 +24,8 @@ const Game = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const socket = useSocket();
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router;
 
   const [players, setPlayers] = useState<LobbyPlayerState[]>([]);
   const [results, setResults] = useState<LobbyState['results']>({
@@ -90,6 +91,10 @@ const Game = () => {
     }
   }, [socket, setPlayers, lobbyHash]);
 
+  const onGoToHomePage = useCallback<ServerToClientEvents['goToHomePage']>(async () => {
+    await router.push('/');
+  }, [router]);
+
   const onGameReset = useCallback<ServerToClientEvents['gameReset']>(() => {
     setGameState(null);
     setPlayerState(null);
@@ -115,6 +120,7 @@ const Game = () => {
 
   useEffect(() => {
     const cleanup = () => {
+      socket.off('goToHomePage', onGoToHomePage);
       socket.off('playersListUpdated', updatePlayers);
       socket.off('gameStart', onGameStart);
       socket.off('gameChange', onGameChange);
@@ -123,6 +129,7 @@ const Game = () => {
       socket.emit('leaveLobby');
     };
 
+    socket.on('goToHomePage', onGoToHomePage);
     socket.on('playersListUpdated', updatePlayers);
     socket.on('gameStart', onGameStart);
     socket.on('gameChange', onGameChange);
@@ -135,7 +142,7 @@ const Game = () => {
       cleanup();
       window.removeEventListener('beforeunload', cleanup);
     };
-  }, [onGameChange, onGameReset, onGameStart, socket, updatePlayers]);
+  }, [onGoToHomePage, onGameChange, onGameReset, onGameStart, socket, updatePlayers]);
 
   return (
     <>
