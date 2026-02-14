@@ -127,8 +127,7 @@ export const lobbyPlayers = (socket: OurServerSocket): ClientToServerEvents['lob
     }
 
     // checking if this player is part of this lobby
-    const player = lobby.players.find((p) => p.id === socket.data.playerId);
-    if (!player) {
+    if (!lobby.hasPlayer(socket.data.playerId)) {
       return callback('', []);
     }
 

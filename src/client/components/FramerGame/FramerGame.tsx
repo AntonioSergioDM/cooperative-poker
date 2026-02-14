@@ -34,13 +34,14 @@ const FramerGame = (props: FramerGameProps) => {
 
   // Memoize player positions to prevent recalculation on every render unless players change
   const playerPositions = useMemo(() => {
-    const totalPlayers = players.length;
+    const activePlayers = players.filter((p) => p.ready);
+    const totalPlayers = activePlayers.length;
     // Radius as percentage of viewport.
     // X is wider (42vw) to create an ellipse for landscape screens.
     const radiusX = 42;
     const radiusY = 38;
 
-    return players.map((player, idx) => {
+    return activePlayers.map((player, idx) => {
       // Calculate index relative to current player.
       // We want current player (offset 0) to be at 90 degrees (Math.PI / 2) which is the bottom of the circle.
       // We subtract the step to distribute players clockwise (or add for counter-clockwise).

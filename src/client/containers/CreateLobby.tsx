@@ -111,6 +111,7 @@ const CreateLobby = () => {
               </IconButton>
             </Stack>
 
+            {/* @ts-ignore */}
             <FormWrapper {...form} onSuccess={onCreate}>
               <TextField
                 autoFocus
