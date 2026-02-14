@@ -28,6 +28,8 @@ export default class Lobby {
 
   players: Array<Player> = [];
 
+  viewers: Array<Player> = [];
+
   game: Game = new Game();
 
   room: LobbyRoom | null = null;
@@ -54,12 +56,22 @@ export default class Lobby {
   }
 
   async removePlayer(playerId: string) {
-    const foundIndex = this.players.findIndex((p) => p.id === playerId);
-    if (foundIndex === -1) {
-      return;
+    let foundIndex = this.players.findIndex((p) => p.id === playerId);
+    let player;
+
+    if (foundIndex >= 0) {
+      player = this.players.splice(foundIndex, 1)[0];
+      this.resetGame();
+    } else {
+      foundIndex = this.viewers.findIndex((p) => p.id === playerId);
+      if (foundIndex >= 0) {
+        player = this.viewers.splice(foundIndex, 1)[0];
+      }
     }
 
-    const player = this.players.splice(foundIndex, 1)[0];
+    if (!player) {
+      return;
+    }
 
     await player.leaveRoom(this.hash);
 
@@ -67,18 +79,13 @@ export default class Lobby {
       console.info(`😘 PlayerID: ${playerId} left the lobby ${this.hash}\n`);
     }
 
-    if (!this.players.length) {
+    if (!this.players.length && !this.viewers.length) {
       Lobby.lobbies.delete(this.hash);
 
       if (IN_DEV) {
         console.info(`💀 Lobby ${this.hash} closed!\n`);
       }
-
-      return;
     }
-
-    this.emitLobbyUpdate();
-    this.resetGame();
   }
 
   async addPlayer(player: Player): Promise<boolean> {
@@ -88,8 +95,13 @@ export default class Lobby {
 
     player.name = player.name.length > 50 ? `${player.name.substring(0, 50)}...` : player.name;
 
-    this.players.push(player);
-    this.emitLobbyUpdate();
+    if (this.game.isEnded()) {
+      this.players.push(player);
+      this.emitLobbyUpdate();
+    } else {
+      this.viewers.push(player);
+    }
+
     this.room = await player.joinRoom(this.hash);
 
     if (IN_DEV) {
@@ -102,21 +114,19 @@ export default class Lobby {
   }
 
   setPlayerReady(playerId: string) {
-    let allReady = true;
-    this.players.forEach((p) => {
-      if (p.id === playerId) {
-        p.setReady();
-        if (IN_DEV) {
-          console.info(`🫡  Player ${p.name} (ID: ${p.id}) is ready\n`);
-        }
-      }
+    let player = this.viewers.find((p) => p.id === playerId);
 
-      if (!p.ready) {
-        allReady = false;
-      }
-    });
+    if (player) {
+      return;
+    }
 
-    if (allReady && this.players.length >= Game.minPlayers) {
+    player = this.players.find((p) => p.id === playerId);
+    if (!player) {
+      return;
+    }
+    player.setReady();
+
+    if (this.players.every((p) => p.ready) && this.players.length >= Game.minPlayers) {
       this.startGame();
     }
 
@@ -136,10 +146,18 @@ export default class Lobby {
     this.emitLobbyUpdate();
   }
 
+  hasPlayer(playerId: any) {
+    return this.players.some((p) => p.id === playerId) || this.viewers.some((p) => p.id === playerId);
+  }
+
   changeOption(option: GameOption, status: boolean, playerId: string): string | boolean {
     const foundIdx = this.players.findIndex((p) => p.id === playerId);
     if (foundIdx === -1) {
       return 'Invalid player';
+    }
+
+    if (!this.game.isEnded()) {
+      return 'Game in progress';
     }
 
     // Should check if is the host?
@@ -225,14 +243,17 @@ export default class Lobby {
     }
 
     setTimeout(() => {
-      this.players.forEach((p) => p.setReady(false));
-      this.emitLobbyUpdate();
+      this.resetGame();
     }, 3000);
 
     return true;
   }
 
   private resetGame() {
+    while (this.viewers.length && this.players.length < Game.maxPlayers) {
+      this.players.push(this.viewers.pop()!);
+    }
+
     this.players.forEach((p) => {
       p.setReady(false);
       if (IN_DEV) {

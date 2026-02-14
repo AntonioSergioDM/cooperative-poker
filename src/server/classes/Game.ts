@@ -52,7 +52,7 @@ export default class Game {
 
   table: Table = [null, null, null, null, null];
 
-  showHands = false;
+  showHands = true;
 
   options: GameOption[] = [];
 

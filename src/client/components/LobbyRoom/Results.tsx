@@ -15,7 +15,11 @@ type ResultsProps = {
 };
 
 const Results = ({ results, players }: ResultsProps) => {
-  if (results.players.length !== players.length) {
+  if (results.players.length > players.length) {
+    return null;
+  }
+
+  if (!results.round || results.round === 'inProgress') {
     return null;
   }
 
