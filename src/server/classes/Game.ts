@@ -191,7 +191,7 @@ export default class Game {
     return this.showHands;
   }
 
-  getResults(): GameResults | undefined {
+  getResults(): GameResults {
     return this.result !== 'inProgress' ? {
       score: this.gameScore,
       round: this.result,
@@ -202,7 +202,17 @@ export default class Game {
         chip: this.chips[index][this.chips[0].length - 1],
         ...(this.chips[index].length ? { rank: this.getPokerHands(hand) } : {}),
       })),
-    } : undefined;
+    } : {
+      score: this.gameScore,
+      round: this.result,
+      table: this.table.filter((card) => !!card),
+      players: this.decks.map((hand, index) => ({
+        index,
+        hand: [],
+        chip: this.chips[index][this.chips[0].length - 1],
+        ...(this.chips[index].length ? { rank: this.getPokerHands(hand) } : {}),
+      })),
+    };
   }
 
   // --------------- Private Methods --------------- //
