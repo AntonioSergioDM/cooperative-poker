@@ -8,6 +8,7 @@ import TableChip from '@/client/components/FramerGame/TableChip';
 import ResultCounter from '@/client/components/LobbyRoom/ResultCounter';
 import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
 import type { ColorNames } from '@/client/tools/colors';
+import { sound } from '@/client/tools/sounds';
 
 type ResultsProps = {
   results: LobbyState['results'];
@@ -49,8 +50,10 @@ const Results = ({ results, players }: ResultsProps) => {
   let resultColor: ColorNames = 'green';
   if (results.round === 'win') {
     resultColor = 'green';
+    setTimeout(() => sound('win'), playerOrder.length * animDelay * 999);
   } else if (results.round === 'lose') {
     resultColor = 'red';
+    setTimeout(() => sound('lose'), playerOrder.length * animDelay * 999);
   }
 
   return (
