@@ -8,7 +8,7 @@ import TableChip from '@/client/components/FramerGame/TableChip';
 import ResultCounter from '@/client/components/LobbyRoom/ResultCounter';
 import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
 import type { ColorNames } from '@/client/tools/colors';
-import { sound } from '@/client/tools/sounds';
+import { sound } from '@/client/tools/useSound';
 
 type ResultsProps = {
   results: LobbyState['results'];
