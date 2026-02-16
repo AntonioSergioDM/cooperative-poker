@@ -198,6 +198,16 @@ export default class Lobby {
 
     this.emitGameChange();
 
+    if (this.game.shouldUpdateHands()) {
+      this.players.forEach((player, idx) => {
+        player.socket.emit('gameStart', {
+          index: idx,
+          hand: this.game.decks[idx],
+          chip: null,
+        });
+      });
+    }
+
     this.checkEnd();
 
     return {

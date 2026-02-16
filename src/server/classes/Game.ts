@@ -31,6 +31,15 @@ export default class Game {
 
   static minPlayers = 3;
 
+  private static readonly HAND_SWITCH_OPTIONS = new Set([
+    GameOption.lowestWhiteSwitch,
+    GameOption.highestWhiteSwitch,
+    GameOption.lowestYellowSwitch,
+    GameOption.highestYellowSwitch,
+    GameOption.lowestOrangeSwitch,
+    GameOption.highestOrangeSwitch,
+  ]);
+
   /** Number of players */
   numPlayers = 0;
 
@@ -189,6 +198,11 @@ export default class Game {
 
   isEnded() {
     return this.showHands;
+  }
+
+  shouldUpdateHands() {
+    return this.options.some((opt) => Game.HAND_SWITCH_OPTIONS.has(opt))
+      && [0, this.numPlayers].includes(this.tableChips.length);
   }
 
   getResults(): GameResults {
