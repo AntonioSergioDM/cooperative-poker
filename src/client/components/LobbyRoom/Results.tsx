@@ -50,10 +50,10 @@ const Results = ({ results, players }: ResultsProps) => {
   let resultColor: ColorNames = 'green';
   if (results.round === 'win') {
     resultColor = 'green';
-    setTimeout(() => sound('win'), playerOrder.length * animDelay * 999);
+    setTimeout(() => sound('win'), (playerOrder.length - 1) * animDelay * 1000);
   } else if (results.round === 'lose') {
     resultColor = 'red';
-    setTimeout(() => sound('lose'), playerOrder.length * animDelay * 999);
+    setTimeout(() => sound('lose'), (playerOrder.length - 1) * animDelay * 1000);
   }
 
   return (
@@ -72,7 +72,7 @@ const Results = ({ results, players }: ResultsProps) => {
         <motion.div
           initial={animInitial}
           animate={animAnimation}
-          transition={{ delay: playerOrder.length * animDelay, duration: 0.4 }}
+          transition={{ delay: (playerOrder.length - 1) * animDelay, duration: 0.4 }}
         >
           <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
             <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
