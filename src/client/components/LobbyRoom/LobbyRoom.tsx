@@ -140,16 +140,7 @@ const LobbyRoom = (props: LobbyRoomProps) => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <Card
-              sx={{
-                background: 'linear-gradient(135deg, rgba(26, 77, 46, 0.3) 0%, rgba(15, 40, 24, 0.3) 100%)',
-                backdropFilter: 'blur(12px)',
-                border: '2px solid rgba(255, 215, 0, 0.2)',
-                borderRadius: 4,
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-                p: 3,
-              }}
-            >
+            <Card className="casino-box p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }} >
               <Stack gap={3} style={{ position: 'relative' }}>
                 <div className="absolute top-0 right-0">
                   <LobbyRoomCounter
