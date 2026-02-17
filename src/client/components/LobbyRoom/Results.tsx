@@ -65,16 +65,7 @@ const Results = ({ results, players }: ResultsProps) => {
   }
 
   return (
-    <Box
-      sx={{
-        background: 'linear-gradient(135deg, rgba(26, 77, 46, 0.3) 0%, rgba(15, 40, 24, 0.3) 100%)',
-        backdropFilter: 'blur(12px)',
-        border: '2px solid rgba(255, 215, 0, 0.2)',
-        borderRadius: 4,
-        p: 3,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-      }}
-    >
+    <Box className="casino-box p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }} >
       <Stack direction="column" spacing={3}>
         {/* Score Display */}
         <motion.div

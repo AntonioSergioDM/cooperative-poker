@@ -60,15 +60,7 @@ const GameSizingDemo = () => (
 
         <Stack spacing={4}>
           {/* Big Cards (Current Player) */}
-          <Paper
-            sx={{
-              p: 4,
-              background: 'linear-gradient(135deg, rgba(26, 77, 46, 0.3) 0%, rgba(15, 40, 24, 0.3) 100%)',
-              backdropFilter: 'blur(12px)',
-              border: '2px solid rgba(255, 215, 0, 0.2)',
-              borderRadius: 4,
-            }}
-          >
+          <Paper className="casino-box p-6">
             <Typography
               variant="h5"
               sx={{ mb: 3, color: '#ffd700', fontWeight: 600 }}
@@ -94,15 +86,7 @@ const GameSizingDemo = () => (
           </Paper>
 
           {/* Small Cards (Other Players) */}
-          <Paper
-            sx={{
-              p: 4,
-              background: 'linear-gradient(135deg, rgba(26, 77, 46, 0.3) 0%, rgba(15, 40, 24, 0.3) 100%)',
-              backdropFilter: 'blur(12px)',
-              border: '2px solid rgba(255, 215, 0, 0.2)',
-              borderRadius: 4,
-            }}
-          >
+          <Paper className="casino-box p-6">
             <Typography
               variant="h5"
               sx={{ mb: 3, color: '#ffd700', fontWeight: 600 }}
