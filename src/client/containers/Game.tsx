@@ -137,7 +137,7 @@ const Game = () => {
 
   return (
     <>
-      <Box className="absolute top-0 left-0 z-10 w-full p-4 flex flex-row gap-4 items-center justify-end">
+      <Box className="absolute top-0 left-0 z-10 w-full p-4 flex flex-row gap-1 items-center justify-end">
         <SoundBtn />
         <HelpBtn />
       </Box>
