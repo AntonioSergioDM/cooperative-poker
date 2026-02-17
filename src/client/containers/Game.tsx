@@ -17,6 +17,8 @@ import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
 import { sound } from '../tools/useSound';
+import { HelpBtn } from '@/client/components/HelpBtn';
+import { Box } from '@mui/material';
 
 const Game = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -135,7 +137,10 @@ const Game = () => {
 
   return (
     <>
-      <SoundBtn />
+      <Box className="absolute top-0 left-0 z-10 w-full p-4 flex flex-row gap-4 items-center justify-end">
+        <SoundBtn />
+        <HelpBtn />
+      </Box>
 
       {(results.round !== 'inProgress' || !playerState) && (
         <LobbyRoom
