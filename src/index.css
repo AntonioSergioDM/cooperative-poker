@@ -83,6 +83,14 @@
   background: #5a5a5a;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

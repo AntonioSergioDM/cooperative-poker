@@ -1,11 +1,36 @@
-import { IconButton, Modal, Box, Typography } from '@mui/material';
+import { IconButton, Modal, Box, Typography, List, ListItem, Divider } from '@mui/material';
 import { HelpOutlineRounded } from '@mui/icons-material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export const HelpBtn = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const rankOrder = useMemo(() => (
+    [
+      {
+        name: 'Royal flush',
+        example: [{ value: 'A♠️', used: true }, { value: 'K♠️', used: true }, { value: 'Q♠️', used: true }, { value: 'J♠️', used: true }, { value: '10♠️', used: true }],
+      },
+      {
+        name: 'Royal flush',
+        example: [{ value: 'A♠️', used: true }, { value: 'K♠️', used: true }, { value: 'Q♠️', used: true }, { value: 'J♠️', used: true }, { value: '10♠️', used: true }],
+      },
+      {
+        name: 'Royal flush',
+        example: [{ value: 'A♠️', used: true }, { value: 'K♠️', used: true }, { value: 'Q♠️', used: true }, { value: 'J♠️', used: true }, { value: '10♠️', used: true }],
+      },
+      {
+        name: 'Royal flush',
+        example: [{ value: 'A♠️', used: true }, { value: 'K♠️', used: true }, { value: 'Q♠️', used: true }, { value: 'J♠️', used: true }, { value: '10♠️', used: true }],
+      },
+      {
+        name: 'Royal flush',
+        example: [{ value: 'A♠️', used: true }, { value: 'K♠️', used: true }, { value: 'Q♠️', used: true }, { value: 'J♠️', used: true }, { value: '10♠️', used: true }],
+      },
+    ]
+  ), []);
 
   return (
     <>
@@ -16,7 +41,6 @@ export const HelpBtn = () => {
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box
           className="casino-box
@@ -29,9 +53,27 @@ export const HelpBtn = () => {
           <Typography className="text-poker-highlight" id="modal-modal-title" variant="h6" component="h2">
             Rules
           </Typography>
-          <Typography id="modal-modal-description" className="mt-1">
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <List aria-label="Rank Order">
+            <Divider />
+            {rankOrder.map((rank) => (
+              <>
+                <ListItem key={rank.name}>
+                  <div className="flex gap-1 w-50">
+                    {rank.example.map((card) => (
+                      <div
+                        key={card.value}
+                        className={`w-10 h-8 text-[12px] flex justify-center items-center border rounded-md border-solid ${card.used ? 'border-poker-highlight' : 'border-poker-disabled'}`}
+                      >
+                        {card.value}
+                      </div>
+                    ))}
+                  </div>
+                  {rank.name}
+                </ListItem>
+                <Divider />
+              </>
+            ))}
+          </List>
         </Box>
       </Modal>
     </>
