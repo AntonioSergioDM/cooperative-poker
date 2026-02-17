@@ -136,7 +136,16 @@ const Game = () => {
   return (
     <>
       <SoundBtn />
-      {(results.round !== 'inProgress' || !playerState) && <LobbyRoom players={players} lobbyHash={lobbyHash} results={results} options={options} isHost={isHost} />}
+
+      {(results.round !== 'inProgress' || !playerState) && (
+        <LobbyRoom
+          players={players}
+          lobbyHash={lobbyHash}
+          results={results}
+          options={options}
+          isHost={isHost}
+        />
+      )}
 
       {(results.round === 'inProgress' && !!playerState && !!gameState) && (
         <FramerGame

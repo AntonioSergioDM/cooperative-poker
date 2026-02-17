@@ -9,13 +9,27 @@ import ResultCounter from '@/client/components/LobbyRoom/ResultCounter';
 import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
 import type { ColorNames } from '@/client/tools/colors';
 import { sound } from '@/client/tools/useSound';
+import { useMemo } from 'react';
 
 type ResultsProps = {
   results: LobbyState['results'];
   players: LobbyPlayerState[];
 };
 
+const animDelay = 2;
+const animInitial = { opacity: 0, y: 20 };
+const animAnimation = { opacity: 1, y: 0 };
+
 const Results = ({ results, players }: ResultsProps) => {
+  const roundResult = useMemo(() => {
+    if (results.round === 'win') {
+      setTimeout(() => sound('win'), (results.players.length - 1) * animDelay * 1000);
+    } else if (results.round === 'lose') {
+      setTimeout(() => sound('lose'), (results.players.length - 1) * animDelay * 1000);
+    }
+    return results.round;
+  }, [results.round, results.players.length]);
+
   if (results.players.length > players.length) {
     return null;
   }
@@ -23,10 +37,6 @@ const Results = ({ results, players }: ResultsProps) => {
   if (!results.round || results.round === 'inProgress') {
     return null;
   }
-
-  const animDelay = 2;
-  const animInitial = { opacity: 0, y: 20 };
-  const animAnimation = { opacity: 1, y: 0 };
 
   results.players.sort((playerB, playerA) => {
     if (results.round === 'win') {
@@ -48,12 +58,10 @@ const Results = ({ results, players }: ResultsProps) => {
   }));
 
   let resultColor: ColorNames = 'green';
-  if (results.round === 'win') {
+  if (roundResult === 'win') {
     resultColor = 'green';
-    setTimeout(() => sound('win'), (playerOrder.length - 1) * animDelay * 1000);
-  } else if (results.round === 'lose') {
+  } else if (roundResult === 'lose') {
     resultColor = 'red';
-    setTimeout(() => sound('lose'), (playerOrder.length - 1) * animDelay * 1000);
   }
 
   return (
