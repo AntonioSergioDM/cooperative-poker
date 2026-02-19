@@ -37,6 +37,14 @@ export const ChatDialog = ({ open, onClose }: ChatDialogProps) => {
     setInputValue('');
   };
 
+  // scroll to end
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (open) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, open]);
+
   const renderMessage = (msg: Message) => {
     let primaryText: ReactNode = msg.sender;
     let secondaryText: ReactNode = msg.content;
@@ -85,6 +93,7 @@ export const ChatDialog = ({ open, onClose }: ChatDialogProps) => {
           <List>
             {messages.map(renderMessage)}
           </List>
+          <div ref={messagesEndRef} />
         </Box>
       </DialogContent>
       <DialogActions className="p-0">
