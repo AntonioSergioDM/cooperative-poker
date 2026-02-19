@@ -44,7 +44,7 @@ export const ChatDialog = (props: ChatDialogProps) => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, open]);
+  }, [messages.length, open]);
 
   const renderMessage = (msg: Message) => {
     let content: ReactNode = msg.msg;
