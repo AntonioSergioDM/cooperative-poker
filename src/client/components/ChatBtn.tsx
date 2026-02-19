@@ -51,6 +51,7 @@ export const ChatBtn = () => {
     const message = {
       type: MessageType.message,
       msg,
+      timestamp: Date.now(),
     };
     socket.emit('message', message);
     setMessages([...messages, message]);

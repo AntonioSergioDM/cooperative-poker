@@ -1,11 +1,21 @@
 import {
-  Dialog, DialogContent, DialogActions, TextField, List, ListItem, ListItemText, Typography, Box,
-  IconButton, InputAdornment,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  IconButton,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { ReactNode, useEffect, useRef } from 'react';
-import { useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SendOutlined } from '@mui/icons-material';
 import type { Message } from '@/shared/Message';
+import { MessageType } from '@/shared/Message';
 
 interface ChatDialogProps {
   open: boolean;
@@ -14,7 +24,14 @@ interface ChatDialogProps {
   sendMessage: (msg: string) => void;
 }
 
-export const ChatDialog = ({ open, onClose, messages, sendMessage }: ChatDialogProps) => {
+export const ChatDialog = (props: ChatDialogProps) => {
+  const {
+    open,
+    onClose,
+    messages,
+    sendMessage,
+  } = props;
+
   const [inputValue, setInputValue] = useState('');
 
   const handleSend = () => {
@@ -32,23 +49,37 @@ export const ChatDialog = ({ open, onClose, messages, sendMessage }: ChatDialogP
   }, [messages, open]);
 
   const renderMessage = (msg: Message) => {
-    let primaryText: ReactNode = msg.from;
-    let secondaryText: ReactNode = msg.msg;
-    let bgColor = 'transparent';
+    let content: ReactNode = msg.msg;
+
+    const date = new Date();
+    date.setTime(msg.timestamp || 0);
 
     switch (msg.type) {
+      case MessageType.message:
+        content = (
+          <div className={`w-fit max-w-[80%] flex flex-col gap-1 ${!msg.from ? 'items-end ml-auto' : 'items-start'}`}>
+            <div className="text-xxs italic px-2 mt-1">{msg.from || 'You'}</div>
+            <div className={`flex ${!msg.from ? 'flex-row-reverse' : 'flex-row'} gap-1 items-end`}>
+              <div className="bg-poker-highlight bg-opacity-40 px-4 py-1 rounded-3xl text-start">{msg.msg}</div>
+              {msg.timestamp ? <div className="text-xxs ml-auto mr-2">{[date.getHours(), date.getMinutes(), date.getSeconds()].join(':')}</div> : null}
+            </div>
+          </div>
+        );
+        break;
+
       default:
-        primaryText = <Typography variant="subtitle2">{msg.from}</Typography>;
-        secondaryText = <Typography variant="body2">{msg.msg}</Typography>;
+        content = (
+          <div className="w-full flex flex-col gap-1 items-center mt-2">
+            {msg.timestamp ? <div className="text-xxs ml-auto mr-2">{[date.getHours(), date.getMinutes(), date.getSeconds()].join(':')}</div> : null}
+            <div className="text-xxs text-center">{msg.msg}</div>
+          </div>
+        );
         break;
     }
 
     return (
-      <ListItem key={msg.timestamp} alignItems="flex-start" sx={{ bgcolor: bgColor, borderRadius: 1, mb: 0.5 }}>
-        <ListItemText
-          primary={primaryText}
-          secondary={secondaryText}
-        />
+      <ListItem key={msg.timestamp} className="m-0 p-1">
+        {content}
       </ListItem>
     );
   };
