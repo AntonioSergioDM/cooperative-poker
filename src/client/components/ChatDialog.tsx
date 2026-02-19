@@ -2,38 +2,24 @@ import {
   Dialog, DialogContent, DialogActions, TextField, List, ListItem, ListItemText, Typography, Box,
   IconButton, InputAdornment,
 } from '@mui/material';
-import type { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { SendOutlined } from '@mui/icons-material';
-
-export type MessageType = 'system' | 'player' | 'whisper';
-
-export interface Message {
-  id: string;
-  type: MessageType;
-  sender?: string;
-  content: string;
-  timestamp: number;
-}
+import type { Message } from '@/shared/Message';
 
 interface ChatDialogProps {
   open: boolean;
   onClose: () => void;
+  messages: Message[];
+  sendMessage: (msg: string) => void;
 }
 
-const initialMessages: Message[] = [
-  { id: '1', type: 'system', content: 'Player 1 has joined the game.', timestamp: Date.now() },
-  { id: '2', type: 'player', sender: 'Player 2', content: 'Hello everyone!', timestamp: Date.now() },
-  { id: '3', type: 'whisper', sender: 'Player 3', content: 'Are you ready?', timestamp: Date.now() },
-];
-
-export const ChatDialog = ({ open, onClose }: ChatDialogProps) => {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+export const ChatDialog = ({ open, onClose, messages, sendMessage }: ChatDialogProps) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleSend = () => {
     if (!inputValue.trim()) return;
-    console.log('Sending:', inputValue);
+    sendMessage(inputValue);
     setInputValue('');
   };
 
@@ -46,30 +32,19 @@ export const ChatDialog = ({ open, onClose }: ChatDialogProps) => {
   }, [messages, open]);
 
   const renderMessage = (msg: Message) => {
-    let primaryText: ReactNode = msg.sender;
-    let secondaryText: ReactNode = msg.content;
+    let primaryText: ReactNode = msg.from;
+    let secondaryText: ReactNode = msg.msg;
     let bgColor = 'transparent';
 
     switch (msg.type) {
-      case 'system':
-        primaryText = <Typography variant="subtitle2" color="primary">System</Typography>;
-        secondaryText = <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>{msg.content}</Typography>;
-        bgColor = 'rgba(255, 255, 255, 0.05)';
-        break;
-      case 'whisper':
-        primaryText = <Typography variant="subtitle2" color="secondary">{msg.sender} (whisper)</Typography>;
-        secondaryText = <Typography variant="body2">{msg.content}</Typography>;
-        bgColor = 'rgba(250, 204, 21, 0.1)'; // Yellowish tint for whisper
-        break;
-      case 'player':
       default:
-        primaryText = <Typography variant="subtitle2">{msg.sender}</Typography>;
-        secondaryText = <Typography variant="body2">{msg.content}</Typography>;
+        primaryText = <Typography variant="subtitle2">{msg.from}</Typography>;
+        secondaryText = <Typography variant="body2">{msg.msg}</Typography>;
         break;
     }
 
     return (
-      <ListItem key={msg.id} alignItems="flex-start" sx={{ bgcolor: bgColor, borderRadius: 1, mb: 0.5 }}>
+      <ListItem key={msg.timestamp} alignItems="flex-start" sx={{ bgcolor: bgColor, borderRadius: 1, mb: 0.5 }}>
         <ListItemText
           primary={primaryText}
           secondary={secondaryText}

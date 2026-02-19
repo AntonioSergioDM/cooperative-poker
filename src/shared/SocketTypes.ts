@@ -1,5 +1,4 @@
 import type { Socket as SocketIoSocket } from 'socket.io';
-
 import type {
   GameOption,
   GameResults,
@@ -7,6 +6,7 @@ import type {
   PlayerState,
 } from '@/shared/GameTypes';
 import type { Chip } from '@/shared/Chip';
+import type { Message } from '@/shared/Message';
 
 export type LobbyPlayerState = { name: string; ready: boolean; id: string };
 export type LobbyState = { players: LobbyPlayerState[]; results: GameResults; options?: GameOption[] };
@@ -18,6 +18,7 @@ export interface ServerToClientEvents {
   gameChange: (gameState: GameState) => void;
   gameReset: () => void;
   goToHomePage: () => void;
+  message: (message: Message) => void;
 }
 
 type GenericCallbackResponse<T = any> = {
@@ -38,6 +39,7 @@ export interface ClientToServerEvents {
   playerUnready: (callback: (playerIndex: number | null) => void) => void;
   changeOption: (option: GameOption, status: boolean) => void;
   stealChip: (chip: Chip, callback: (res: GenericCallbackResponse<PlayerState | null>) => void) => void;
+  message: (message: Message) => void;
 }
 
 /**
