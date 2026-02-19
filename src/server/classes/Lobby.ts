@@ -231,7 +231,9 @@ export default class Lobby {
       console.info(`Player ${from} sent a message`, message);
     }
 
-    message.from = from; // this.players.find((p) => p.id === from)?.name || 'Unkown';
+    message.from = this.players.find((p) => p.id === from)?.name || from;
+    message.timestamp = Date.now();
+
     this.players.forEach((player) => {
       if (player.id === from) return;
       if (message.to && message.to !== player.id) return;

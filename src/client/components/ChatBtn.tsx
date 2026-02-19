@@ -30,7 +30,10 @@ export const ChatBtn = () => {
 
   const onMessageReceived = useCallback((message: Message) => {
     setMessages([...messages, message]);
-  }, [messages]);
+    if ([MessageType.message].includes(message.type)) {
+      setUnreadMessages(!open ? unreadMessages + 1 : 0);
+    }
+  }, [open, messages, unreadMessages, setUnreadMessages]);
 
   useEffect(() => {
     const cleanup = () => {
@@ -47,13 +50,11 @@ export const ChatBtn = () => {
   const sendMessage = useCallback((msg: string) => {
     const message = {
       type: MessageType.message,
-      timestamp: Date.now(),
       msg,
-      from: 'Player', // TODO
     };
     socket.emit('message', message);
-    onMessageReceived(message);
-  }, [onMessageReceived, socket]);
+    setMessages([...messages, message]);
+  }, [socket, setMessages, messages]);
 
   const handleClose = () => setOpen(false);
 

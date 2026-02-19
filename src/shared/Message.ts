@@ -15,8 +15,8 @@ export enum MessageType {
 
 export type Message = {
   type: MessageType;
-  timestamp: number;
   msg: string;
-  from: 'System' | string;
+  timestamp?: number;
+  from?: string;
   to?: string;
 };
