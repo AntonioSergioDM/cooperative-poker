@@ -1,19 +1,15 @@
 import type { BroadcastOperator } from 'socket.io';
 import type { DecorateAcknowledgementsWithMultipleResponses } from 'socket.io/dist/typed-events';
 
-import {
-  adjectives, animals, colors, countries, names,
-  uniqueNamesGenerator,
-} from 'unique-names-generator';
+import { adjectives, animals, colors, countries, names, uniqueNamesGenerator, } from 'unique-names-generator';
 
 import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import type { GameOption, PlayerState } from '@/shared/GameTypes';
+import { GameOption, getOptionDescription, PlayerState } from '@/shared/GameTypes';
 
-import type { Message } from '@/shared/Message';
-import { MessageType } from '@/shared/Message';
+import { Message, MessageType } from '@/shared/Message';
 import Game from './Game';
 import type Player from './Player';
 
@@ -44,7 +40,7 @@ export default class Lobby {
       style: 'lowerCase',
     });
 
-    // In the very low case of generating a already existing
+    // In the very low case of generating an already existing
     // one call again until we get a unique name
     if (Lobby.lobbies.has(newHash)) {
       return this.generateNewHash();
@@ -83,7 +79,11 @@ export default class Lobby {
       if (IN_DEV) {
         console.info(`💀 Lobby ${this.hash} closed!\n`);
       }
+
+      return;
     }
+
+    this.emitMessage({ type: MessageType.leave, msg: `${player.name} left the lobby` });
   }
 
   async addPlayer(player: Player): Promise<boolean> {
@@ -151,8 +151,8 @@ export default class Lobby {
   }
 
   changeOption(option: GameOption, status: boolean, playerId: string): string | boolean {
-    const foundIdx = this.players.findIndex((p) => p.id === playerId);
-    if (foundIdx === -1) {
+    const player = this.players.find((p) => p.id === playerId);
+    if (!player) {
       return 'Invalid player';
     }
 
@@ -169,17 +169,21 @@ export default class Lobby {
     }
 
     this.emitLobbyUpdate();
+    this.emitMessage({
+      type: option <= GameOption.randomChallenge ? MessageType.challenge : MessageType.advantage,
+      msg: `${player.name} ${status ? 'added' : 'removed'} ${getOptionDescription(option)}`,
+    });
     return status;
   }
 
   stealChip(playerId: string, chip: Chip | null): PlayerState | string {
+    if (!chip) {
+      return 'Invalid chip';
+    }
+
     const foundIdx = this.players.findIndex((p) => p.id === playerId);
     if (foundIdx === -1) {
       return 'Invalid player';
-    }
-
-    if (!chip) {
-      return 'Invalid chip';
     }
 
     if (IN_DEV) {
@@ -195,8 +199,12 @@ export default class Lobby {
     if (IN_DEV) {
       console.info('    Chip Stolen');
     }
-
     this.emitGameChange();
+
+    this.emitMessage({
+      type: MessageType.chipSteal,
+      msg: `${this.players[foundIdx].name} stole the ${chip.color} ${chip.value}`,
+    });
 
     if (this.game.shouldUpdateHands()) {
       this.players.forEach((player, idx) => {
@@ -205,6 +213,11 @@ export default class Lobby {
           hand: this.game.decks[idx],
           chip: null,
         });
+      });
+
+      this.emitMessage({
+        type: MessageType.specialEffect,
+        msg: 'A special effect was activated',
       });
     }
 
@@ -259,6 +272,10 @@ export default class Lobby {
         chip: null,
       });
     });
+    this.emitMessage({
+      type: MessageType.result,
+      msg: 'The game starts',
+    });
 
     this.emitGameChange();
   }
@@ -269,6 +286,10 @@ export default class Lobby {
     }
 
     setTimeout(() => {
+      this.emitMessage({
+        type: MessageType.result,
+        msg: 'The game ended',
+      });
       this.resetGame();
     }, 3000);
 
