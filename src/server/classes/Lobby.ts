@@ -2,11 +2,7 @@ import type { BroadcastOperator } from 'socket.io';
 import type { DecorateAcknowledgementsWithMultipleResponses } from 'socket.io/dist/typed-events';
 
 import {
-  names,
-  colors,
-  animals,
-  countries,
-  adjectives,
+  adjectives, animals, colors, countries, names,
   uniqueNamesGenerator,
 } from 'unique-names-generator';
 
@@ -14,9 +10,10 @@ import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import type { PlayerState, GameOption } from '@/shared/GameTypes';
+import type { GameOption, PlayerState } from '@/shared/GameTypes';
 
 import type { Message } from '@/shared/Message';
+import { MessageType } from '@/shared/Message';
 import Game from './Game';
 import type Player from './Player';
 
@@ -110,6 +107,8 @@ export default class Lobby {
       console.info(`      Players on Lobby ${this.hash}`);
       console.info(this.players.reduce((info, p, idx) => (`${info}       ${idx}.  ${p.name} (ID: ${p.id})\n`), ''));
     }
+
+    this.emitMessage({ type: MessageType.join, msg: `${player.name} joined the lobby` });
 
     return true;
   }
@@ -226,7 +225,7 @@ export default class Lobby {
     });
   }
 
-  emitMessage(message: Message, from: string) {
+  emitMessage(message: Message, from: string = '') {
     if (IN_DEV) {
       console.info(`Player ${from} sent a message`, message);
     }
