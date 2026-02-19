@@ -16,6 +16,7 @@ import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
 import type { PlayerState, GameOption } from '@/shared/GameTypes';
 
+import type { Message } from '@/shared/Message';
 import Game from './Game';
 import type Player from './Player';
 
@@ -222,6 +223,20 @@ export default class Lobby {
       players: this.players.map((p) => ({ name: p.name, ready: p.ready, id: p.id })),
       results: this.game.getResults(),
       options: this.game.options,
+    });
+  }
+
+  emitMessage(message: Message, from: string) {
+    if (IN_DEV) {
+      console.info(`Player ${from} sent a message`, message);
+    }
+
+    message.from = from; // this.players.find((p) => p.id === from)?.name || 'Unkown';
+    this.players.forEach((player) => {
+      if (player.id === from) return;
+      if (message.to && message.to !== player.id) return;
+
+      player.socket.emit('message', message);
     });
   }
 

@@ -200,3 +200,18 @@ export const kickFromLobby = (socket: OurServerSocket): ClientToServerEvents['ki
     lobby.emitLobbyUpdate();
   }
 );
+
+export const playerMessage = (socket: OurServerSocket): ClientToServerEvents['message'] => (
+  (message) => {
+    if (!socket?.data?.lobbyHash || !socket.data.playerId) {
+      return;
+    }
+
+    const lobby = Lobby.lobbies.get(socket.data.lobbyHash);
+    if (!lobby) {
+      return;
+    }
+
+    lobby.emitMessage(message, socket.data.playerId);
+  }
+);

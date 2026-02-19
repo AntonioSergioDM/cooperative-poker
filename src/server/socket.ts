@@ -27,7 +27,7 @@ import {
   stealChip,
   playerReady,
   playerUnReady,
-  changeOption,
+  changeOption, playerMessage,
 } from './lobbies';
 
 type SocketIOResponse = NextApiResponse & {
@@ -85,6 +85,7 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
       socket.on('kickFromLobby', kickFromLobby(socket));
       socket.on('stealChip', stealChip(socket));
       socket.on('lobbyPlayers', lobbyPlayers(socket));
+      socket.on('message', playerMessage(socket));
     }
   });
 

@@ -28,14 +28,16 @@ export const ChatBtn = () => {
     setOpen(true);
   };
 
-  const onMessageReceived = useCallback((message: Message) => setMessages([...messages, message]), [messages]);
+  const onMessageReceived = useCallback((message: Message) => {
+    setMessages([...messages, message]);
+  }, [messages]);
 
   useEffect(() => {
     const cleanup = () => {
       socket.off('message', onMessageReceived);
     };
 
-    socket.off('message', onMessageReceived);
+    socket.on('message', onMessageReceived);
 
     return () => {
       cleanup();
@@ -47,7 +49,6 @@ export const ChatBtn = () => {
       type: MessageType.message,
       timestamp: Date.now(),
       msg,
-      to: 'all',
       from: 'Player', // TODO
     };
     socket.emit('message', message);
