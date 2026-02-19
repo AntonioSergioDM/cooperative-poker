@@ -13,13 +13,13 @@ import type { LobbyPlayerState, LobbyState, ServerToClientEvents } from '@/share
 import type { Chip } from '@/shared/Chip';
 import { SiteRoute } from '@/shared/Routes';
 import { SoundBtn } from '@/client/components/SoundBtn';
+import { HelpBtn } from '@/client/components/HelpBtn';
+import { Box } from '@mui/material';
+import { ChatBtn } from '@/client/components/ChatBtn';
 import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
 import { sound } from '../tools/useSound';
-import { HelpBtn } from '@/client/components/HelpBtn';
-import { Box } from '@mui/material';
-import { ChatBtn } from '@/client/components/ChatBtn';
 
 const Game = () => {
   const { enqueueSnackbar } = useSnackbar();
