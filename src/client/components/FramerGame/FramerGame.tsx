@@ -134,6 +134,7 @@ const FramerGame = (props: FramerGameProps) => {
             handDescription={isMe ? pokerHand : undefined}
             numFigures={gameState.numFigures?.[player.originalIndex]}
             handValue={gameState.handValue?.[player.originalIndex]}
+            hasPlayed={gameState.tableChips.length === 0 || gameState.chips[player.originalIndex].some((chip) => chip.color === gameState.tableChips[0].color)}
             chips={gameState.chips[player.originalIndex].length > 0 && (
               <>
                 {gameState.chips[player.originalIndex].map((chip) => (

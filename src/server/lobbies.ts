@@ -3,6 +3,7 @@ import type { ClientToServerEvents, OurServerSocket } from '@/shared/SocketTypes
 import type { Chip } from '@/shared/Chip';
 import Lobby from './classes/Lobby';
 import Player from './classes/Player';
+import { MessageType } from '@/shared/Message';
 
 export const joinLobby = (socket: OurServerSocket): ClientToServerEvents['joinLobby'] => (
   async (lobbyHash, playerName, callback) => {
@@ -210,6 +211,12 @@ export const playerMessage = (socket: OurServerSocket): ClientToServerEvents['me
     const lobby = Lobby.lobbies.get(socket.data.lobbyHash);
     if (!lobby) {
       return;
+    }
+
+    if (message.to) {
+      message.type = message.type === MessageType.reminder ? MessageType.reminder : MessageType.whisper;
+    } else {
+      message.type = MessageType.message;
     }
 
     lobby.emitMessage(message, socket.data.playerId);

@@ -8,6 +8,7 @@ import { useSocket } from '@/client/tools/useSocket';
 import type { Message } from '@/shared/Message';
 import { MessageType } from '@/shared/Message';
 import { ChatDialog } from './ChatDialog';
+import { sound } from '@/client/tools/useSound';
 
 const ChatBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -30,8 +31,12 @@ export const ChatBtn = () => {
 
   const onMessageReceived = useCallback((message: Message) => {
     setMessages([...messages, message]);
-    if ([MessageType.message].includes(message.type)) {
+    if ([MessageType.message, MessageType.whisper, MessageType.reminder].includes(message.type)) {
       setUnreadMessages(!open ? unreadMessages + 1 : 0);
+    }
+
+    if (message.type === MessageType.reminder) {
+      sound('reminder');
     }
   }, [open, messages, unreadMessages, setUnreadMessages]);
 

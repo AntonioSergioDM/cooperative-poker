@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import {
+  IconButton,
   Box,
   Paper,
   Stack,
@@ -11,6 +12,9 @@ import type { Card } from '@/shared/Card';
 
 import PlayerHand from '@/client/components/Players/PlayerHand';
 import React from 'react';
+import { NotificationsActive } from '@mui/icons-material';
+import { useSocket } from '@/client/tools/useSocket';
+import { MessageType } from '@/shared/Message';
 
 type PlayerSeatProps = {
   player: LobbyPlayerState & {
@@ -21,6 +25,7 @@ type PlayerSeatProps = {
   cards: (Card | null)[];
   cardWidth: number;
   isCurrentPlayer: boolean;
+  hasPlayed: boolean;
   handDescription?: string;
   numFigures?: number;
   handValue?: number;
@@ -41,11 +46,15 @@ const PlayerSeat = (props: PlayerSeatProps) => {
     cards,
     cardWidth,
     isCurrentPlayer,
+    hasPlayed,
     handDescription,
     numFigures,
     handValue,
     chips,
   } = props;
+
+  const socket = useSocket();
+  const remindPlayer = () => socket.emit('message', { type: MessageType.reminder, to: player.id, msg: 'Can you please play?' });
 
   return (
     <div
@@ -80,20 +89,27 @@ const PlayerSeat = (props: PlayerSeatProps) => {
         >
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Box>
-              <Typography
-                variant="body1"
-                fontWeight={isCurrentPlayer ? 'bold' : 'semibold'}
-                sx={{
-                  maxWidth: 140,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  color: isCurrentPlayer ? '#ffd700' : 'white',
-                  fontSize: isCurrentPlayer ? '1rem' : '0.9rem',
-                }}
-              >
-                {player.name}
-              </Typography>
+              <div className="flex flex-row gap-1 items-center">
+                <Typography
+                  variant="body1"
+                  fontWeight={isCurrentPlayer ? 'bold' : 'semibold'}
+                  sx={{
+                    maxWidth: 140,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    color: isCurrentPlayer ? '#ffd700' : 'white',
+                    fontSize: isCurrentPlayer ? '1rem' : '0.9rem',
+                  }}
+                >
+                  {player.name}
+                </Typography>
+                {!isCurrentPlayer && !hasPlayed && (
+                  <IconButton className="text-poker-highlight" onClick={remindPlayer}>
+                    <NotificationsActive />
+                  </IconButton>
+                )}
+              </div>
 
               {/* Hand description for current player */}
               {isCurrentPlayer && handDescription && (

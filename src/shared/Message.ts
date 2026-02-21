@@ -4,8 +4,6 @@ export enum MessageType {
   challenge,
   advantage,
   chipSteal,
-  chipSwitch,
-  cardsAdded,
   specialEffect,
   result,
   message,

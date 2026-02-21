@@ -55,12 +55,35 @@ export const ChatDialog = (props: ChatDialogProps) => {
 
     switch (msg.type) {
       case MessageType.message:
+      case MessageType.whisper:
         content = (
           <div className={`w-fit max-w-[80%] flex flex-col gap-1 ${!msg.from ? 'items-end ml-auto' : 'items-start'}`}>
-            <div className="text-xxs italic px-2 mt-1">{msg.from || 'You'}</div>
+            <div className="text-xxs italic px-2 mt-1">
+              {msg.from || 'You'}
+              {msg.type === MessageType.whisper && ' (whisper)'}
+            </div>
             <div className={`flex ${!msg.from ? 'flex-row-reverse' : 'flex-row'} gap-1 items-end`}>
-              <div className="bg-poker-highlight bg-opacity-40 px-4 py-1 rounded-3xl text-start">{msg.msg}</div>
-              {msg.timestamp ? <div className="text-xxs ml-auto mr-2">{time}</div> : null}
+              <div className={`${msg.type === MessageType.whisper ? 'bg-poker-disabled' : 'bg-poker-highlight'} bg-opacity-40 px-4 py-1 rounded-3xl text-start`}>
+                {msg.msg}
+              </div>
+              {msg.timestamp && (
+                <div className="text-xxs ml-auto mr-2">
+                  {time}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+        break;
+
+      case MessageType.reminder:
+        content = (
+          <div className="w-full flex flex-col gap-1 items-center mt-2">
+            {msg.timestamp ? <div className="text-xxs mr-2">{time}</div> : null}
+            <div className="text-xxs text-center">
+              🔔🔔🔔
+              <br />
+              {`${msg.from || 'Someone'} is reminding you to play`}
             </div>
           </div>
         );
@@ -85,6 +108,7 @@ export const ChatDialog = (props: ChatDialogProps) => {
 
   return (
     <Dialog
+      keepMounted
       open={open}
       onClose={onClose}
       fullWidth
