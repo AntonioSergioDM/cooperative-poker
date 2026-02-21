@@ -21,7 +21,7 @@ docker compose up -d --build
 ## Deploy
 - Navigate to the directory where the Docker Compose file is located
 ```bash
-cd .. && cd .. && cd /mnt/user/Storage/ml-automation  
+cd .. && cd .. && cd /mnt/user/Storage/cooperative-poker  
 ```
 - Run docker compose to build and start the containers
 ```bash
