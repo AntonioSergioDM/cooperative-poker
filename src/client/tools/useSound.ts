@@ -5,6 +5,8 @@ const sounds = {
   // beep: '/sounds/beep1.mp3',
   win: '/sounds/win.mp3',
   lose: '/sounds/lose.mp3',
+  reminder: '/sounds/play_reminder.ogg',
+  message: '/sounds/message.mp3',
 };
 
 export type SoundEffect = keyof typeof sounds;

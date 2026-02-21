@@ -201,7 +201,7 @@ export default class Game {
   }
 
   shouldUpdateHands() {
-    return this.options.some((opt) => Game.HAND_SWITCH_OPTIONS.has(opt))
+    return !this.isEnded() && this.options.some((opt) => Game.HAND_SWITCH_OPTIONS.has(opt))
       && [0, this.numPlayers].includes(this.tableChips.length);
   }
 
