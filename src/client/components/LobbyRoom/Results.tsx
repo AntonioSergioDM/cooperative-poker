@@ -73,7 +73,7 @@ const Results = ({ results, players }: ResultsProps) => {
           animate={animAnimation}
           transition={{ delay: (playerOrder.length - 1) * animDelay, duration: 0.4 }}
         >
-          <Stack direction="row" spacing={5} justifyContent="center" alignItems="center">
+          <Stack direction="row" spacing={5} justifyContent="center" alignItems="start">
             <ResultCounter content={results.score[0]} label="lost" color="red" emoji="💀" />
 
             <ResultMessage
