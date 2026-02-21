@@ -81,9 +81,7 @@ export const ChatDialog = (props: ChatDialogProps) => {
           <div className="w-full flex flex-col gap-1 items-center mt-2">
             {msg.timestamp ? <div className="text-xxs mr-2">{time}</div> : null}
             <div className="text-xxs text-center">
-              🔔🔔🔔
-              <br />
-              {`${msg.from || 'Someone'} is reminding you to play`}
+              {`🔔 ${msg.from || 'Someone'} is reminding you to play 🔔`}
             </div>
           </div>
         );
