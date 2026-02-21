@@ -88,18 +88,16 @@ const Results = ({ results, players }: ResultsProps) => {
         {/* Community Cards */}
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 2,
-            p: 2,
             background: 'rgba(0, 0, 0, 0.3)',
             borderRadius: 3,
             border: '1px solid rgba(255, 215, 0, 0.2)',
           }}
         >
-          {results.table.map((card) => (
-            <TableCard card={card} key={`${card.value} - ${card.suit}`} />
-          ))}
+          <div className="w-full p-4 flex flex-row gap-2 items-center justify-center overflow-x-auto">
+            {results.table.map((card) => (
+              <TableCard card={card} key={`${card.value} - ${card.suit}`} />
+            ))}
+          </div>
         </Box>
 
         {/* Player Results */}
@@ -171,7 +169,7 @@ const Results = ({ results, players }: ResultsProps) => {
                 </Box>
 
                 {/* Player Cards */}
-                <Stack direction="row" spacing={-3} sx={{ mt: 2, mb: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ mt: 2, mb: 1 }}>
                   {player.hand.map((card) => (
                     <TableCard card={card} key={card.value} />
                   ))}

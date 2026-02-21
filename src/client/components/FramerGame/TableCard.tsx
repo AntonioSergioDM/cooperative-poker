@@ -27,6 +27,7 @@ const TableCard = ({ card }: TableCardProps) => (
     initial="fromHand"
     animate="inTable"
     exit={toGraveyard}
+    whileHover={{ scale: 1.2, zIndex: 10 }}
     className="select-none"
   >
     <AnimatedCard width={SMALL_CARD} card={card} />
