@@ -26,6 +26,8 @@ export default class Lobby {
 
   game: Game = new Game();
 
+  nextPhaseTimeout: NodeJS.Timeout | undefined;
+
   room: LobbyRoom | null = null;
 
   constructor() {
@@ -177,6 +179,8 @@ export default class Lobby {
   }
 
   stealChip(playerId: string, chip: Chip | null): PlayerState | string {
+    clearTimeout(this.nextPhaseTimeout);
+
     if (!chip) {
       return 'Invalid chip';
     }
@@ -194,6 +198,14 @@ export default class Lobby {
 
     if (typeof playRes === 'string') {
       return playRes;
+    }
+
+    if (this.game.canGo2NextPhase()) {
+      this.nextPhaseTimeout = setTimeout(() => {
+        this.game.nextPhase();
+        this.emitGameChange();
+        this.checkEnd();
+      }, 3000);
     }
 
     if (IN_DEV) {
@@ -220,8 +232,6 @@ export default class Lobby {
         msg: 'A special effect was activated',
       });
     }
-
-    this.checkEnd();
 
     return {
       index: foundIdx,
@@ -285,13 +295,12 @@ export default class Lobby {
       return false;
     }
 
-    setTimeout(() => {
-      this.emitMessage({
-        type: MessageType.result,
-        msg: 'The game ended',
-      });
-      this.resetGame();
-    }, 3000);
+    this.emitMessage({
+      type: MessageType.result,
+      msg: 'The game ended',
+    });
+
+    this.resetGame();
 
     return true;
   }
