@@ -105,7 +105,11 @@ export default class Game {
   }
 
   stealChip(player: number, chip: Chip): PlayErrors | true {
-    if (this.tableChips[0]?.color !== chip.color) {
+    if (this.tableChips[0]) {
+      if (this.tableChips[0].color !== chip.color) {
+        return PlayErrors.wrongRound;
+      }
+    } else if (chip.color !== this.chips[0][this.chips[0].length - 1].color) {
       return PlayErrors.wrongRound;
     }
 
@@ -135,11 +139,6 @@ export default class Game {
     if (inTableIdx !== -1) {
       this.chips[player].push(this.tableChips.splice(inTableIdx, 1)[0]);
 
-      if (this.tableChips.length === 0) {
-        this.nextPhase();
-        return true;
-      }
-
       return true;
     }
 
@@ -162,11 +161,74 @@ export default class Game {
     return PlayErrors.somethingWrong;
   }
 
+  canGo2NextPhase() {
+    return this.tableChips.length === 0;
+  }
+
+  nextPhase() {
+    let cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
+    if (cardsOnTable < 3) {
+      this.flop.forEach((card, idx) => {
+        this.table[idx] = card;
+      });
+      cardsOnTable++;
+
+      if (this.options.includes(GameOption.highestWhiteSwitch)) {
+        this.replaceHands('high', this.flop);
+      }
+
+      if (this.options.includes(GameOption.lowestWhiteSwitch)) {
+        this.replaceHands('low', this.flop);
+      }
+
+      if (!this.options.includes(GameOption.skipYellow)) {
+        this.resetTableChips('yellow');
+        return;
+      }
+    }
+
+    if (cardsOnTable < 4) {
+      this.table[3] = this.turn;
+      cardsOnTable++;
+
+      if (this.options.includes(GameOption.highestYellowSwitch)) {
+        this.replaceHands('high', [this.turn!]);
+      }
+
+      if (this.options.includes(GameOption.lowestYellowSwitch)) {
+        this.replaceHands('low', [this.turn!]);
+      }
+
+      if (!this.options.includes(GameOption.skipOrange)) {
+        this.resetTableChips('orange');
+        return;
+      }
+    }
+
+    if (cardsOnTable < 5) {
+      this.table[4] = this.river;
+      cardsOnTable++;
+
+      if (this.options.includes(GameOption.highestOrangeSwitch)) {
+        this.replaceHands('high', [this.river!]);
+      }
+
+      if (this.options.includes(GameOption.lowestOrangeSwitch)) {
+        this.replaceHands('low', [this.river!]);
+      }
+
+      this.resetTableChips('red');
+      return;
+    }
+
+    this.end();
+  }
+
   getState(): GameState {
     return {
       tableChips: this.tableChips,
       table: this.table,
-      hands: this.showHands ? this.decks : this.decks.map((hand) => hand.map(() => null)),
+      hands: this.decks.map((hand) => hand.map(() => null)),
       chips: this.chips,
       options: this.options,
       ...(this.options.includes(GameOption.howManyFigures) && { numFigures: this.decks.map((hand) => hand.filter(isFigure).length) }),
@@ -278,65 +340,6 @@ export default class Game {
       this.decks[playerToSwitch] = this.decks[playerToSwitch].map(this.getCard);
     }
   };
-
-  private nextPhase() {
-    let cardsOnTable = this.table.reduce((count, card) => count + +!!card, 0);
-    if (cardsOnTable < 3) {
-      this.flop.forEach((card, idx) => {
-        this.table[idx] = card;
-      });
-      cardsOnTable++;
-
-      if (this.options.includes(GameOption.highestWhiteSwitch)) {
-        this.replaceHands('high', this.flop);
-      }
-
-      if (this.options.includes(GameOption.lowestWhiteSwitch)) {
-        this.replaceHands('low', this.flop);
-      }
-
-      if (!this.options.includes(GameOption.skipYellow)) {
-        this.resetTableChips('yellow');
-        return;
-      }
-    }
-
-    if (cardsOnTable < 4) {
-      this.table[3] = this.turn;
-      cardsOnTable++;
-
-      if (this.options.includes(GameOption.highestYellowSwitch)) {
-        this.replaceHands('high', [this.turn!]);
-      }
-
-      if (this.options.includes(GameOption.lowestYellowSwitch)) {
-        this.replaceHands('low', [this.turn!]);
-      }
-
-      if (!this.options.includes(GameOption.skipOrange)) {
-        this.resetTableChips('orange');
-        return;
-      }
-    }
-
-    if (cardsOnTable < 5) {
-      this.table[4] = this.river;
-      cardsOnTable++;
-
-      if (this.options.includes(GameOption.highestOrangeSwitch)) {
-        this.replaceHands('high', [this.river!]);
-      }
-
-      if (this.options.includes(GameOption.lowestOrangeSwitch)) {
-        this.replaceHands('low', [this.river!]);
-      }
-
-      this.resetTableChips('red');
-      return;
-    }
-
-    this.end();
-  }
 
   private end() {
     this.showHands = true;
