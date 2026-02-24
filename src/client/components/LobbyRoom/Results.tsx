@@ -65,7 +65,7 @@ const Results = ({ results, players }: ResultsProps) => {
   }
 
   return (
-    <Box className="casino-box p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }} >
+    <Box className="casino-box p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }}>
       <Stack direction="column" spacing={3}>
         {/* Score Display */}
         <motion.div

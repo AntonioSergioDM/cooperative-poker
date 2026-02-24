@@ -41,6 +41,6 @@ const TableCard = ({ card }: TableCardProps) => (
       </motion.div>
     </AnimatePresence>
   </div>
-  );
+);
 
 export default TableCard;

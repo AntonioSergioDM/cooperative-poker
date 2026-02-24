@@ -1,15 +1,33 @@
 import type { BroadcastOperator } from 'socket.io';
 import type { DecorateAcknowledgementsWithMultipleResponses } from 'socket.io/dist/typed-events';
 
-import { adjectives, animals, colors, countries, names, uniqueNamesGenerator, } from 'unique-names-generator';
+import {
+  adjectives,
+  animals,
+  colors,
+  countries,
+  names,
+  uniqueNamesGenerator,
+} from 'unique-names-generator';
 
 import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
-import { GameOption, getOptionDescription, PlayerState } from '@/shared/GameTypes';
+import type {
+  PlayerState,
+} from '@/shared/GameTypes';
+import {
+  GameOption,
+  getOptionDescription,
+} from '@/shared/GameTypes';
 
-import { Message, MessageType } from '@/shared/Message';
+import type {
+  Message,
+} from '@/shared/Message';
+import {
+  MessageType,
+} from '@/shared/Message';
 import Game from './Game';
 import type Player from './Player';
 

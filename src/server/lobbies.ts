@@ -1,9 +1,9 @@
 import type { ClientToServerEvents, OurServerSocket } from '@/shared/SocketTypes';
 
 import type { Chip } from '@/shared/Chip';
+import { MessageType } from '@/shared/Message';
 import Lobby from './classes/Lobby';
 import Player from './classes/Player';
-import { MessageType } from '@/shared/Message';
 
 export const joinLobby = (socket: OurServerSocket): ClientToServerEvents['joinLobby'] => (
   async (lobbyHash, playerName, callback) => {

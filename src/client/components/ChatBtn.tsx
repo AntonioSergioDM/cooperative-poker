@@ -7,8 +7,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSocket } from '@/client/tools/useSocket';
 import type { Message } from '@/shared/Message';
 import { MessageType } from '@/shared/Message';
-import { ChatDialog } from './ChatDialog';
 import { sound } from '@/client/tools/useSound';
+import { ChatDialog } from './ChatDialog';
 
 const ChatBadge = styled(Badge)`
   & .${badgeClasses.badge} {
