@@ -40,7 +40,7 @@ const Results = ({ results, players }: ResultsProps) => {
 
   results.players.sort((playerB, playerA) => {
     if (results.round === 'win') {
-      return ((playerA.chip?.value || 0) - (playerB.chip?.value || 0));
+      return ((playerB.chip?.value || 0) - (playerA.chip?.value || 0));
     }
 
     return (
