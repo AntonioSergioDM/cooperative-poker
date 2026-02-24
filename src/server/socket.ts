@@ -89,28 +89,28 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
     }
   });
 
-  if ((ADMIN_USERNAME && ADMIN_PASSWORD)) {
-    instrument(io, {
-      namespaceName: '/admin',
-      auth: {
-        type: 'basic',
-        username: ADMIN_USERNAME,
-        password: bcrypt.hashSync(ADMIN_PASSWORD, 10),
-      },
-      mode: IN_DEV ? 'development' : 'production',
-    });
-
-    console.info(`
-
-Admin website:    ${NEXT_URL}/admin
-URL:   ${NEXT_URL}
-Username: ${ADMIN_USERNAME}
-Password: ${ADMIN_PASSWORD.replace(/./g, '*')}
-Admin namespace: /admin
-Path:   ${SiteRoute.Socket}
-
-`);
-  }
+//   if ((ADMIN_USERNAME && ADMIN_PASSWORD)) {
+//     instrument(io, {
+//       namespaceName: '/admin',
+//       auth: {
+//         type: 'basic',
+//         username: ADMIN_USERNAME,
+//         password: bcrypt.hashSync(ADMIN_PASSWORD, 10),
+//       },
+//       mode: IN_DEV ? 'development' : 'production',
+//     });
+//
+//     console.info(`
+//
+// Admin website:    ${NEXT_URL}/admin
+// URL:   ${NEXT_URL}
+// Username: ${ADMIN_USERNAME}
+// Password: ${ADMIN_PASSWORD.replace(/./g, '*')}
+// Admin namespace: /admin
+// Path:   ${SiteRoute.Socket}
+//
+// `);
+//   }
 
   res.end();
 };
