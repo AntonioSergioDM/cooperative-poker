@@ -37,7 +37,7 @@ const PlayerHand = (props: PlayerHandProps) => {
       {cards.map((card, idx) => (
         <motion.div
           // eslint-disable-next-line react/no-array-index-key
-          key={idx}
+          key={card ? `${card.value}-${card.suit}` : idx}
           initial="fromDeck"
           animate="inHand"
           variants={getCardFanVariants(idx, cards.length)}
