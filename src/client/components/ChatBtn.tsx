@@ -30,13 +30,13 @@ export const ChatBtn = () => {
   };
 
   const onMessageReceived = useCallback((message: Message) => {
+    if (message.type === MessageType.reminder && messages.at(-1)?.type !== MessageType.reminder) {
+      sound('reminder');
+    }
+
     setMessages([...messages, message]);
     if ([MessageType.message, MessageType.whisper, MessageType.reminder].includes(message.type)) {
       setUnreadMessages(!open ? unreadMessages + 1 : 0);
-    }
-
-    if (message.type === MessageType.reminder) {
-      sound('reminder');
     }
   }, [open, messages, unreadMessages, setUnreadMessages]);
 
