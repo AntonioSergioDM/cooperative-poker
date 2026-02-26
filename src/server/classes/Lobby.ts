@@ -220,7 +220,6 @@ export default class Lobby {
 
     if (this.game.canGo2NextPhase()) {
       this.nextPhaseTimeout = setTimeout(() => {
-
         this.game.nextPhase();
         this.emitGameChange();
         this.checkEnd();
