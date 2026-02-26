@@ -220,9 +220,25 @@ export default class Lobby {
 
     if (this.game.canGo2NextPhase()) {
       this.nextPhaseTimeout = setTimeout(() => {
+
         this.game.nextPhase();
         this.emitGameChange();
         this.checkEnd();
+
+        if (this.game.shouldUpdateHands()) {
+          this.players.forEach((player, idx) => {
+            player.socket.emit('gameStart', {
+              index: idx,
+              hand: this.game.decks[idx],
+              chip: null,
+            });
+          });
+
+          this.emitMessage({
+            type: MessageType.specialEffect,
+            msg: 'A special effect was activated',
+          });
+        }
       }, 3000);
     }
 
@@ -235,21 +251,6 @@ export default class Lobby {
       type: MessageType.chipSteal,
       msg: `${this.players[foundIdx].name} stole the ${chip.color} ${chip.value}`,
     });
-
-    if (this.game.shouldUpdateHands()) {
-      this.players.forEach((player, idx) => {
-        player.socket.emit('gameStart', {
-          index: idx,
-          hand: this.game.decks[idx],
-          chip: null,
-        });
-      });
-
-      this.emitMessage({
-        type: MessageType.specialEffect,
-        msg: 'A special effect was activated',
-      });
-    }
 
     return {
       index: foundIdx,
