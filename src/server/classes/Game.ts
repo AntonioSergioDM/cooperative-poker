@@ -85,12 +85,6 @@ export default class Game {
       .fill(1)
       .map(() => []);
 
-    // reset table
-    this.resetTableChips('white');
-
-    // reset cards
-    this.shuffleAndDistribute();
-
     if (this.options.includes(GameOption.randomChallenge)) {
       this.options.push(getRandom(GameOption.randomChallenge - 2));
     }
@@ -98,6 +92,12 @@ export default class Game {
     if (this.options.includes(GameOption.randomAdvantage)) {
       this.options.push(getRandom(GameOption.randomAdvantage - GameOption.randomChallenge - 1) + GameOption.randomChallenge + 1);
     }
+
+    // reset table
+    this.resetTableChips('white');
+
+    // reset cards
+    this.shuffleAndDistribute();
 
     if (this.options.includes(GameOption.skipWhite)) {
       this.nextPhase();
