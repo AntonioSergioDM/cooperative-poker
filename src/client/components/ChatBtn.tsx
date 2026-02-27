@@ -30,8 +30,11 @@ export const ChatBtn = () => {
   };
 
   const onMessageReceived = useCallback((message: Message) => {
-    if (message.type === MessageType.reminder && messages.at(-1)?.type !== MessageType.reminder) {
-      sound('reminder');
+    if (message.type === MessageType.reminder) {
+      const lastMsg = messages.at(-1);
+      if (!lastMsg || lastMsg.type !== MessageType.reminder || (lastMsg.timestamp && lastMsg.timestamp <= new Date().getTime() - 60000)) {
+        sound('reminder');
+      }
     }
 
     setMessages([...messages, message]);
