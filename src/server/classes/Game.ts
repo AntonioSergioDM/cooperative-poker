@@ -121,7 +121,7 @@ export default class Game {
       }
 
       // Reversed chip cannot be exchanged
-      if (chip.reverse) {
+      if (currentChip.reverse) {
         return PlayErrors.reversedChip;
       }
 
