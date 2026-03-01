@@ -17,7 +17,7 @@ type ResultsProps = {
 };
 
 const animDelay = 2;
-const animInitial = { opacity: 0, y: 20 };
+const animInitial = { opacity: 0 };
 const animAnimation = { opacity: 1, y: 0 };
 
 const Results = ({ results, players }: ResultsProps) => {
@@ -101,118 +101,131 @@ const Results = ({ results, players }: ResultsProps) => {
         </Box>
 
         {/* Player Results */}
-        <Stack
-          direction="row"
-          spacing={2}
-          flexWrap="wrap"
-          justifyContent="center"
-          sx={{ gap: 2 }}
-        >
-          {playerOrder.map((player, idx) => (
-            <motion.div
-              key={`${player.name}-${player.chip?.value}`}
-              initial={animInitial}
-              animate={animAnimation}
-              transition={{ delay: idx * animDelay, duration: 0.4 }}
-            >
-              <Paper
-                elevation={4}
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  minWidth: '180px',
-                  minHeight: '240px',
-                  background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
-                  backdropFilter: 'blur(8px)',
-                  border: idx + 1 !== player.chip?.value
-                    ? '3px solid rgba(239, 68, 68, 0.6)'
-                    : '3px solid rgba(34, 197, 94, 0.6)',
-                  borderRadius: 3,
-                  boxShadow: idx + 1 !== player.chip?.value
-                    ? '0 8px 24px rgba(239, 68, 68, 0.3)'
-                    : '0 8px 12px rgba(34, 197, 94, 0.3)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: idx + 1 !== player.chip?.value
-                      ? '0 12px 32px rgba(239, 68, 68, 0.4)'
-                      : '0 12px 20px rgba(34, 197, 94, 0.4)',
-                  },
+        <div id="hands-holder" className="py-2 h-96 flex flex-row gap-4 justify-around overflow-visible overflow-x-auto w-full">
+          {playerOrder.map((player, idx) => {
+            setTimeout(
+              // For some reason it doesn't realize container is a property ( and a very handy one )
+              // @ts-ignore
+              () => document.getElementById('hands-holder')?.children[idx]?.scrollIntoView({ behavior: 'smooth', container: 'nearest' }),
+              (idx * animDelay * 1000 - 15) || 500, // Slightly before the animation
+            );
+            return (
+              <motion.div
+                key={`${player.name}-${player.chip?.value}`}
+                initial={animInitial}
+                animate={animAnimation}
+                transition={{
+                  delay: idx * animDelay,
+                  duration: 0.4,
                 }}
               >
-                {/* Rank Badge */}
-                <Box
+                <Paper
+                  elevation={4}
                   sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+                    p: 2,
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '1rem',
-                    color: 'white',
-                    boxShadow: '0 2px 8px rgba(147, 51, 234, 0.5)',
-                    border: '2px solid rgba(255, 255, 255, 0.2)',
+                    justifyContent: 'space-between',
+                    minWidth: '180px',
+                    minHeight: '240px',
+                    background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
+                    backdropFilter: 'blur(8px)',
+                    border: idx + 1 !== player.chip?.value
+                      ? '3px solid rgba(239, 68, 68, 0.6)'
+                      : '3px solid rgba(34, 197, 94, 0.6)',
+                    borderRadius: 3,
+                    boxShadow: idx + 1 !== player.chip?.value
+                      ? '0 8px 24px rgba(239, 68, 68, 0.3)'
+                      : '0 8px 12px rgba(34, 197, 94, 0.3)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: idx + 1 !== player.chip?.value
+                        ? '0 12px 32px rgba(239, 68, 68, 0.4)'
+                        : '0 12px 20px rgba(34, 197, 94, 0.4)',
+                    },
                   }}
                 >
-                  {idx + 1}
-                </Box>
-
-                {/* Player Cards */}
-                <Stack direction="row" spacing={1} sx={{ mt: 2, mb: 1 }}>
-                  {player.hand.map((card) => (
-                    <TableCard card={card} key={card.value} />
-                  ))}
-                </Stack>
-
-                {/* Hand Rank */}
-                {player.rank?.handName && (
-                  <Typography
-                    variant="body1"
-                    fontWeight="bold"
+                  {/* Rank Badge */}
+                  <Box
                     sx={{
-                      color: '#ffd700',
-                      textAlign: 'center',
-                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: '1rem',
+                      color: 'white',
+                      boxShadow: '0 2px 8px rgba(147, 51, 234, 0.5)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
+                    }}
+                  >
+                    {idx + 1}
+                  </Box>
+
+                  {/* Player Cards */}
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      mt: 2,
                       mb: 1,
                     }}
                   >
-                    {player.rank.handName}
-                  </Typography>
-                )}
+                    {player.hand.map((card) => (
+                      <TableCard card={card} key={card.value} />
+                    ))}
+                  </Stack>
 
-                {/* Chips */}
-                <Stack direction="row" gap={-1.5} alignItems="center" sx={{ my: 1 }}>
-                  <TableChip chip={player.chip!} onClick={() => {}} />
-                </Stack>
+                  {/* Hand Rank */}
+                  {player.rank?.handName && (
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      sx={{
+                        color: '#ffd700',
+                        textAlign: 'center',
+                        textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+                        mb: 1,
+                      }}
+                    >
+                      {player.rank.handName}
+                    </Typography>
+                  )}
 
-                {/* Player Name */}
-                <Typography
-                  variant="body1"
-                  fontWeight="semibold"
-                  textAlign="center"
-                  sx={{
-                    maxWidth: 160,
-                    color: 'white',
-                    mt: 1,
-                  }}
-                >
-                  {player.name}
-                </Typography>
-              </Paper>
-            </motion.div>
-          ))}
-        </Stack>
+                  {/* Chips */}
+                  <Stack direction="row" gap={-1.5} alignItems="center" sx={{ my: 1 }}>
+                    <TableChip chip={player.chip!} onClick={() => console.info('Why are you clicking here?')} />
+                  </Stack>
+
+                  {/* Player Name */}
+                  <div className="h-12 w-full max-w-40 flex items-center justify-center">
+                    <Typography
+                      variant="body1"
+                      fontWeight="semibold"
+                      textAlign="center"
+                      sx={{
+                        color: 'white',
+                        mt: 1,
+                      }}
+                    >
+                      {player.name}
+                    </Typography>
+                  </div>
+                </Paper>
+              </motion.div>
+            );
+          })}
+        </div>
       </Stack>
     </Box>
   );
