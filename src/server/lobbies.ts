@@ -11,6 +11,10 @@ export const joinLobby = (socket: OurServerSocket): ClientToServerEvents['joinLo
       return callback({ error: 'Invalid lobby' });
     }
 
+    if (!playerName) {
+      return callback({ error: 'Invalid player name' });
+    }
+
     const lobby = Lobby.lobbies.get(lobbyHash);
     if (!lobby) {
       return callback({ error: 'Invalid lobby' });
