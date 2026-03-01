@@ -121,19 +121,18 @@ const LobbyRoom = (props: LobbyRoomProps) => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href={SiteRoute.Home} style={{ display: 'flex', justifyContent: 'center' }}>
-              <Box
-                sx={{
-                  filter: 'drop-shadow(0 8px 24px rgba(147, 51, 234, 0.4))',
-                  transition: 'filter 0.3s ease',
-                  '&:hover': {
-                    filter: 'drop-shadow(0 12px 32px rgba(147, 51, 234, 0.6))',
-                  },
-                }}
-              >
-                <Image alt="Logo" src={logo} priority height={200} />
-              </Box>
-            </Link>
+            <Box
+              className="flex items-center justify-center"
+              sx={{
+                filter: 'drop-shadow(0 8px 24px rgba(147, 51, 234, 0.4))',
+                transition: 'filter 0.3s ease',
+                '&:hover': {
+                  filter: 'drop-shadow(0 12px 32px rgba(147, 51, 234, 0.6))',
+                },
+              }}
+            >
+              <Image alt="Logo" src={logo} priority height={200} />
+            </Box>
           </motion.div>
 
           <Results results={results} players={players} />
