@@ -2,7 +2,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
-import Link from 'next/link';
 import Image from 'next/image';
 
 import {
@@ -18,7 +17,6 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { SiteRoute } from '@/shared/Routes';
 import type { LobbyPlayerState, LobbyState } from '@/shared/SocketTypes';
 
 import logo from '@/public/cooperative-poker.png';
