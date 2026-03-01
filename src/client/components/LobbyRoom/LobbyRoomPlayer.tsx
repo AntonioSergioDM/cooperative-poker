@@ -94,23 +94,23 @@ const LobbyRoomPlayer = ({
               {getInitials(name)}
             </Typography>
           </Avatar>
-
-          <Typography
-            variant="body1"
-            textAlign="center"
-            overflow="hidden"
-            maxWidth={MAX_WIDTH}
-            sx={{
-              mt: 1.5,
-              fontWeight: 600,
-              color: ready ? '#22c55e' : '#ef4444',
-              textShadow: ready
-                ? '0 2px 4px rgba(34, 197, 94, 0.5)'
-                : '0 2px 4px rgba(239, 68, 68, 0.5)',
-            }}
-          >
-            {name}
-          </Typography>
+          <div className="mt-2 h-12 flex items-center justify-center">
+            <Typography
+              variant="body1"
+              textAlign="center"
+              maxWidth={MAX_WIDTH}
+              sx={{
+                fontWeight: 600,
+                color: ready ? '#22c55e' : '#ef4444',
+                textShadow: ready
+                  ? '0 2px 4px rgba(34, 197, 94, 0.5)'
+                  : '0 2px 4px rgba(239, 68, 68, 0.5)',
+              }}
+              title={name.length > 17 ? name : undefined}
+            >
+              {name.length > 17 ? `${name.substring(0, 15)}...` : name}
+            </Typography>
+          </div>
         </Box>
       </motion.div>
     );
