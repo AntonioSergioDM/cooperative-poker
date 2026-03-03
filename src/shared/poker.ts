@@ -110,10 +110,10 @@ export const getRank = (cards: Card[]): CalculatedRank => {
     return [PokerRank.ThreeOfAKind, ...cards.filter((c) => c.value !== trioEntry[0]).slice(0, 2).map((c) => c.value)];
   }
 
-  const pairsValue = Array.from(countValues.entries().filter((entry) => entry[1] >= 2) || []).map((entry) => entry[0]);
+  const pairsValue = Array.from(countValues.entries()).filter((entry) => entry[1] >= 2)?.map((entry) => entry[0]);
 
   if (pairsValue?.length >= 2) {
-    return [PokerRank.TwoPair, pairsValue[0], pairsValue[1], cards.filter((c) => ![pairsValue[0], pairsValue[1]].includes(c.value))[0].value];
+    return [PokerRank.TwoPair, pairsValue[0], pairsValue[1], cards.filter((c) => ![pairsValue[0], pairsValue[1]].includes(c.value)).map((c) => c.value)[0]];
   }
 
   if (pairsValue?.length === 1) {
