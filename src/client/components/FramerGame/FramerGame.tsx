@@ -13,7 +13,7 @@ import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 import { Typography, Box } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
-import { filterPoker } from '@/shared/Card';
+import { getRank, getRankName } from '@/shared/poker';
 import PlayerSeat from './PlayerSeat';
 import Table from './Table';
 
@@ -70,8 +70,7 @@ const FramerGame = (props: FramerGameProps) => {
   }, [players, playerState.index]);
 
   const pokerHand = useMemo(() => (
-    // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
-    require('pokersolver').Hand.solve([...filterPoker(playerState.hand), ...filterPoker(gameState.table)]).descr
+    getRankName(getRank([...playerState.hand, ...gameState.table].filter((c) => !!c)))
   ), [playerState.hand, gameState.table]);
 
   return (

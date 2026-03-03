@@ -1,4 +1,4 @@
-import type { EvaluatedHand } from 'poker-utils';
+import type { CalculatedRank } from '@/shared/poker';
 import type { Card } from './Card';
 import type { Chip } from './Chip';
 
@@ -12,7 +12,7 @@ export type PlayerState = {
   index: number;
   hand: Hand;
   chip: Chip | null;
-  rank?: EvaluatedHand;
+  rank?: CalculatedRank;
 };
 
 export type GameStatus = 'win' | 'lose' | 'inProgress';
