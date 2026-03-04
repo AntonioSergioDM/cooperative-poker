@@ -1,8 +1,6 @@
 import type { Card } from '@/shared/Card';
 import {
-  filterPoker,
   isFigure,
-  getPokerCode,
   Suit,
 } from '@/shared/Card';
 import type { Chip } from '@/shared/Chip';
@@ -18,9 +16,8 @@ import {
   GameOption,
   PlayErrors,
 } from '@/shared/GameTypes';
-import { evaluate } from 'poker-utils/build/module/lib/evaluate';
-import { boardToInts, iso } from 'poker-utils';
 import { IN_DEV } from '@/globals';
+import { compareRank, getRank } from '@/shared/poker';
 
 const getRandom = (range: number) => Math.floor(Math.random() * range);
 
@@ -359,7 +356,7 @@ export default class Game {
       .map((_, idx) => idx)
       .sort((playerA, playerB) => this.chips[playerB][this.chips[0].length - 1].value - this.chips[playerA][this.chips[0].length - 1].value);
 
-    const compare = (playerA: number, playerB: number) => hands[playerB].value - hands[playerA].value;
+    const compare = (playerA: number, playerB: number) => compareRank(hands[playerA], hands[playerB]);
     const playerOrder = Array(this.numPlayers)
       .fill(1)
       .map((_, idx) => idx)
@@ -378,12 +375,12 @@ export default class Game {
       }
 
       // Tie
-      if (hands[playerOrder[idx]].handRank === hands[playerIdx].handRank) {
+      if (compareRank(hands[playerOrder[idx]], hands[playerIdx]) === 0) {
         return false;
       }
 
       // Allow Rank Ties Advantage (Pair Q's vs Pair K's)
-      if (this.options.includes(GameOption.allowRankTie) && hands[playerOrder[idx]].handType === hands[playerIdx].handType) {
+      if (this.options.includes(GameOption.allowRankTie) && hands[playerOrder[idx]][0] === hands[playerIdx][0]) {
         return false;
       }
 
@@ -405,16 +402,7 @@ export default class Game {
   }
 
   private getPokerHands(deck: Card[]) {
-    const {
-      board,
-      hand,
-    } = iso({
-      board: boardToInts(
-        filterPoker(this.table),
-      ),
-      hand: boardToInts(deck.map(getPokerCode)),
-    });
-    return evaluate([...board, ...hand]);
+    return getRank([...deck, ...this.table].filter((c) => !!c));
   }
 
   // -------------- Private Static Methods -------------- //

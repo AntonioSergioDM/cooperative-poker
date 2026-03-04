@@ -10,6 +10,7 @@ import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
 import type { ColorNames } from '@/client/tools/colors';
 import { sound } from '@/client/tools/useSound';
 import { useMemo } from 'react';
+import { compareRank, getRankName } from '@/shared/poker';
 
 type ResultsProps = {
   results: LobbyState['results'];
@@ -43,11 +44,11 @@ const Results = ({ results, players }: ResultsProps) => {
       return ((playerB.chip?.value || 0) - (playerA.chip?.value || 0));
     }
 
-    return (
-      (playerB.rank?.value || 0) - (playerA.rank?.value || 0))
-      || ((playerA.rank?.handRank || 0) - (playerB.rank?.handRank || 0))
-      || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)
-      );
+    if (!playerA.rank || !playerB.rank) {
+      return 0;
+    }
+
+    return (compareRank(playerA.rank, playerB.rank) || ((playerA.chip?.value || 0) - (playerB.chip?.value || 0)));
   });
 
   const playerOrder = results.players.map((player) => ({
@@ -187,7 +188,7 @@ const Results = ({ results, players }: ResultsProps) => {
                   </Stack>
 
                   {/* Hand Rank */}
-                  {player.rank?.handName && (
+                  {player.rank && (
                     <Typography
                       variant="body1"
                       fontWeight="bold"
@@ -198,7 +199,7 @@ const Results = ({ results, players }: ResultsProps) => {
                         mb: 1,
                       }}
                     >
-                      {player.rank.handName}
+                      {getRankName(player.rank)}
                     </Typography>
                   )}
 
