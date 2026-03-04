@@ -73,15 +73,15 @@ export const getRank = (cards: Card[]): CalculatedRank => {
     }
   }
 
-  const fourOfKindEntry = countValues.entries().find((entry) => entry[1] >= 4);
+  const fourOfKindEntry = Array.from(countValues.entries()).find((entry) => entry[1] >= 4);
   if (fourOfKindEntry) {
     const highCard = cards.find((c) => c.value !== fourOfKindEntry[0]);
     return [PokerRank.FourOfAKind, fourOfKindEntry[0], highCard?.value || 0];
   }
 
-  const trioEntry = countValues.entries().find((entry) => entry[1] >= 3);
+  const trioEntry = Array.from(countValues.entries()).find((entry) => entry[1] >= 3);
   if (trioEntry) {
-    const pairEntry = countValues.entries().find((entry) => trioEntry[0] !== entry[0] && entry[1] >= 2);
+    const pairEntry = Array.from(countValues.entries()).find((entry) => trioEntry[0] !== entry[0] && entry[1] >= 2);
 
     if (pairEntry) {
       return [PokerRank.FullHouse, trioEntry[0], pairEntry[0]];
