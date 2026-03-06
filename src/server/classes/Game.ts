@@ -255,6 +255,10 @@ export default class Game {
     }
   }
 
+  endRound() {
+    this.end()
+  }
+
   isEnded() {
     return this.showHands;
   }

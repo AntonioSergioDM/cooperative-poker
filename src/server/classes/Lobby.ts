@@ -335,6 +335,8 @@ export default class Lobby {
       }
     });
 
+    this.game.endRound();
+
     if (IN_DEV) {
       console.info(`🃏 Game restarted on Lobby ${this.hash}\n`);
     }
