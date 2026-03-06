@@ -295,7 +295,7 @@ export default class Game {
 
     this.decks = [];
     for (let i = 0; i < this.numPlayers; i++) {
-      this.decks.push(Array(Game.cardsPerPlayer) // + +this.options.includes(GameOption.extraCard) Poker library can't handle it
+      this.decks.push(Array(Game.cardsPerPlayer + +this.options.includes(GameOption.extraCard))
         .fill(1)
         .map(this.getCard));
     }
