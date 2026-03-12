@@ -64,7 +64,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
       countColors4Straight.set(c.suit, (countColors4Straight.get(c.suit) || 0) + 1);
     });
 
-    if (countColors4Straight.values().some((v) => v === numForStraight)) {
+    if (Array.from(countColors4Straight.values()).some((v) => v === numForStraight)) {
       if (auxStraight.lastValue === (13 - numForStraight + 1)) {
         return [PokerRank.RoyalFlush, 1];
       }
