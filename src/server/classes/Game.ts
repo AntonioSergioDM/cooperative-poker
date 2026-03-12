@@ -256,7 +256,14 @@ export default class Game {
   }
 
   endRound() {
-    this.end()
+    if (this.isEnded()) {
+      return;
+    }
+
+    // fake end
+    this.showHands = true;
+    this.removeRandomOptions();
+    this.result = 'lose';
   }
 
   isEnded() {
@@ -342,17 +349,28 @@ export default class Game {
     }
   };
 
-  private end() {
-    this.showHands = true;
-
+  private removeRandomOptions() {
+    // We add randoms at the start, we need to remove them at the end
     if (this.options.includes(GameOption.randomChallenge)) {
-      this.options.pop(); // We add a random one at the start, we need to remove it at the end
+      const challenge = this.options.pop();
+      if (challenge === GameOption.randomChallenge) {
+        this.options.push(challenge);
+      }
     }
 
     if (this.options.includes(GameOption.randomAdvantage)) {
-      this.options.pop(); // We add a random one at the start, we need to remove it at the end
+      const advantage = this.options.pop();
+      if (advantage === GameOption.randomAdvantage) {
+        this.options.push(advantage);
+      }
     }
+  }
 
+  private end() {
+    this.showHands = true;
+    this.removeRandomOptions();
+
+    // Check Victory
     const hands = this.decks.map((deck) => this.getPokerHands(deck));
 
     const playerChoice = Array(this.numPlayers)
