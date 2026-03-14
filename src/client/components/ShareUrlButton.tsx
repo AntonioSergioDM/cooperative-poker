@@ -20,10 +20,14 @@ const ShareUrlButton = ({ lobbyHash }: ShareUrlButtonProps) => {
 
   const { enqueueSnackbar } = useSnackbar();
   const onCopy = useCallback(async () => {
-    await navigator.clipboard.writeText(shareURL);
+    let success = false;
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareURL);
+      success = true;
+    }
     enqueueSnackbar({
-      variant: 'success',
-      message: 'Copied to clipboard!',
+      variant: success ? 'success' : 'error',
+      message: success ? 'Copied to clipboard!' : 'Failed to copy to clipboard!',
       autoHideDuration: 2000,
     });
   }, [enqueueSnackbar, shareURL]);

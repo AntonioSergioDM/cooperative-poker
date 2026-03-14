@@ -114,7 +114,7 @@ export const getOptionDescription = (option: GameOption) => [
   // 'One player shares one card value',
   // 'One player shows one card to another',
   // 'Redistribute the dealt cards',
-  // 'Give one card to the left player',
+  // 'Give one card to the left player after the flop',
   // 'One player can get a J with no suit',
 
   'Random Advantage',
