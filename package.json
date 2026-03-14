@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "env-cmd -f .env.dev next dev -p 3001",
+    "dev": "env-cmd -f .env.dev next dev -p 80",
     "build": "next build",
     "start": "next start",
     "errors:types": "tsc --noEmit && echo \"Type errors done\"",
