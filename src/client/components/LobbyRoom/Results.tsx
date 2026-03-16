@@ -87,19 +87,21 @@ const Results = ({ results, players }: ResultsProps) => {
         </motion.div>
 
         {/* Community Cards */}
-        <Box
-          sx={{
-            background: 'rgba(0, 0, 0, 0.3)',
-            borderRadius: 3,
-            border: '1px solid rgba(255, 215, 0, 0.2)',
-          }}
-        >
-          <div className="w-full p-4 flex flex-row gap-2 items-center justify-center overflow-x-auto">
-            {results.table.map((card) => (
-              <TableCard card={card} key={`${card.value} - ${card.suit}`} />
-            ))}
-          </div>
-        </Box>
+        {results.table && (
+          <Box
+            sx={{
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: 3,
+              border: '1px solid rgba(255, 215, 0, 0.2)',
+            }}
+          >
+            <div className="w-full p-4 flex flex-row gap-2 items-center justify-center overflow-x-auto">
+              {results.table.map((card) => (
+                <TableCard card={card} key={`${card.value} - ${card.suit}`} />
+              ))}
+            </div>
+          </Box>
+        )}
 
         {/* Player Results */}
         <div id="hands-holder" className="py-2 h-96 flex flex-row gap-4 justify-around overflow-visible overflow-x-auto w-full">
@@ -204,9 +206,11 @@ const Results = ({ results, players }: ResultsProps) => {
                   )}
 
                   {/* Chips */}
-                  <Stack direction="row" gap={-1.5} alignItems="center" sx={{ my: 1 }}>
-                    <TableChip chip={player.chip!} onClick={() => console.info('Why are you clicking here?')} />
-                  </Stack>
+                  {player.chip && (
+                    <Stack direction="row" gap={-1.5} alignItems="center" sx={{ my: 1 }}>
+                      <TableChip chip={player.chip} onClick={() => console.info('Why are you clicking here?')} />
+                    </Stack>
+                  )}
 
                   {/* Player Name */}
                   <div className="h-12 w-full max-w-40 flex items-center justify-center">
