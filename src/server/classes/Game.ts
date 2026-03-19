@@ -35,6 +35,9 @@ export default class Game {
     GameOption.highestYellowSwitch,
     GameOption.lowestOrangeSwitch,
     GameOption.highestOrangeSwitch,
+    GameOption.switchCardLeftFlop,
+    GameOption.switchCardLeftTurn,
+    GameOption.switchCardLeftRiver,
   ]);
 
   /** Number of players */
@@ -178,6 +181,10 @@ export default class Game {
         this.replaceHands('low', this.flop);
       }
 
+      if (this.options.includes(GameOption.switchCardLeftFlop)) {
+        this.switchCardLeft();
+      }
+
       if (!this.options.includes(GameOption.skipYellow)) {
         this.resetTableChips('yellow');
         return;
@@ -196,6 +203,10 @@ export default class Game {
         this.replaceHands('low', [this.turn!]);
       }
 
+      if (this.options.includes(GameOption.switchCardLeftTurn)) {
+        this.switchCardLeft();
+      }
+
       if (!this.options.includes(GameOption.skipOrange)) {
         this.resetTableChips('orange');
         return;
@@ -212,6 +223,10 @@ export default class Game {
 
       if (this.options.includes(GameOption.lowestOrangeSwitch)) {
         this.replaceHands('low', [this.river!]);
+      }
+
+      if (this.options.includes(GameOption.switchCardLeftRiver)) {
+        this.switchCardLeft();
       }
 
       this.resetTableChips('red');
@@ -329,6 +344,16 @@ export default class Game {
   //   this.turn = { suit: 3, value: 5 };
   //   this.river = { suit: 3, value: 9 };
   // }
+
+  private switchCardLeft = () => {
+    const cardsToSwitch = this.decks.map((deck) => deck.pop());
+    cardsToSwitch.unshift(cardsToSwitch.pop());
+    cardsToSwitch.forEach((card, idx) => {
+      if (card) {
+        this.decks[idx].push(card);
+      }
+    });
+  };
 
   private getCard = () => this.fullDeck.splice(getRandom(this.fullDeck.length), 1)[0];
 

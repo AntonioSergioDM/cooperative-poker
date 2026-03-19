@@ -56,6 +56,9 @@ export enum GameOption {
   highestYellowSwitch, // Switch hand if...
   lowestOrangeSwitch, // Switch hand if...
   highestOrangeSwitch, // Switch hand if...
+  switchCardLeftFlop, // Give random card to left player flop
+  switchCardLeftTurn, // Give random card to left player turn
+  switchCardLeftRiver, // Give random card to left player river
 
   // guessHighRedRank, // Need to guess the rank of the higher red chip
   // guessHighRedCard, // Need to guess a card value of the higher red chip
@@ -69,7 +72,6 @@ export enum GameOption {
   howManyFigures,
   handValue,
 
-  // switchOneCard,
   // shareRank,
   // shareValue,
   // showOne,
@@ -97,6 +99,9 @@ export const getOptionDescription = (option: GameOption) => [
   'Switch higher hand if figure on turn',
   'Switch lower hand if no figure on river',
   'Switch higher hand if figure on river',
+  'Give a random card to the left player after the flop',
+  'Give a random card to the left player after the turn',
+  'Give a random card to the left player after the river',
 
   // 'Need to guess the rank of the higher red chip',
   // 'Need to guess one card value of the higher red chip',
@@ -109,7 +114,6 @@ export const getOptionDescription = (option: GameOption) => [
   'How many K, Q and J in hand',
   'Hand value (A, K, Q & J are 10 points)',
 
-  // 'One player switches one card',
   // 'One player shares the current rank',
   // 'One player shares one card value',
   // 'One player shows one card to another',
