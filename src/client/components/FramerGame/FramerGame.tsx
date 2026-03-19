@@ -74,7 +74,7 @@ const FramerGame = (props: FramerGameProps) => {
   ), [playerState.hand, gameState.table]);
 
   return (
-    <div className="relative w-screen h-screen poker-table-felt overflow-hidden">
+    <div className="relative w-screen h-screen poker-table-felt overflow-hidden overscroll-contain">
       {/* Wood rail around the table */}
       <Box
         sx={{

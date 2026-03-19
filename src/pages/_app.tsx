@@ -21,7 +21,7 @@ const MyApp = (props: AppProps) => {
     <AppCacheProvider {...props}>
       <Head>
         <title>Cooperative Poker</title>
-        <meta name="viewport" content="width=980" />
+        <meta name="viewport" content="width=980, initial-scale=1.0, user-scalable=yes" />
       </Head>
 
       <ThemeProvider theme={theme}>
