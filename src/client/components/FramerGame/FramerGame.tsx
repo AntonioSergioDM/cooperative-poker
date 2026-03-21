@@ -13,7 +13,7 @@ import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 import { Typography, Box } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
-import { getRank, getRankName } from '@/shared/poker';
+import { getRank, getRankName, getRankValue } from '@/shared/poker';
 import PlayerSeat from './PlayerSeat';
 import Table from './Table';
 
@@ -69,9 +69,10 @@ const FramerGame = (props: FramerGameProps) => {
     });
   }, [players, playerState.index]);
 
-  const pokerHand = useMemo(() => (
-    getRankName(getRank([...playerState.hand, ...gameState.table].filter((c) => !!c)))
-  ), [playerState.hand, gameState.table]);
+  const pokerHand = useMemo(() => {
+    const calculatedRank = getRank([...playerState.hand, ...gameState.table].filter((c) => !!c));
+    return `${getRankName(calculatedRank)}, ${getRankValue(calculatedRank)}`;
+  }, [playerState.hand, gameState.table]);
 
   return (
     <div className="relative w-screen h-screen poker-table-felt overflow-hidden overscroll-contain">

@@ -1,4 +1,4 @@
-import type { Card, Suit } from '@/shared/Card';
+import { Card, cardName, Suit } from '@/shared/Card';
 
 export type CalculatedRank = [PokerRank, ...number[]];
 
@@ -163,11 +163,32 @@ export const getRankName = (rank: PokerRank | CalculatedRank): string => {
     case PokerRank.ThreeOfAKind:
       return 'Three of a Kind';
     case PokerRank.TwoPair:
-      return 'Two Pair';
+      return 'Two Pairs';
     case PokerRank.Pair:
       return 'Pair';
     case PokerRank.HighCard:
     default:
       return 'High Card';
+  }
+};
+
+export const getRankValue = (rank: CalculatedRank): string => {
+  switch (rank[0]) {
+    case PokerRank.StraightFlush:
+    case PokerRank.Straight:
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] + numForStraight })}`;
+    case PokerRank.ThreeOfAKind:
+    case PokerRank.FourOfAKind:
+    case PokerRank.HighCard:
+    case PokerRank.Flush:
+    case PokerRank.Pair:
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] })}`;
+    case PokerRank.FullHouse:
+    case PokerRank.TwoPair:
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] })} and ${cardName({ suit: Suit.Diamonds, value: rank[2] })}`;
+    case PokerRank.RoyalFlush:
+      return '🥳';
+    default:
+      return '🃏';
   }
 };
