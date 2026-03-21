@@ -44,15 +44,15 @@ export const getRank = (cards: Card[]): CalculatedRank => {
   });
 
   // Ace can be the lowest card in a straight
-  if (auxStraight.lastValue === 0 && cards[0].value === 13) {
+  if (auxStraight.numStraight !== numForStraight && auxStraight.lastValue === 1 && cards[0].value === 13) {
     auxStraight.numStraight++;
-    auxStraight.lastValue = 13;
+    auxStraight.lastValue = 0;
   }
 
   if (auxStraight.numStraight === numForStraight) {
     const acceptableCards = cards.filter((c: Card) => {
       // Ace can be the lowest card in a straight
-      if (auxStraight.lastValue === 13) {
+      if (auxStraight.lastValue === 0) {
         return c.value === 13 || c.value <= numForStraight - 1;
       }
 
@@ -69,7 +69,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
         return [PokerRank.RoyalFlush, 1];
       }
 
-      return [PokerRank.StraightFlush, auxStraight.lastValue === 13 ? -1 : auxStraight.lastValue];
+      return [PokerRank.StraightFlush, auxStraight.lastValue];
     }
   }
 
@@ -103,7 +103,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
   }
 
   if (auxStraight.numStraight === numForStraight) {
-    return [PokerRank.Straight, auxStraight.lastValue === 13 ? -1 : auxStraight.lastValue];
+    return [PokerRank.Straight, auxStraight.lastValue];
   }
 
   if (trioEntry) {

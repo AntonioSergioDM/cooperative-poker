@@ -53,6 +53,8 @@ const tests2: [PokerRank, Card[]][] = [
   [PokerRank.FullHouse, [{ suit: Suit.Diamonds, value: 9 }, { suit: Suit.Hearts, value: 9 }, { suit: Suit.Spades, value: 9 }, { suit: Suit.Clubs, value: 10 }, { suit: Suit.Diamonds, value: 10 }]],
   [PokerRank.Flush, [{ suit: Suit.Clubs, value: 3 }, { suit: Suit.Clubs, value: 5 }, { suit: Suit.Clubs, value: 12 }, { suit: Suit.Clubs, value: 13 }, { suit: Suit.Clubs, value: 9 }]],
   [PokerRank.Straight, [{ suit: Suit.Diamonds, value: 10 }, { suit: Suit.Clubs, value: 11 }, { suit: Suit.Hearts, value: 12 }, { suit: Suit.Clubs, value: 13 }, { suit: Suit.Clubs, value: 9 }]],
+  [PokerRank.Straight, [{ suit: Suit.Diamonds, value: 1 }, { suit: Suit.Clubs, value: 2 }, { suit: Suit.Hearts, value: 3 }, { suit: Suit.Clubs, value: 5 }, { suit: Suit.Clubs, value: 4 }]],
+  [PokerRank.Straight, [{ suit: Suit.Diamonds, value: 1 }, { suit: Suit.Clubs, value: 2 }, { suit: Suit.Hearts, value: 3 }, { suit: Suit.Clubs, value: 13 }, { suit: Suit.Clubs, value: 4 }]],
   [PokerRank.ThreeOfAKind, [{ suit: Suit.Diamonds, value: 9 }, { suit: Suit.Hearts, value: 9 }, { suit: Suit.Spades, value: 9 }, { suit: Suit.Clubs, value: 8 }, { suit: Suit.Diamonds, value: 10 }]],
   [PokerRank.TwoPair, [{ suit: Suit.Diamonds, value: 9 }, { suit: Suit.Hearts, value: 9 }, { suit: Suit.Spades, value: 3 }, { suit: Suit.Clubs, value: 3 }, { suit: Suit.Diamonds, value: 10 }]],
   [PokerRank.Pair, [{ suit: Suit.Diamonds, value: 9 }, { suit: Suit.Hearts, value: 9 }, { suit: Suit.Spades, value: 3 }, { suit: Suit.Clubs, value: 5 }, { suit: Suit.Diamonds, value: 10 }]],

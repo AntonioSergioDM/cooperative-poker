@@ -8,6 +8,7 @@ export enum Suit {
 export const cardName = (card: Card) => {
   switch (card.value) {
     case 13:
+    case 0: // Sometimes we may need the Ace below 2 for straight
       return 'Ace';
     case 12:
       return 'King';
