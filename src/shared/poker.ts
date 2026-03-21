@@ -16,6 +16,8 @@ export enum PokerRank {
 }
 
 const numForStraight = 5;
+const highestValueCard = 13;
+
 export const getRank = (cards: Card[]): CalculatedRank => {
   cards.sort((a, b) => b.value - a.value);
 
@@ -44,7 +46,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
   });
 
   // Ace can be the lowest card in a straight
-  if (auxStraight.numStraight !== numForStraight && auxStraight.lastValue === 1 && cards[0].value === 13) {
+  if (auxStraight.numStraight !== numForStraight && auxStraight.lastValue === 1 && cards[0].value === highestValueCard) {
     auxStraight.numStraight++;
     auxStraight.lastValue = 0;
   }
@@ -53,7 +55,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
     const acceptableCards = cards.filter((c: Card) => {
       // Ace can be the lowest card in a straight
       if (auxStraight.lastValue === 0) {
-        return c.value === 13 || c.value <= numForStraight - 1;
+        return c.value === highestValueCard || c.value <= numForStraight - 1;
       }
 
       return c.value >= auxStraight.lastValue && c.value <= auxStraight.lastValue + numForStraight;
@@ -65,7 +67,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
     });
 
     if (Array.from(countColors4Straight.values()).some((v) => v === numForStraight)) {
-      if (auxStraight.lastValue === (13 - numForStraight + 1)) {
+      if (auxStraight.lastValue === (highestValueCard - numForStraight + 1)) {
         return [PokerRank.RoyalFlush, 1];
       }
 
