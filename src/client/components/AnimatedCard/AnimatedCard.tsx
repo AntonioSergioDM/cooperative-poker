@@ -5,6 +5,7 @@ import { motion, type Variants } from 'framer-motion';
 import type { Card } from '@/shared/Card';
 import getCardId from '@/client/tools/getCardId';
 import styles from './AnimatedCard.module.css';
+import { coverPath, frontPath } from '@/client/tools/useTheme';
 
 export const SMALL_CARD = 100;
 export const BIG_CARD = 140;
@@ -54,7 +55,7 @@ const AnimatedCard = (props: AnimatedCardProps) => {
           width={width}
           draggable={false}
           alt="Card Back"
-          src="/images/cards/Cover.png" // Path to your card back image
+          src={`${coverPath()}Cover.png`} // Path to your card back image
           className={cardClasses}
           style={{
             backfaceVisibility: 'hidden',
@@ -69,7 +70,7 @@ const AnimatedCard = (props: AnimatedCardProps) => {
         width={width}
         draggable={false}
         alt={`Card: ${cardId}`}
-        src={`/images/cards/${cardId}.png`}
+        src={`${frontPath()}${cardId}.png`}
         className={cardClasses}
         style={{
           backfaceVisibility: 'hidden',
@@ -80,7 +81,7 @@ const AnimatedCard = (props: AnimatedCardProps) => {
 
       {/* Spacer to maintain aspect ratio since children are absolute */}
       <div style={{ visibility: 'hidden' }}>
-        <img width={width} src="/images/cards/Cover.png" alt="spacer" />
+        <img width={width} src={`${coverPath()}Cover.png`} alt="spacer" />
       </div>
     </motion.div>
   );

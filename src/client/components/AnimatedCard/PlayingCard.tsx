@@ -7,6 +7,7 @@ import type { Card } from '@/shared/Card';
 import getCardId from '@/client/tools/getCardId';
 
 import styles from './AnimatedCard.module.css';
+import { coverPath, frontPath } from '@/client/tools/useTheme';
 
 export const SMALL_CARD = 80;
 export const BIG_CARD = 100;
@@ -132,7 +133,7 @@ const PlayingCard = (props: PlayingCardProps) => {
             height={height}
             draggable={false}
             alt={`Card: ${cardId}`}
-            src={`/images/cards/${cardId}.png`}
+            src={`${frontPath()}${cardId}.png`}
             className={clsx(
               'rounded-md outline outline-1 outline-black shadow-md bg-black w-full h-full object-cover',
               pulse && !rgb && styles.pulse,
@@ -157,7 +158,7 @@ const PlayingCard = (props: PlayingCardProps) => {
             height={height}
             draggable={false}
             alt="Card back"
-            src="/images/cards/Cover.png"
+            src={`${coverPath()}Cover.png`}
             className={clsx(
               'rounded-md outline outline-1 outline-black shadow-md bg-black w-full h-full object-cover',
               isDisabled && 'opacity-50 grayscale',
