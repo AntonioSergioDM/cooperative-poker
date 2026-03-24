@@ -151,7 +151,7 @@ const FramerGame = (props: FramerGameProps) => {
       })}
 
       {/* Table is centered absolutely */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[70%]">
+      <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-[20%]">
         <Table
           gameState={gameState}
           onStealChip={onStealChip}
