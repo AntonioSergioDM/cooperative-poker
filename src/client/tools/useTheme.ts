@@ -15,6 +15,8 @@ export type CardTheme = keyof typeof cardPaths;
 
 export const availableThemes: CardTheme[] = Object.keys(cardPaths) as CardTheme[];
 
+const STORAGE_KEY = 'card-theme-context';
+
 let context: {
   cover: CardTheme;
   front: CardTheme;
@@ -22,12 +24,23 @@ let context: {
   changeFront: (front: CardTheme) => CardTheme;
 };
 
+const saveContext = () => {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      cover: context.cover,
+      front: context.front,
+    }));
+  }
+};
+
 const changeCover = (cover: CardTheme) => {
   context.cover = cover;
+  saveContext();
   return context.cover;
 };
 const changeFront = (front: CardTheme) => {
   context.front = front;
+  saveContext();
   return context.front;
 };
 
@@ -36,12 +49,34 @@ const getContext = () => {
     return context;
   }
 
+  let cover: CardTheme = 'drawings';
+  let front: CardTheme = 'drawings';
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const storedString = localStorage.getItem(STORAGE_KEY);
+      if (storedString) {
+        const stored = JSON.parse(storedString);
+        if (stored.cover && availableThemes.includes(stored.cover)) {
+          cover = stored.cover;
+        }
+        if (stored.front && availableThemes.includes(stored.front)) {
+          front = stored.front;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse theme from local storage', e);
+    }
+  }
+
   context = {
-    cover: 'drawings',
-    front: 'drawings',
+    cover,
+    front,
     changeCover,
     changeFront,
   };
+
+  saveContext();
 
   return context;
 };
