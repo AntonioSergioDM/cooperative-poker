@@ -133,7 +133,7 @@ const PlayingCard = (props: PlayingCardProps) => {
             height={height}
             draggable={false}
             alt={`Card: ${cardId}`}
-            src={`${frontPath()}${cardId}.png`}
+            src={frontPath(cardId)}
             className={clsx(
               'rounded-md outline outline-1 outline-black shadow-md bg-black w-full h-full object-cover',
               pulse && !rgb && styles.pulse,
@@ -158,7 +158,7 @@ const PlayingCard = (props: PlayingCardProps) => {
             height={height}
             draggable={false}
             alt="Card back"
-            src={`${coverPath()}Cover.png`}
+            src={coverPath()}
             className={clsx(
               'rounded-md outline outline-1 outline-black shadow-md bg-black w-full h-full object-cover',
               isDisabled && 'opacity-50 grayscale',
