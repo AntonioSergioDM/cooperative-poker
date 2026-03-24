@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 import type { Card } from '@/shared/Card';
 import getCardId from '@/client/tools/getCardId';
 
-import styles from './AnimatedCard.module.css';
 import { coverPath, frontPath } from '@/client/tools/useTheme';
+import styles from './AnimatedCard.module.css';
 
 export const SMALL_CARD = 80;
 export const BIG_CARD = 100;

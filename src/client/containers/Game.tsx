@@ -16,11 +16,11 @@ import { SoundBtn } from '@/client/components/SoundBtn';
 import { HelpBtn } from '@/client/components/HelpBtn';
 import { Box } from '@mui/material';
 import { ChatBtn } from '@/client/components/ChatBtn';
+import { ThemeBtn } from '@/client/components/ThemeBtn';
 import { useSocket } from '../tools/useSocket';
 import LobbyRoom from '../components/LobbyRoom';
 import FramerGame from '../components/FramerGame';
 import { sound } from '../tools/useSound';
-import { ThemeBtn } from '@/client/components/ThemeBtn';
 
 const Game = () => {
   const { enqueueSnackbar } = useSnackbar();

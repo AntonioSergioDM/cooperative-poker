@@ -1,4 +1,5 @@
-import { Card, cardName, Suit } from '@/shared/Card';
+import type { Card } from '@/shared/Card';
+import { cardName, Suit } from '@/shared/Card';
 
 export type CalculatedRank = [PokerRank, ...number[]];
 
