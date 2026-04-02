@@ -177,7 +177,7 @@ export const getRankValue = (rank: CalculatedRank): string => {
   switch (rank[0]) {
     case PokerRank.StraightFlush:
     case PokerRank.Straight:
-      return `${cardName({ suit: Suit.Diamonds, value: rank[1] + numForStraight })}`;
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] + numForStraight - 1 })}`;
     case PokerRank.ThreeOfAKind:
     case PokerRank.FourOfAKind:
     case PokerRank.HighCard:
