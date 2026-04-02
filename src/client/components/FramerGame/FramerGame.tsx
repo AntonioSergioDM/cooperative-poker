@@ -32,7 +32,7 @@ const FramerGame = (props: FramerGameProps) => {
     onStealChip,
   } = props;
 
-  // Memoize player positions to prevent recalculation on every render unless players change
+  // Memorize player positions to prevent recalculation on every render unless players change
   const playerPositions = useMemo(() => {
     const activePlayers = players.filter((p) => p.ready);
     const totalPlayers = activePlayers.length;
@@ -71,7 +71,7 @@ const FramerGame = (props: FramerGameProps) => {
 
   const pokerHand = useMemo(() => {
     const calculatedRank = getRank([...playerState.hand, ...gameState.table].filter((c) => !!c));
-    return `${getRankName(calculatedRank)}, ${getRankValue(calculatedRank)}`;
+    return `${getRankName(calculatedRank)} of ${getRankValue(calculatedRank)}`;
   }, [playerState.hand, gameState.table]);
 
   return (

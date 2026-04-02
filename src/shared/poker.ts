@@ -110,7 +110,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
   }
 
   if (trioEntry) {
-    return [PokerRank.ThreeOfAKind, ...cards.filter((c) => c.value !== trioEntry[0]).slice(0, 2).map((c) => c.value)];
+    return [PokerRank.ThreeOfAKind, trioEntry[0], ...cards.filter((c) => c.value !== trioEntry[0]).slice(0, 2).map((c) => c.value)];
   }
 
   const pairsValue = Array.from(countValues.entries()).filter((entry) => entry[1] >= 2)?.map((entry) => entry[0]);
@@ -180,13 +180,14 @@ export const getRankValue = (rank: CalculatedRank): string => {
       return `${cardName({ suit: Suit.Diamonds, value: rank[1] + numForStraight - 1 })}`;
     case PokerRank.ThreeOfAKind:
     case PokerRank.FourOfAKind:
+    case PokerRank.Pair:
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] })}'s`;
     case PokerRank.HighCard:
     case PokerRank.Flush:
-    case PokerRank.Pair:
       return `${cardName({ suit: Suit.Diamonds, value: rank[1] })}`;
     case PokerRank.FullHouse:
     case PokerRank.TwoPair:
-      return `${cardName({ suit: Suit.Diamonds, value: rank[1] })} and ${cardName({ suit: Suit.Diamonds, value: rank[2] })}`;
+      return `${cardName({ suit: Suit.Diamonds, value: rank[1] })}'s over ${cardName({ suit: Suit.Diamonds, value: rank[2] })}'s`;
     case PokerRank.RoyalFlush:
       return '🥳';
     default:
