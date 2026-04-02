@@ -10,7 +10,7 @@ import ResultMessage from '@/client/components/LobbyRoom/ResultMessage';
 import type { ColorNames } from '@/client/tools/colors';
 import { sound } from '@/client/tools/useSound';
 import { useMemo } from 'react';
-import { compareRank, getRankName } from '@/shared/poker';
+import { compareRank, getRankName, getRankValue } from '@/shared/poker';
 
 type ResultsProps = {
   results: LobbyState['results'];
@@ -201,7 +201,7 @@ const Results = ({ results, players }: ResultsProps) => {
                         mb: 1,
                       }}
                     >
-                      {getRankName(player.rank)}
+                      {`${getRankName(player.rank)} of ${getRankValue(player.rank)}`}
                     </Typography>
                   )}
 
