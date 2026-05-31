@@ -104,6 +104,7 @@ export default class Lobby {
     }
 
     this.emitMessage({ type: MessageType.leave, msg: `${player.name} left the lobby` });
+    this.emitLobbyUpdate();
   }
 
   async addPlayer(player: Player): Promise<boolean> {
