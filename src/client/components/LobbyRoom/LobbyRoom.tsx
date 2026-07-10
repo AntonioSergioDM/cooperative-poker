@@ -131,7 +131,7 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                   height: 'auto !important',
                   width: 'auto !important',
                   maxWidth: '100%',
-                  maxHeight: { xs: 110, sm: 160, md: 200 },
+                  maxHeight: { xs: 140, sm: 200, md: 250 },
                 },
               }}
             >
