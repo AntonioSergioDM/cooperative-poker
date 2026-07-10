@@ -86,7 +86,7 @@ export default class Game {
       .map(() => []);
 
     if (this.options.includes(GameOption.randomChallenge)) {
-      this.options.push(getRandom(GameOption.randomChallenge - 2));
+      this.options.push(getRandom(GameOption.randomChallenge));
     }
 
     if (this.options.includes(GameOption.randomAdvantage)) {
@@ -275,10 +275,17 @@ export default class Game {
       return;
     }
 
-    // fake end
+    // fake end: the game was aborted mid-round (e.g. a player left). Drop the
+    // dealt state so getResults() can't emit hands/chips for players that no
+    // longer match the lobby (avoids stale or departed-player data).
     this.showHands = true;
     this.removeRandomOptions();
     this.result = 'lose';
+    this.numPlayers = 0;
+    this.decks = [];
+    this.chips = [];
+    this.tableChips = [];
+    this.table = [null, null, null, null, null];
   }
 
   isEnded() {
@@ -298,7 +305,7 @@ export default class Game {
       players: this.decks.map((hand, index) => ({
         index,
         hand,
-        chip: this.chips[index][this.chips[0].length - 1],
+        chip: this.chips[index][this.chips[index].length - 1],
         ...(this.chips[index].length ? { rank: this.getPokerHands(hand) } : {}),
       })),
     } : {
@@ -308,7 +315,7 @@ export default class Game {
       players: this.decks.map((hand, index) => ({
         index,
         hand: [],
-        chip: this.chips[index][this.chips[0].length - 1],
+        chip: this.chips[index][this.chips[index].length - 1],
         ...(this.chips[index].length ? { rank: this.getPokerHands(hand) } : {}),
       })),
     };
@@ -401,7 +408,7 @@ export default class Game {
     const playerChoice = Array(this.numPlayers)
       .fill(1)
       .map((_, idx) => idx)
-      .sort((playerA, playerB) => this.chips[playerB][this.chips[0].length - 1].value - this.chips[playerA][this.chips[0].length - 1].value);
+      .sort((playerA, playerB) => this.chips[playerB][this.chips[playerB].length - 1].value - this.chips[playerA][this.chips[playerA].length - 1].value);
 
     const compare = (playerA: number, playerB: number) => compareRank(hands[playerA], hands[playerB]);
     const playerOrder = Array(this.numPlayers)

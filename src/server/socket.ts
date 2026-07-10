@@ -29,6 +29,7 @@ import {
   playerUnReady,
   changeOption, playerMessage,
 } from './lobbies';
+import Lobby from './classes/Lobby';
 
 type SocketIOResponse = NextApiResponse & {
   socket: NextApiResponse['socket'] & {
@@ -65,27 +66,45 @@ const SocketHandler = (_: NextApiRequest, res: SocketIOResponse) => {
   );
 
   io.on('connection', (socket) => {
+    // Always (re)bind handlers. A recovered connection is a brand-new Socket
+    // instance with NO listeners attached, even though connectionStateRecovery
+    // restored its id, rooms and data. Binding only on non-recovered sockets
+    // meant a recovered player still received room broadcasts (they could see
+    // the board) but their stealChip/playerReady/etc. events were silently
+    // dropped by the server (they could not pick up chips).
+    socket.on('joinLobby', joinLobby(socket));
+    socket.on('createLobby', createLobby(socket));
+    socket.on('playerReady', playerReady(socket));
+    socket.on('playerUnready', playerUnReady(socket));
+    socket.on('changeOption', changeOption(socket));
+    socket.on('leaveLobby', leaveLobby(socket));
+    socket.on('kickFromLobby', kickFromLobby(socket));
+    socket.on('stealChip', stealChip(socket));
+    socket.on('lobbyPlayers', lobbyPlayers(socket));
+    socket.on('message', playerMessage(socket));
+
     if (socket.recovered) {
-      // recovery was successful: socket.id, socket.rooms and socket.data were restored
+      // recovery was successful: socket.id, socket.rooms and socket.data were
+      // restored, but the Lobby/Player still hold a reference to the OLD (now
+      // dead) socket. Refresh it so per-player direct emits (gameStart, which
+      // delivers the hand and unlocks the interactive board, plus whispers)
+      // reach this new socket instead of the dead one.
       if (IN_DEV) {
         console.info(`🥰 A client reconnected. ID: ${socket.id}\n`);
       }
-    } else {
-      // new or unrecoverable session
-      if (IN_DEV) {
-        console.info(`😊 A client connected. ID: ${socket.id}\n`);
-      }
 
-      socket.on('joinLobby', joinLobby(socket));
-      socket.on('createLobby', createLobby(socket));
-      socket.on('playerReady', playerReady(socket));
-      socket.on('playerUnready', playerUnReady(socket));
-      socket.on('changeOption', changeOption(socket));
-      socket.on('leaveLobby', leaveLobby(socket));
-      socket.on('kickFromLobby', kickFromLobby(socket));
-      socket.on('stealChip', stealChip(socket));
-      socket.on('lobbyPlayers', lobbyPlayers(socket));
-      socket.on('message', playerMessage(socket));
+      const { lobbyHash, playerId } = socket.data;
+      if (lobbyHash && playerId) {
+        const lobby = Lobby.lobbies.get(lobbyHash);
+        const player = lobby?.players.find((p) => p.id === playerId)
+          || lobby?.viewers.find((p) => p.id === playerId);
+        if (player) {
+          player.socket = socket;
+        }
+      }
+    } else if (IN_DEV) {
+      // new or unrecoverable session
+      console.info(`😊 A client connected. ID: ${socket.id}\n`);
     }
   });
 

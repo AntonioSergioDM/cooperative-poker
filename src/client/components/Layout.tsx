@@ -17,12 +17,12 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => (
   <Stack
-    gap={6}
     useFlexGap
     margin="0 auto"
     direction="column"
     alignItems="center"
     justifyContent="center"
+    gap={{ xs: 3, sm: 6 }}
     sx={{ position: 'relative', zIndex: 1 }}
   >
     <motion.div
@@ -40,6 +40,12 @@ const Layout = ({ children }: LayoutProps) => (
             transition: 'filter 0.3s ease',
             '&:hover': {
               filter: 'drop-shadow(0 12px 32px rgba(147, 51, 234, 0.6))',
+            },
+            '& img': {
+              height: 'auto !important',
+              width: 'auto !important',
+              maxWidth: '100%',
+              maxHeight: { xs: 150, sm: 200, md: 250 },
             },
           }}
         >

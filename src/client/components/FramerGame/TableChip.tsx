@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 type TableCardProps = {
   chip: Chip;
   onClick: (chip: Chip) => void;
+  /** Diameter in px. Defaults to the desktop size (48px = w-12). */
+  size?: number;
   key?: string;
 };
 
@@ -13,6 +15,7 @@ const TableChip = (props: TableCardProps) => {
   const {
     chip,
     onClick,
+    size = 48,
     key,
   } = props;
 
@@ -24,11 +27,16 @@ const TableChip = (props: TableCardProps) => {
 
   const style = {
     backgroundColor: color,
+    width: size,
+    height: size,
+    padding: Math.max(2, Math.round(size * 0.08)),
+    fontSize: Math.max(10, Math.round(size * 0.36)),
   };
 
   const style2 = {
     borderColor: chip.reverse ? color : 'black',
     backgroundColor: chip.reverse ? 'black' : color,
+    borderWidth: Math.max(2, Math.round(size * 0.08)),
   };
   const style3 = {
     backgroundColor: chip.reverse ? 'black' : color,
@@ -39,14 +47,15 @@ const TableChip = (props: TableCardProps) => {
 
   return (
     <motion.div
-      className="cursor-pointer rounded-full w-12 h-12 p-1 z-10"
+      className="relative cursor-pointer rounded-full z-10 touch-manipulation"
       style={style}
       onClick={handleOnClick()}
       key={key}
       whileHover={{ scale: 1.2 }}
+      whileTap={{ scale: 1.15 }}
     >
-      <div className="rounded-full w-full h-full border-4 border-dashed" style={style2}>
-        <div className="rounded-full w-full h-full flex justify-center items-center border-2 border-solid" style={style3}>
+      <div className="rounded-full w-full h-full border-dashed" style={style2}>
+        <div className="rounded-full w-full h-full flex justify-center items-center border-2 border-solid leading-none" style={style3}>
           <span>{chip.value}</span>
         </div>
       </div>

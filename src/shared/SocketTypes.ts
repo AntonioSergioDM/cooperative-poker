@@ -34,7 +34,7 @@ export interface ClientToServerEvents {
   createLobby: (playerName: string, callback: (res: GenericCallbackResponse<{ lobbyHash: string }>) => void) => void;
   leaveLobby: () => void;
   kickFromLobby: (playerToKickId: string) => void;
-  lobbyPlayers: (lobbyHash: string, callback: (lobbyHash: string, players: LobbyPlayerState[], results?: GameResults, options?: GameOption[]) => void) => void;
+  lobbyPlayers: (lobbyHash: string, callback: (lobbyHash: string, players: LobbyPlayerState[], results?: GameResults, options?: GameOption[], selfId?: string) => void) => void;
   playerReady: (callback: (playerIndex: number | null) => void) => void;
   playerUnready: (callback: (playerIndex: number | null) => void) => void;
   changeOption: (option: GameOption, status: boolean) => void;
