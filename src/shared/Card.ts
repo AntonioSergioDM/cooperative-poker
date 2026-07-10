@@ -117,6 +117,21 @@ export const stringToCard = (str: string): false | Card => {
 
 export const isFigure = (card: Card) => [12, 11, 10].includes(card.value);
 
+// Rank strength for ordering a hand: Ace (13, or the low-straight 0) is highest.
+export const cardRankValue = (card: Card) => (card.value === 0 ? 13 : card.value);
+
+/**
+ * Order cards for display: grouped by suit, then by rank (high to low) within
+ * each suit. Nulls (hidden cards) are kept at the end. Returns a new array.
+ */
+export const sortCards = <T extends Card | null>(cards: T[]): T[] => [...cards].sort((a, b) => {
+  if (!a) return 1;
+  if (!b) return -1;
+  const suitDiff = Number(a.suit) - Number(b.suit);
+  if (suitDiff !== 0) return suitDiff;
+  return cardRankValue(b) - cardRankValue(a);
+});
+
 export type Card = {
   suit: Suit | `${Suit}`;
   value: number;

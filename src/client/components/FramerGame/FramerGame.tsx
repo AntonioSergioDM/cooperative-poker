@@ -14,6 +14,7 @@ import { Typography, Box, useMediaQuery } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import { getRank, getRankName, getRankValue } from '@/shared/poker';
+import { sortCards } from '@/shared/Card';
 import { useCardScale } from '@/client/tools/useCardScale';
 import PlayerSeat from './PlayerSeat';
 import Table from './Table';
@@ -50,11 +51,12 @@ const FramerGame = (props: FramerGameProps) => {
     // X is wider on landscape to create an ellipse; tighter on portrait so
     // edge seats keep their labels on-screen.
     const radiusX = isPortrait ? 32 : 42;
-    // On portrait phones keep the vertical radius small and push the centre
-    // down so the top-center seat clears the top toolbar instead of clipping
-    // off-screen. Landscape/desktop have the headroom to spread out more.
-    const radiusY = isPortrait ? 33 : 38;
-    const centerY = isPortrait ? 46 : 40;
+    // On portrait phones spread the seats vertically a touch more and lift the
+    // centre so the top players sit higher, leaving a clear middle band for the
+    // community-card island (otherwise the island covers their name labels).
+    // Landscape/desktop have the headroom to spread out more.
+    const radiusY = isPortrait ? 37 : 38;
+    const centerY = isPortrait ? 39 : 40;
 
     return activePlayers.map((player, idx) => {
       // Calculate index relative to current player.
@@ -91,13 +93,20 @@ const FramerGame = (props: FramerGameProps) => {
 
   return (
     <div className="relative w-screen h-[100dvh] poker-table-felt overflow-hidden overscroll-none touch-none select-none">
-      {/* Wood rail around the table */}
+      {/* Wood rail around the viewport edge. Use longhand border properties:
+          the `border` shorthand (especially with responsive breakpoints) resets
+          border-color to currentColor (white) and wipes border-image, which is
+          what made this rail render white. */}
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
-          border: { xs: '12px solid', sm: '24px solid' },
-          borderImage: 'linear-gradient(135deg, #3e2723 0%, #5d4037 25%, #4e342e 50%, #5d4037 75%, #3e2723 100%) 1',
+          borderStyle: 'solid',
+          borderWidth: { xs: '9px', sm: '18px' },
+          // Solid wood tone as the guaranteed base, with a plank-like gradient
+          // layered on top where border-image is supported.
+          borderColor: '#6d4c41',
+          borderImage: 'repeating-linear-gradient(45deg, #5d4037 0px, #8d6e63 5px, #6d4c41 10px, #a1887f 15px, #5d4037 20px) 1',
           pointerEvents: 'none',
           boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.5)',
         }}
@@ -139,7 +148,8 @@ const FramerGame = (props: FramerGameProps) => {
 
       {playerPositions.map((player) => {
         const isMe = playerState.index === player.originalIndex;
-        const cards = isMe ? playerState.hand : gameState.hands[player.originalIndex];
+        // Group the hand by suit and rank so it always reads consistently.
+        const cards = sortCards(isMe ? playerState.hand : gameState.hands[player.originalIndex]);
 
         return (
           <PlayerSeat
@@ -172,17 +182,23 @@ const FramerGame = (props: FramerGameProps) => {
       {/* Table (community-card island) is centered absolutely. On wide/short
           (non-portrait) screens it is anchored higher so the current player's
           large hand at the bottom clears it — otherwise the hand overlaps the
-          island and would hide the tap-to-steal chips. Portrait phones already
-          have plenty of vertical gap, so the island stays centred there. */}
+          island and would hide the tap-to-steal chips. On portrait phones it is
+          dropped into the empty middle band between the raised top players and
+          the current player's hand, and its cards are shrunk so it fits. */}
       <div
-        className="absolute left-1/2 transform -translate-x-1/2 -translate-y-[20%]"
-        style={{ top: isPortrait ? '33.333%' : '22%' }}
+        className="absolute left-1/2"
+        style={{
+          top: isPortrait ? '39%' : '22%',
+          transform: isPortrait
+            ? 'translate(-50%, -50%)'
+            : 'translate(-50%, -20%)',
+        }}
       >
         <Table
           gameState={gameState}
           onStealChip={onStealChip}
-          cardWidth={smallCard}
-          chipSize={chipSize}
+          cardWidth={isPortrait ? Math.round(smallCard * 0.78) : smallCard}
+          chipSize={isPortrait ? Math.round(chipSize * 0.85) : chipSize}
           scale={scale}
         />
       </div>

@@ -171,6 +171,7 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                       name={player.name}
                       ready={player.ready}
                       id={player.id}
+                      isHost={idx === 0}
                       canKick={(isHost || playerIndex === 0) && idx > 0}
                     />
                   ))}
