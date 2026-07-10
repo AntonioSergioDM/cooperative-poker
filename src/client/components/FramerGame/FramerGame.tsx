@@ -10,10 +10,11 @@ import type { LobbyPlayerState } from '@/shared/SocketTypes';
 
 import { BIG_CARD, SMALL_CARD } from '@/client/components/AnimatedCard';
 
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, useMediaQuery } from '@mui/material';
 import type { Chip } from '@/shared/Chip';
 import TableChip from '@/client/components/FramerGame/TableChip';
 import { getRank, getRankName, getRankValue } from '@/shared/poker';
+import { useCardScale } from '@/client/tools/useCardScale';
 import PlayerSeat from './PlayerSeat';
 import Table from './Table';
 
@@ -32,14 +33,28 @@ const FramerGame = (props: FramerGameProps) => {
     onStealChip,
   } = props;
 
+  const scale = useCardScale();
+  const bigCard = useMemo(() => Math.round(BIG_CARD * scale), [scale]);
+  const smallCard = useMemo(() => Math.round(SMALL_CARD * scale), [scale]);
+  const chipSize = useMemo(() => Math.round(48 * scale), [scale]);
+
+  // Portrait phones are tall & narrow: pull the seats in horizontally so wide
+  // player labels near the left/right edges don't clip off-screen.
+  const isPortrait = useMediaQuery('(max-aspect-ratio: 1/1)');
+
   // Memorize player positions to prevent recalculation on every render unless players change
   const playerPositions = useMemo(() => {
     const activePlayers = players.filter((p) => p.ready);
     const totalPlayers = activePlayers.length;
     // Radius as percentage of viewport.
-    // X is wider (42vw) to create an ellipse for landscape screens.
-    const radiusX = 42;
-    const radiusY = 38;
+    // X is wider on landscape to create an ellipse; tighter on portrait so
+    // edge seats keep their labels on-screen.
+    const radiusX = isPortrait ? 32 : 42;
+    // On portrait phones keep the vertical radius small and push the centre
+    // down so the top-center seat clears the top toolbar instead of clipping
+    // off-screen. Landscape/desktop have the headroom to spread out more.
+    const radiusY = isPortrait ? 33 : 38;
+    const centerY = isPortrait ? 46 : 40;
 
     return activePlayers.map((player, idx) => {
       // Calculate index relative to current player.
@@ -52,7 +67,7 @@ const FramerGame = (props: FramerGameProps) => {
       // Convert Polar to Cartesian (percentage based)
       // Center is 50, 50.
       const x = 50 + radiusX * Math.cos(theta);
-      const y = 40 + radiusY * Math.sin(theta);
+      const y = centerY + radiusY * Math.sin(theta);
 
       return {
         ...player,
@@ -67,7 +82,7 @@ const FramerGame = (props: FramerGameProps) => {
         rotation: theta * (180 / Math.PI) - 90, // +180 to make cards face inward
       };
     });
-  }, [players, playerState.index]);
+  }, [players, playerState.index, isPortrait]);
 
   const pokerHand = useMemo(() => {
     const calculatedRank = getRank([...playerState.hand, ...gameState.table].filter((c) => !!c));
@@ -75,13 +90,13 @@ const FramerGame = (props: FramerGameProps) => {
   }, [playerState.hand, gameState.table]);
 
   return (
-    <div className="relative w-screen h-screen poker-table-felt overflow-hidden overscroll-contain">
+    <div className="relative w-screen h-[100dvh] poker-table-felt overflow-hidden overscroll-none touch-none select-none">
       {/* Wood rail around the table */}
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
-          border: '24px solid',
+          border: { xs: '12px solid', sm: '24px solid' },
           borderImage: 'linear-gradient(135deg, #3e2723 0%, #5d4037 25%, #4e342e 50%, #5d4037 75%, #3e2723 100%) 1',
           pointerEvents: 'none',
           boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.5)',
@@ -89,19 +104,20 @@ const FramerGame = (props: FramerGameProps) => {
       />
 
       {/* Options display with better styling */}
-      {gameState.options.length && (
+      {!!gameState.options.length && (
         <Box
           sx={{
             position: 'absolute',
-            top: 16,
+            top: { xs: 56, sm: 16 },
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 10,
+            maxWidth: '92vw',
             background: 'rgba(0, 0, 0, 0.7)',
             backdropFilter: 'blur(8px)',
             borderRadius: 3,
-            px: 3,
-            py: 1.5,
+            px: { xs: 1.5, sm: 3 },
+            py: { xs: 0.75, sm: 1.5 },
             border: '1px solid rgba(255, 215, 0, 0.3)',
           }}
         >
@@ -109,8 +125,9 @@ const FramerGame = (props: FramerGameProps) => {
             className="text-poker-highlight"
             sx={{
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: { xs: '0.72rem', sm: '0.9rem' },
               letterSpacing: '0.5px',
+              textAlign: 'center',
               textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
             }}
           >
@@ -129,7 +146,8 @@ const FramerGame = (props: FramerGameProps) => {
             key={player.name + player.originalIndex}
             player={player}
             cards={cards}
-            cardWidth={isMe ? BIG_CARD : SMALL_CARD}
+            cardWidth={isMe ? bigCard : smallCard}
+            scale={scale}
             isCurrentPlayer={isMe}
             handDescription={isMe ? pokerHand : undefined}
             numFigures={gameState.numFigures?.[player.originalIndex]}
@@ -141,6 +159,7 @@ const FramerGame = (props: FramerGameProps) => {
                   <TableChip
                     key={`${chip.color}-${chip.value}`}
                     chip={chip}
+                    size={chipSize}
                     onClick={onStealChip}
                   />
                 ))}
@@ -150,11 +169,21 @@ const FramerGame = (props: FramerGameProps) => {
         );
       })}
 
-      {/* Table is centered absolutely */}
-      <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-[20%]">
+      {/* Table (community-card island) is centered absolutely. On wide/short
+          (non-portrait) screens it is anchored higher so the current player's
+          large hand at the bottom clears it — otherwise the hand overlaps the
+          island and would hide the tap-to-steal chips. Portrait phones already
+          have plenty of vertical gap, so the island stays centred there. */}
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2 -translate-y-[20%]"
+        style={{ top: isPortrait ? '33.333%' : '22%' }}
+      >
         <Table
           gameState={gameState}
           onStealChip={onStealChip}
+          cardWidth={smallCard}
+          chipSize={chipSize}
+          scale={scale}
         />
       </div>
     </div>

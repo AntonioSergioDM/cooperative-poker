@@ -127,6 +127,12 @@ const LobbyRoom = (props: LobbyRoomProps) => {
                 '&:hover': {
                   filter: 'drop-shadow(0 12px 32px rgba(147, 51, 234, 0.6))',
                 },
+                '& img': {
+                  height: 'auto !important',
+                  width: 'auto !important',
+                  maxWidth: '100%',
+                  maxHeight: { xs: 110, sm: 160, md: 200 },
+                },
               }}
             >
               <Image alt="Logo" src={logo} priority height={200} />
@@ -143,7 +149,7 @@ const LobbyRoom = (props: LobbyRoomProps) => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <Card className="casino-box p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }}>
+            <Card className="casino-box p-4 sm:p-6" sx={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' }}>
               <Stack gap={3} style={{ position: 'relative' }}>
                 <div className="absolute top-0 right-0">
                   <LobbyRoomCounter

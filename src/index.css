@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  /* Stop iOS/Android from rubber-band scrolling the whole game board */
+  overscroll-behavior: none;
+  /* Avoid the grey flash on double-tap while grabbing chips/cards */
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Poker Felt Texture Background */
 @layer utilities {
   .poker-felt {

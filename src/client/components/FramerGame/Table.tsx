@@ -7,12 +7,18 @@ import type { Chip } from '@/shared/Chip';
 type TableProps = {
   gameState: GameState;
   onStealChip: (chip: Chip) => void;
+  cardWidth: number;
+  chipSize: number;
+  scale: number;
 };
 
 const Table = (props: TableProps) => {
   const {
     gameState,
     onStealChip,
+    cardWidth,
+    chipSize,
+    scale,
   } = props;
 
   return (
@@ -22,24 +28,24 @@ const Table = (props: TableProps) => {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: `${Math.round(24 * scale)}px`,
         alignItems: 'center',
         background: 'rgba(0, 0, 0, 0.3)',
-        padding: 4,
+        padding: `${Math.round(24 * scale)}px`,
         backdropFilter: 'blur(4px)',
         boxShadow: 'inset 0 2px 20px rgba(0, 0, 0, 0.5), 0 8px 32px rgba(0, 0, 0, 0.3)',
       }}
     >
       {/* Community Cards */}
-      <div className="flex flex-row gap-4 justify-center">
+      <div className="flex flex-row justify-center" style={{ gap: `${Math.round(16 * scale)}px` }}>
         {/* eslint-disable-next-line react/jsx-key */}
-        {gameState.table.map((card) => (<TableCard card={card} />))}
+        {gameState.table.map((card) => (<TableCard card={card} width={cardWidth} />))}
       </div>
 
       {/* Table Chips */}
-      <div className="flex flex-row gap-3 justify-center flex-wrap">
+      <div className="flex flex-row justify-center flex-wrap" style={{ gap: `${Math.round(12 * scale)}px` }}>
         {/* eslint-disable-next-line react/jsx-key */}
-        {gameState.tableChips.map((chip) => (<TableChip chip={chip} onClick={onStealChip} />))}
+        {gameState.tableChips.map((chip) => (<TableChip chip={chip} size={chipSize} onClick={onStealChip} />))}
       </div>
     </Box>
   );

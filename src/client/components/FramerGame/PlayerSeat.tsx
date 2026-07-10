@@ -26,6 +26,7 @@ type PlayerSeatProps = {
   cardWidth: number;
   isCurrentPlayer: boolean;
   hasPlayed: boolean;
+  scale: number;
   handDescription?: string;
   numFigures?: number;
   handValue?: number;
@@ -47,25 +48,34 @@ const PlayerSeat = (props: PlayerSeatProps) => {
     cardWidth,
     isCurrentPlayer,
     hasPlayed,
+    scale,
     handDescription,
     numFigures,
     handValue,
     chips,
   } = props;
 
+  const wrapperSize = Math.round(96 * scale);
+
   const socket = useSocket();
   const remindPlayer = () => socket.emit('message', { type: MessageType.reminder, to: player.id, msg: 'Can you please play?' });
 
   return (
     <div
-      className="fixed flex flex-col justify-start items-center gap-3 transform -translate-x-1/2 -translate-y-1/2 hover:z-10"
-      style={player.style}
+      // Only the current player's seat is lifted above the community-card
+      // island so their own hand is never hidden behind it. Other seats keep
+      // the default stacking so the island can cover them (and the tableChips,
+      // which have their own z-10, always stay clickable on top).
+      className={`fixed flex flex-col justify-start items-center transform -translate-x-1/2 -translate-y-1/2 ${isCurrentPlayer ? 'z-[5]' : 'hover:z-10'}`}
+      style={{ ...player.style, gap: `${Math.round(12 * scale)}px` }}
     >
 
       {/* Cards - rotated to face center */}
       <motion.div
-        className="origin-center relative w-24 h-24"
+        className="origin-center relative"
         style={{
+          width: wrapperSize,
+          height: wrapperSize,
           transform: `rotate(${player.rotation}deg)`,
         }}
       >
@@ -82,7 +92,7 @@ const PlayerSeat = (props: PlayerSeatProps) => {
         <Paper
           className={`border rounded border-solid border-poker-highlight ${(!isCurrentPlayer ? 'border-opacity-30' : ' shadow-[0_0_12px_4px] shadow-poker-highlight')}`}
           sx={{
-            p: 1.5,
+            p: `${Math.max(4, Math.round(12 * scale))}px`,
             backdropFilter: 'blur(8px)',
             transition: 'all 0.3s ease',
           }}
@@ -94,19 +104,20 @@ const PlayerSeat = (props: PlayerSeatProps) => {
                   variant="body1"
                   fontWeight={isCurrentPlayer ? 'bold' : 'semibold'}
                   sx={{
-                    maxWidth: 140,
+                    maxWidth: Math.round(140 * scale),
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     color: isCurrentPlayer ? '#ffd700' : 'white',
-                    fontSize: isCurrentPlayer ? '1rem' : '0.9rem',
+                    fontSize: `${(isCurrentPlayer ? 1 : 0.9) * scale}rem`,
+                    lineHeight: 1.3,
                   }}
                 >
                   {player.name}
                 </Typography>
                 {!isCurrentPlayer && !hasPlayed && (
-                  <IconButton className="text-poker-highlight" onClick={remindPlayer}>
-                    <NotificationsActive />
+                  <IconButton className="text-poker-highlight" size="small" onClick={remindPlayer}>
+                    <NotificationsActive fontSize="small" />
                   </IconButton>
                 )}
               </div>
@@ -118,6 +129,7 @@ const PlayerSeat = (props: PlayerSeatProps) => {
                   fontWeight="bold"
                   sx={{
                     color: 'white',
+                    fontSize: `${0.95 * scale}rem`,
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
                   }}
                 >
@@ -130,7 +142,7 @@ const PlayerSeat = (props: PlayerSeatProps) => {
                   variant="caption"
                   sx={{
                     color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '0.75rem',
+                    fontSize: `${0.75 * scale}rem`,
                   }}
                 >
                   {numFigures !== undefined && `${numFigures} figures`}

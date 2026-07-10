@@ -19,9 +19,10 @@ const flipVariants = {
 
 type TableCardProps = {
   card: Card | null;
+  width?: number;
 };
 
-const TableCard = ({ card }: TableCardProps) => (
+const TableCard = ({ card, width = SMALL_CARD }: TableCardProps) => (
   // Perspective wrapper is key for 3D effects
   <div style={{ perspective: '1000px' }}>
     <AnimatePresence mode="wait">
@@ -37,7 +38,7 @@ const TableCard = ({ card }: TableCardProps) => (
         className="select-none"
         style={{ transformStyle: 'preserve-3d' }}
       >
-        <AnimatedCard width={SMALL_CARD} card={card} />
+        <AnimatedCard width={width} card={card} />
       </motion.div>
     </AnimatePresence>
   </div>
