@@ -1,5 +1,4 @@
-import type { BroadcastOperator } from 'socket.io';
-import type { DecorateAcknowledgementsWithMultipleResponses } from 'socket.io/dist/typed-events';
+import type { Server } from 'socket.io';
 
 import {
   adjectives,
@@ -10,7 +9,12 @@ import {
   uniqueNamesGenerator,
 } from 'unique-names-generator';
 
-import type { ServerToClientEvents, SocketData } from '@/shared/SocketTypes';
+import type {
+  ClientToServerEvents,
+  InterServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from '@/shared/SocketTypes';
 
 import { IN_DEV } from '@/globals';
 import type { Chip } from '@/shared/Chip';
@@ -31,7 +35,8 @@ import {
 import Game from './Game';
 import type Player from './Player';
 
-export type LobbyRoom = BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<ServerToClientEvents>, SocketData>;
+type LobbyServer = Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
+export type LobbyRoom = ReturnType<LobbyServer['to']>;
 
 export default class Lobby {
   static lobbies: Map<string, Lobby> = new Map();
