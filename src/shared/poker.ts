@@ -59,7 +59,7 @@ export const getRank = (cards: Card[]): CalculatedRank => {
         return c.value === highestValueCard || c.value <= numForStraight - 1;
       }
 
-      return c.value >= auxStraight.lastValue && c.value <= auxStraight.lastValue + numForStraight;
+      return c.value >= auxStraight.lastValue && c.value <= auxStraight.lastValue + numForStraight - 1;
     });
 
     const countColors4Straight = new Map();

@@ -1,4 +1,5 @@
 import {
+  useRef,
   useMemo,
   useState,
   useEffect,
@@ -37,6 +38,11 @@ const Game = () => {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
 
+  // Our own player id, learned from the initial lobbyPlayers response. Used to
+  // recompute host status (host === players[0]) whenever the list changes.
+  const selfId = useRef<string | undefined>(undefined);
+  const [isHost, setHost] = useState<boolean>(false);
+
   const lobbyHash = useMemo(() => {
     if (!query?.lobby) return '';
 
@@ -48,6 +54,7 @@ const Game = () => {
   const updatePlayers = useCallback<ServerToClientEvents['playersListUpdated']>((lobbyState) => {
     const { players: newPlayers, results: newResults, options: newOptions } = lobbyState;
     setPlayers(newPlayers);
+    setHost(!!selfId.current && newPlayers[0]?.id === selfId.current);
     if (newResults) {
       setResults(newResults);
     }
@@ -60,21 +67,18 @@ const Game = () => {
     sound('beep');
   }, []);
 
-  const [isHost, setHost] = useState<boolean>(false);
-
   useEffect(() => {
     if (lobbyHash) {
       // get current players in lobby
-      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions) => {
+      socket.emit('lobbyPlayers', lobbyHash, (validHash, newPlayers, newResults, newOptions, mySelfId) => {
         if (!validHash || !newPlayers || newPlayers.length === 0) {
           void push(`${SiteRoute.JoinLobby}/${lobbyHash}`);
           return;
         }
 
+        selfId.current = mySelfId;
         setPlayers(newPlayers);
-        if (newPlayers.length === 1) {
-          setHost(true);
-        }
+        setHost(!!mySelfId && newPlayers[0]?.id === mySelfId);
 
         if (newResults) {
           setResults(newResults);
@@ -111,31 +115,38 @@ const Game = () => {
     });
   }, [enqueueSnackbar, socket]);
 
+  // (Un)register socket listeners. This may re-run when a handler identity
+  // changes (e.g. the router `push` changes) and must NOT emit leaveLobby, or
+  // the player would be dropped from an in-progress game.
   useEffect(() => {
-    const cleanup = () => {
-      socket.off('goToHomePage', onGoToHomePage);
-      socket.off('playersListUpdated', updatePlayers);
-      socket.off('gameStart', onGameStart);
-      socket.off('gameChange', onGameChange);
-      socket.off('gameReset', onGameReset);
-
-      socket.emit('leaveLobby');
-    };
-
     socket.on('goToHomePage', onGoToHomePage);
     socket.on('playersListUpdated', updatePlayers);
     socket.on('gameStart', onGameStart);
     socket.on('gameChange', onGameChange);
     socket.on('gameReset', onGameReset);
 
-    // cleanup when browser/tab closes
-    window.addEventListener('beforeunload', cleanup);
-
     return () => {
-      cleanup();
-      window.removeEventListener('beforeunload', cleanup);
+      socket.off('goToHomePage', onGoToHomePage);
+      socket.off('playersListUpdated', updatePlayers);
+      socket.off('gameStart', onGameStart);
+      socket.off('gameChange', onGameChange);
+      socket.off('gameReset', onGameReset);
     };
   }, [onGoToHomePage, onGameChange, onGameReset, onGameStart, socket, updatePlayers]);
+
+  // Leave the lobby only when the component truly unmounts or the tab closes.
+  useEffect(() => {
+    const leave = () => {
+      socket.emit('leaveLobby');
+    };
+
+    window.addEventListener('beforeunload', leave);
+
+    return () => {
+      leave();
+      window.removeEventListener('beforeunload', leave);
+    };
+  }, [socket]);
 
   return (
     <>
