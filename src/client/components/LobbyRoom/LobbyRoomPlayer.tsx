@@ -18,6 +18,7 @@ type LobbyRoomPlayerProps = {
   name?: string;
   ready?: boolean;
   canKick?: boolean;
+  isHost?: boolean;
   id?: string;
 };
 
@@ -25,7 +26,7 @@ const SIZE = 85;
 const MAX_WIDTH = 120;
 
 const LobbyRoomPlayer = ({
-  name, ready, canKick, id,
+  name, ready, canKick, isHost, id,
 }: LobbyRoomPlayerProps) => {
   const socket = useSocket();
   const kickFromLobby = useCallback((playerId: string) => {
@@ -81,6 +82,27 @@ const LobbyRoomPlayer = ({
             </IconButton>
           )}
 
+          {isHost && (
+            <Box
+              component="span"
+              aria-label="Host"
+              title="Host"
+              sx={{
+                position: 'absolute',
+                top: -14,
+                left: '50%',
+                transform: 'translateX(-50%) rotate(-18deg)',
+                fontSize: 26,
+                lineHeight: 1,
+                filter: 'drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5))',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+            >
+              👑
+            </Box>
+          )}
+
           <Avatar
             sx={{
               width: SIZE,
@@ -114,7 +136,7 @@ const LobbyRoomPlayer = ({
         </Box>
       </motion.div>
     );
-  }, [canKick, id, kickFromLobby, name, ready]);
+  }, [canKick, id, isHost, kickFromLobby, name, ready]);
 
   return (
     <Stack
